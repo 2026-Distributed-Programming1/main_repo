@@ -2,6 +2,8 @@ package dp.actor;
 
 import dp.consultation.ConsultationRequest;
 import dp.consultation.PolicyApplication;
+import dp.enums.ChannelType;
+
 import java.time.LocalDate;
 
 /**
@@ -11,10 +13,13 @@ import java.time.LocalDate;
 public class SalesChannel {
 
     private int channelId;
+    /** name: 4.2.9에 보면 channelName이라고 나와 있어서 통일해야 할 듯 합니다 */
     private String name;
     private String location;
     private LocalDate startDate;
+    private ChannelType channelType; // enum
 
+    public void getActivityDetail() {}
     public SalesChannel(int channelId, String name, String location) {
         this.channelId = channelId;
         this.name = name;
@@ -22,13 +27,6 @@ public class SalesChannel {
         this.startDate = LocalDate.now();
     }
 
-    public void login() {
-        System.out.println(name + " 채널이 로그인했습니다.");
-    }
-
-    public void logout() {
-        System.out.println(name + " 채널이 로그아웃했습니다.");
-    }
     public void acceptConsultation(ConsultationRequest request) {
         request.accept();
         System.out.println("  [" + name + "] 상담 요청을 수락했습니다.");
