@@ -1,6 +1,6 @@
-package com.insurance.claim;
+package dp.claim;
 
-import com.insurance.actor.Customer;
+import dp.actor.Customer;
 
 /**
  * 수령인 정보 (RecipientInfo)

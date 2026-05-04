@@ -1,14 +1,13 @@
-package com.insurance.claim;
+package dp.claim;
 
-import com.insurance.actor.Customer;
-import com.insurance.common.Attachment;
-import com.insurance.common.BankAccount;
-import com.insurance.contract.InsuranceContract;
-import com.insurance.enums.AuthMethod;
-import com.insurance.enums.ClaimRequestStatus;
-import com.insurance.enums.ClaimType;
-import com.insurance.enums.NoticeMethod;
-
+import dp.actor.Customer;
+import dp.common.Attachment;
+import dp.common.BankAccount;
+import dp.contract.InsuranceContract;
+import dp.enums.AuthMethod;
+import dp.enums.ClaimRequestStatus;
+import dp.enums.ClaimType;
+import dp.enums.NoticeMethod;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

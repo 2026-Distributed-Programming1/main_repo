@@ -1,9 +1,8 @@
-package com.insurance.claim;
+package dp.claim;
 
-import com.insurance.actor.ClaimsHandler;
-import com.insurance.enums.InvestigationResult;
-import com.insurance.enums.InvestigationStatus;
-
+import dp.actor.ClaimsHandler;
+import dp.enums.InvestigationResult;
+import dp.enums.InvestigationStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 

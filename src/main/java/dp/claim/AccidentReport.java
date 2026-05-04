@@ -1,9 +1,8 @@
-package com.insurance.claim;
+package dp.claim;
 
-import com.insurance.actor.Customer;
-import com.insurance.enums.AccidentReportStatus;
-import com.insurance.enums.AccidentType;
-
+import dp.actor.Customer;
+import dp.enums.AccidentReportStatus;
+import dp.enums.AccidentType;
 import java.time.LocalDateTime;
 
 /**

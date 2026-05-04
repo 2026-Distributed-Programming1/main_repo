@@ -1,4 +1,4 @@
-package com.insurance.contract;
+package dp.contract;
 
 import java.time.LocalDateTime;
 

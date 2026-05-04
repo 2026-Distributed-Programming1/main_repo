@@ -1,10 +1,8 @@
-package com.insurance.payment;
+package dp.payment;
 
-import com.insurance.actor.FinanceManager;
-import com.insurance.contract.Cancellation;
-import com.insurance.contract.InsuranceContract;
-import com.insurance.enums.RefundStatus;
-
+import dp.contract.Cancellation;
+import dp.contract.InsuranceContract;
+import dp.enums.RefundStatus;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

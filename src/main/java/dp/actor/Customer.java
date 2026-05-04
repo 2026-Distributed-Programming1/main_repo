@@ -1,7 +1,7 @@
-package com.insurance.actor;
+package dp.actor;
 
-import com.insurance.common.BankAccount;
 
+import dp.common.BankAccount;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.insurance.common;
+package dp.common;
 
 import java.io.File;
 import java.time.LocalDateTime;

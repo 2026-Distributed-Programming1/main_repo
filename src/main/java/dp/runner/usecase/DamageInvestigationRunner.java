@@ -1,14 +1,13 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.actor.ClaimsHandler;
-import com.insurance.claim.ClaimCalculation;
-import com.insurance.claim.ClaimRequest;
-import com.insurance.claim.DamageInvestigation;
-import com.insurance.enums.InvestigationResult;
-import com.insurance.enums.InvestigationStatus;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.actor.ClaimsHandler;
+import dp.claim.ClaimCalculation;
+import dp.claim.ClaimRequest;
+import dp.claim.DamageInvestigation;
+import dp.enums.InvestigationResult;
+import dp.enums.InvestigationStatus;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;

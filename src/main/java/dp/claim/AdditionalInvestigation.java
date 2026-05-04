@@ -1,4 +1,4 @@
-package com.insurance.claim;
+package dp.claim;
 
 import java.time.LocalDateTime;
 

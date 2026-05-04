@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum AuthMethod {
     MOBILE,        // 휴대폰

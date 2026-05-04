@@ -1,13 +1,12 @@
-package com.insurance.runner;
+package dp.runner;
 
-import com.insurance.actor.ClaimsHandler;
-import com.insurance.actor.Customer;
-import com.insurance.actor.DispatchAgent;
-import com.insurance.actor.FinanceManager;
-import com.insurance.common.BankAccount;
-import com.insurance.contract.InsuranceContract;
-import com.insurance.payment.OverdueNoticeSetting;
-
+import dp.actor.ClaimsHandler;
+import dp.actor.Customer;
+import dp.actor.DispatchAgent;
+import dp.actor.FinanceManager;
+import dp.common.BankAccount;
+import dp.contract.InsuranceContract;
+import dp.payment.OverdueNoticeSetting;
 import java.time.LocalDate;
 
 /**

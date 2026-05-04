@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum RefundStatus {
     CALCULATION_PENDING,    // 산출대기

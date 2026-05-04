@@ -1,11 +1,10 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.common.BankAccount;
-import com.insurance.enums.RefundPaymentStatus;
-import com.insurance.payment.RefundPayment;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.common.BankAccount;
+import dp.enums.RefundPaymentStatus;
+import dp.payment.RefundPayment;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.util.List;
 import java.util.stream.Collectors;
 

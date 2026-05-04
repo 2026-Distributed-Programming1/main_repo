@@ -1,22 +1,19 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.actor.Customer;
-import com.insurance.claim.AccidentDetail;
-import com.insurance.claim.ClaimRequest;
-import com.insurance.common.Attachment;
-import com.insurance.common.BankAccount;
-import com.insurance.contract.InsuranceContract;
-import com.insurance.enums.AccidentSubType;
-import com.insurance.enums.AuthMethod;
-import com.insurance.enums.ClaimType;
-import com.insurance.enums.NoticeMethod;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.actor.Customer;
+import dp.claim.AccidentDetail;
+import dp.claim.ClaimRequest;
+import dp.common.Attachment;
+import dp.common.BankAccount;
+import dp.contract.InsuranceContract;
+import dp.enums.AccidentSubType;
+import dp.enums.AuthMethod;
+import dp.enums.ClaimType;
+import dp.enums.NoticeMethod;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.io.File;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

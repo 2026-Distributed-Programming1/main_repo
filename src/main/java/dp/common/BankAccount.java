@@ -1,4 +1,4 @@
-package com.insurance.common;
+package dp.common;
 
 /**
  * 계좌 정보 (BankAccount)

@@ -1,15 +1,14 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.actor.Customer;
-import com.insurance.common.BankAccount;
-import com.insurance.contract.InsuranceContract;
-import com.insurance.enums.PaymentMethod;
-import com.insurance.payment.Payment;
-import com.insurance.payment.PaymentItem;
-import com.insurance.payment.PaymentRecord;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.actor.Customer;
+import dp.common.BankAccount;
+import dp.contract.InsuranceContract;
+import dp.enums.PaymentMethod;
+import dp.payment.Payment;
+import dp.payment.PaymentItem;
+import dp.payment.PaymentRecord;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.util.List;
 import java.util.stream.Collectors;
 

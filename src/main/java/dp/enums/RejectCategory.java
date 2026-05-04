@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum RejectCategory {
     PAYMENT_ERROR,        // 오류결제

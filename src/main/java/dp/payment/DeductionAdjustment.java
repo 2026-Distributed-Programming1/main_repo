@@ -1,7 +1,6 @@
-package com.insurance.payment;
+package dp.payment;
 
-import com.insurance.actor.FinanceManager;
-
+import dp.actor.FinanceManager;
 import java.time.LocalDateTime;
 
 /**

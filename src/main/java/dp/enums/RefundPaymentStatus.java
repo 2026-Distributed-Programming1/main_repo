@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum RefundPaymentStatus {
     WAITING,     // 대기

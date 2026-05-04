@@ -1,11 +1,10 @@
-package com.insurance.payment;
+package dp.payment;
 
-import com.insurance.actor.Customer;
-import com.insurance.common.BankAccount;
-import com.insurance.contract.InsuranceContract;
-import com.insurance.enums.PaymentMethod;
-import com.insurance.enums.PaymentStatus;
-
+import dp.actor.Customer;
+import dp.common.BankAccount;
+import dp.contract.InsuranceContract;
+import dp.enums.PaymentMethod;
+import dp.enums.PaymentStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

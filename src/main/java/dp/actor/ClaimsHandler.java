@@ -1,4 +1,4 @@
-package com.insurance.actor;
+package dp.actor;
 
 /**
  * 보상담당자 (ClaimsHandler)

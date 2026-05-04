@@ -1,8 +1,7 @@
-package com.insurance.payment;
+package dp.payment;
 
-import com.insurance.common.BankAccount;
-import com.insurance.enums.RefundPaymentStatus;
-
+import dp.common.BankAccount;
+import dp.enums.RefundPaymentStatus;
 import java.time.LocalDateTime;
 
 /**

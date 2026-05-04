@@ -1,4 +1,4 @@
-package com.insurance.actor;
+package dp.actor;
 
 /**
  * 현장출동 직원 (DispatchAgent)

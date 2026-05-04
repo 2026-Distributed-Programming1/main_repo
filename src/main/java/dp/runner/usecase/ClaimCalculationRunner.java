@@ -1,13 +1,12 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.actor.ClaimsHandler;
-import com.insurance.actor.Employee;
-import com.insurance.claim.ClaimCalculation;
-import com.insurance.claim.ClaimPayment;
-import com.insurance.enums.CalculationStatus;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.actor.ClaimsHandler;
+import dp.actor.Employee;
+import dp.claim.ClaimCalculation;
+import dp.claim.ClaimPayment;
+import dp.enums.CalculationStatus;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.util.List;
 import java.util.stream.Collectors;
 

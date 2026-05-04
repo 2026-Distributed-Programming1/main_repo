@@ -1,7 +1,7 @@
-package com.insurance.contract;
+package dp.contract;
 
-import com.insurance.actor.Customer;
 
+import dp.actor.Customer;
 import java.time.LocalDate;
 
 /**

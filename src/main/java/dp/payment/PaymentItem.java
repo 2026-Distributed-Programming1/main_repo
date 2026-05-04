@@ -1,6 +1,7 @@
-package com.insurance.payment;
+package dp.payment;
 
-import com.insurance.contract.InsuranceContract;
+
+import dp.contract.InsuranceContract;
 
 /**
  * 납입 항목 (PaymentItem) - N:M 매핑 클래스

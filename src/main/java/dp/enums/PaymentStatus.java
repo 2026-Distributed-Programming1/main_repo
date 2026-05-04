@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum PaymentStatus {
     DRAFT,        // 작성중

@@ -1,13 +1,12 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.contract.Cancellation;
-import com.insurance.contract.InsuranceContract;
-import com.insurance.enums.RefundStatus;
-import com.insurance.payment.RefundCalculation;
-import com.insurance.payment.RefundPayment;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.contract.Cancellation;
+import dp.contract.InsuranceContract;
+import dp.enums.RefundStatus;
+import dp.payment.RefundCalculation;
+import dp.payment.RefundPayment;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.util.List;
 import java.util.stream.Collectors;
 

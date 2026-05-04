@@ -1,4 +1,4 @@
-package com.insurance.actor;
+package dp.actor;
 
 /**
  * 재무회계 담당자 (FinanceManager)

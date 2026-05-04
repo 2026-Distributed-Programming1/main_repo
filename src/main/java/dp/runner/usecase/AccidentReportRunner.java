@@ -1,12 +1,11 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.actor.Customer;
-import com.insurance.claim.AccidentReport;
-import com.insurance.claim.Dispatch;
-import com.insurance.enums.AccidentType;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.actor.Customer;
+import dp.claim.AccidentReport;
+import dp.claim.Dispatch;
+import dp.enums.AccidentType;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.util.List;
 
 /**

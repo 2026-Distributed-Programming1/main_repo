@@ -1,12 +1,11 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.payment.OverdueNoticeSetting;
-import com.insurance.payment.PaymentRecord;
-import com.insurance.enums.PaymentRecordStatus;
-import com.insurance.enums.RejectCategory;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.enums.PaymentRecordStatus;
+import dp.enums.RejectCategory;
+import dp.payment.OverdueNoticeSetting;
+import dp.payment.PaymentRecord;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.util.List;
 import java.util.stream.Collectors;
 

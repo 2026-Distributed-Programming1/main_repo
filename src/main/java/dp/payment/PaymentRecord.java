@@ -1,9 +1,8 @@
-package com.insurance.payment;
+package dp.payment;
 
-import com.insurance.contract.InsuranceContract;
-import com.insurance.enums.PaymentRecordStatus;
-import com.insurance.enums.RejectCategory;
-
+import dp.contract.InsuranceContract;
+import dp.enums.PaymentRecordStatus;
+import dp.enums.RejectCategory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

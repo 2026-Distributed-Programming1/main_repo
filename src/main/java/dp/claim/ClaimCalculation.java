@@ -1,8 +1,7 @@
-package com.insurance.claim;
+package dp.claim;
 
-import com.insurance.actor.Employee;
-import com.insurance.enums.CalculationStatus;
-
+import dp.actor.Employee;
+import dp.enums.CalculationStatus;
 import java.time.LocalDateTime;
 
 /**

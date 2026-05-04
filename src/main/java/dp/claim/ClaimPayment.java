@@ -1,10 +1,9 @@
-package com.insurance.claim;
+package dp.claim;
 
-import com.insurance.common.BankAccount;
-import com.insurance.enums.ClaimPaymentStatus;
-import com.insurance.enums.NoticeMethod;
-import com.insurance.enums.PaymentType;
-
+import dp.common.BankAccount;
+import dp.enums.ClaimPaymentStatus;
+import dp.enums.NoticeMethod;
+import dp.enums.PaymentType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

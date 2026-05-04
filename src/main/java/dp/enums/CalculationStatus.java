@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum CalculationStatus {
     CALCULATED,         // 산출완료

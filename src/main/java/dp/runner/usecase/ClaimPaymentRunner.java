@@ -1,12 +1,11 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.claim.ClaimPayment;
-import com.insurance.enums.ClaimPaymentStatus;
-import com.insurance.enums.NoticeMethod;
-import com.insurance.enums.PaymentType;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.claim.ClaimPayment;
+import dp.enums.ClaimPaymentStatus;
+import dp.enums.NoticeMethod;
+import dp.enums.PaymentType;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

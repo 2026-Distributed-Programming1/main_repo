@@ -1,24 +1,23 @@
-package com.insurance.runner;
+package dp.runner;
 
-import com.insurance.actor.ClaimsHandler;
-import com.insurance.actor.Customer;
-import com.insurance.actor.DispatchAgent;
-import com.insurance.actor.FinanceManager;
-import com.insurance.claim.AccidentReport;
-import com.insurance.claim.ClaimCalculation;
-import com.insurance.claim.ClaimPayment;
-import com.insurance.claim.ClaimRequest;
-import com.insurance.claim.DamageInvestigation;
-import com.insurance.claim.Dispatch;
-import com.insurance.claim.DispatchRecord;
-import com.insurance.contract.Cancellation;
-import com.insurance.contract.InsuranceContract;
-import com.insurance.payment.OverdueNoticeSetting;
-import com.insurance.payment.Payment;
-import com.insurance.payment.PaymentRecord;
-import com.insurance.payment.RefundCalculation;
-import com.insurance.payment.RefundPayment;
-
+import dp.actor.ClaimsHandler;
+import dp.actor.Customer;
+import dp.actor.DispatchAgent;
+import dp.actor.FinanceManager;
+import dp.claim.AccidentReport;
+import dp.claim.ClaimCalculation;
+import dp.claim.ClaimPayment;
+import dp.claim.ClaimRequest;
+import dp.claim.DamageInvestigation;
+import dp.claim.Dispatch;
+import dp.claim.DispatchRecord;
+import dp.contract.Cancellation;
+import dp.contract.InsuranceContract;
+import dp.payment.OverdueNoticeSetting;
+import dp.payment.Payment;
+import dp.payment.PaymentRecord;
+import dp.payment.RefundCalculation;
+import dp.payment.RefundPayment;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum PaymentMethod {
     IMMEDIATE_TRANSFER,    // 즉시이체

@@ -1,4 +1,4 @@
-package com.insurance.actor;
+package dp.actor;
 
 /**
  * 사용자 (User) - 추상 클래스

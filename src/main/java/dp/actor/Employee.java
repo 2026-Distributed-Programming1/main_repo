@@ -1,4 +1,4 @@
-package com.insurance.actor;
+package dp.actor;
 
 import java.time.LocalDate;
 

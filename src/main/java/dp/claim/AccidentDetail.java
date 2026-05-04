@@ -1,7 +1,6 @@
-package com.insurance.claim;
+package dp.claim;
 
-import com.insurance.enums.AccidentSubType;
-
+import dp.enums.AccidentSubType;
 import java.time.LocalDate;
 
 /**

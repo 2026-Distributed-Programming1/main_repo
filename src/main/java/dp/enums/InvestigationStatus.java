@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum InvestigationStatus {
     NEW_ASSIGNED,    // 신규배정

@@ -1,8 +1,7 @@
-package com.insurance.claim;
+package dp.claim;
 
-import com.insurance.actor.DispatchAgent;
-import com.insurance.enums.DispatchStatus;
-
+import dp.actor.DispatchAgent;
+import dp.enums.DispatchStatus;
 import java.time.LocalDateTime;
 
 /**

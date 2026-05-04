@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum AccidentSubType {
     GENERAL,    // 일반재해

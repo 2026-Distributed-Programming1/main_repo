@@ -1,13 +1,12 @@
-package com.insurance.runner.usecase;
+package dp.runner.usecase;
 
-import com.insurance.actor.DispatchAgent;
-import com.insurance.claim.Dispatch;
-import com.insurance.claim.DispatchRecord;
-import com.insurance.common.Attachment;
-import com.insurance.enums.DispatchStatus;
-import com.insurance.runner.ConsoleHelper;
-import com.insurance.runner.Repository;
-
+import dp.actor.DispatchAgent;
+import dp.claim.Dispatch;
+import dp.claim.DispatchRecord;
+import dp.common.Attachment;
+import dp.enums.DispatchStatus;
+import dp.runner.ConsoleHelper;
+import dp.runner.Repository;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;

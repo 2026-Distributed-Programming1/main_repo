@@ -1,4 +1,4 @@
-package com.insurance.enums;
+package dp.enums;
 
 public enum InvestigationResult {
     APPROVED,    // 지급승인

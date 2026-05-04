@@ -1,8 +1,7 @@
-package com.insurance.claim;
+package dp.claim;
 
-import com.insurance.common.Attachment;
-import com.insurance.enums.DispatchRecordStatus;
-
+import dp.common.Attachment;
+import dp.enums.DispatchRecordStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
