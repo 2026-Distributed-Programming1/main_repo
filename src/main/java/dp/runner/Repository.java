@@ -20,7 +20,23 @@ import dp.payment.RefundCalculation;
 import dp.payment.RefundPayment;
 import java.util.ArrayList;
 import java.util.List;
-
+import dp.actor.Agency;
+import dp.actor.Designer;
+import dp.actor.EducationTrainer;
+import dp.actor.InsuranceReviewer;
+import dp.actor.SalesManager;
+import dp.consultation.ConsultationRequest;
+import dp.consultation.InsuranceApplication;
+import dp.consultation.InsuranceProduct;
+import dp.consultation.InterviewRecord;
+import dp.consultation.InterviewSchedule;
+import dp.consultation.PolicyApplication;
+import dp.consultation.Proposal;
+import dp.consultation.Revival;
+import dp.consultation.Underwriting;
+import dp.education.EducationExecution;
+import dp.education.EducationPlan;
+import dp.education.EducationPreparation;
 /**
  * 메모리 객체 보관소 (유스케이스 외부의 구동 코드)
  *
@@ -57,4 +73,27 @@ public class Repository {
     public static final List<RefundPayment> refundPayments = new ArrayList<>();
 
     private Repository() {}
+
+    // ===== 교육/상담/가입 도메인 액터 =====
+    public static final List<EducationTrainer> educationTrainers = new ArrayList<>();
+    public static final List<SalesManager> salesManagers = new ArrayList<>();
+    public static final List<InsuranceReviewer> insuranceReviewers = new ArrayList<>();
+    public static final List<Designer> designers = new ArrayList<>();
+    public static final List<Agency> agencies = new ArrayList<>();
+
+    // ===== 교육 도메인 =====
+    public static final List<EducationPlan> educationPlans = new ArrayList<>();
+    public static final List<EducationPreparation> educationPreparations = new ArrayList<>();
+    public static final List<EducationExecution> educationExecutions = new ArrayList<>();
+
+    // ===== 상담 및 가입 도메인 =====
+    public static final List<ConsultationRequest> consultationRequests = new ArrayList<>();
+    public static final List<InterviewSchedule> interviewSchedules = new ArrayList<>();
+    public static final List<InterviewRecord> interviewRecords = new ArrayList<>();
+    public static final List<InsuranceProduct> insuranceProducts = new ArrayList<>();
+    public static final List<Proposal> proposals = new ArrayList<>();
+    public static final List<PolicyApplication> policyApplications = new ArrayList<>();
+    public static final List<InsuranceApplication> insuranceApplications = new ArrayList<>();
+    public static final List<Revival> revivals = new ArrayList<>();
+    public static final List<Underwriting> underwritings = new ArrayList<>();
 }

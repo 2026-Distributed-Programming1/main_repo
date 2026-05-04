@@ -12,6 +12,17 @@ import dp.runner.usecase.PaymentRecordRunner;
 import dp.runner.usecase.PaymentRunner;
 import dp.runner.usecase.RefundCalculationRunner;
 import dp.runner.usecase.RefundPaymentRunner;
+import dp.runner.usecase.ConsultationRequestRunner;
+import dp.runner.usecase.EducationExecutionRunner;
+import dp.runner.usecase.EducationPlanRunner;
+import dp.runner.usecase.EducationPreparationRunner;
+import dp.runner.usecase.InsuranceApplicationRunner;
+import dp.runner.usecase.InterviewRecordRunner;
+import dp.runner.usecase.InterviewScheduleRunner;
+import dp.runner.usecase.PolicyApplicationRunner;
+import dp.runner.usecase.ProposalRunner;
+import dp.runner.usecase.RevivalRunner;
+import dp.runner.usecase.UnderwritingRunner;
 
 /**
  * 인터랙티브 메인 진입점
@@ -20,66 +31,110 @@ import dp.runner.usecase.RefundPaymentRunner;
  */
 public class Main {
 
-  public static void main(String[] args) {
-    ConsoleHelper.printDoubleDivider();
-    System.out.println("  보험 시스템 시나리오 시뮬레이터");
-    System.out.println("  (사고/보험금 + 납입/환급 도메인)");
-    ConsoleHelper.printDoubleDivider();
+    public static void main(String[] args) {
+        ConsoleHelper.printDoubleDivider();
+        System.out.println("  보험 시스템 시나리오 시뮬레이터");
+        System.out.println("  (사고/보험금 + 납입/환급 도메인)");
+        ConsoleHelper.printDoubleDivider();
 
-    // 샘플 데이터 초기화
-    SampleData.initialize();
+        // 샘플 데이터 초기화
+        SampleData.initialize();
 
-    // 메인 메뉴 루프
-    while (true) {
-      int choice = ConsoleHelper.readMenuChoice(
-          "\n=== 메인 메뉴: 실행할 유스케이스를 선택하세요 ===",
-          "[7-UC1] 사고를 접수한다",
-          "[7-UC2] 현장 출동 정보를 기록한다",
-          "[7-UC3] 보험금을 요청한다",
-          "[7-UC4] 손해 조사를 한다",
-          "[7-UC5] 보험금을 산출한다",
-          "[7-UC6] 보험금을 지급한다",
-          "[8-UC7] 보험료를 납입한다",
-          "[8-UC8] 납부 내역을 관리한다",
-          "[8-UC9] 해약 환급금을 산출한다",
-          "[8-UC10] 해약 환급금을 지급한다",
-          "종료");
+        // 메인 메뉴 루프
+        while (true) {
+            int choice = ConsoleHelper.readMenuChoice(
+                    "\n=== 메인 메뉴: 실행할 유스케이스를 선택하세요 ===",
+                    "[7-UC1] 사고를 접수한다",
+                    "[7-UC2] 현장 출동 정보를 기록한다",
+                    "[7-UC3] 보험금을 요청한다",
+                    "[7-UC4] 손해 조사를 한다",
+                    "[7-UC5] 보험금을 산출한다",
+                    "[7-UC6] 보험금을 지급한다",
+                    "[8-UC7] 보험료를 납입한다",
+                    "[8-UC8] 납부 내역을 관리한다",
+                    "[8-UC9] 해약 환급금을 산출한다",
+                    "[8-UC10] 해약 환급금을 지급한다",
+                    "[4-UC1] 교육 계획안을 작성한다",
+                    "[4-UC2] 교육 제반을 등록한다",
+                    "[4-UC3] 교육을 진행한다",
+                    "[4-UC4] 상담을 요청한다",
+                    "[4-UC5] 면담일정을 관리한다",
+                    "[4-UC6] 면담기록을 관리한다",
+                    "[4-UC7] 보험상품을 제안한다",
+                    "[4-UC8] 청약서를 작성한다",
+                    "[4-UC9] 보험을 신청한다",
+                    "[4-UC10] 부활을 요청한다",
+                    "[4-UC11] 인수 심사를 한다",
+                    "종료");
 
-      switch (choice) {
-        case 1:
-          AccidentReportRunner.run();
-          break;
-        case 2:
-          DispatchRecordRunner.run();
-          break;
-        case 3:
-          ClaimRequestRunner.run();
-          break;
-        case 4:
-          DamageInvestigationRunner.run();
-          break;
-        case 5:
-          ClaimCalculationRunner.run();
-          break;
-        case 6:
-          ClaimPaymentRunner.run();
-          break;
-        case 7:
-          PaymentRunner.run();
-          break;
-        case 8:
-          PaymentRecordRunner.run();
-          break;
-        case 9:
-          RefundCalculationRunner.run();
-          break;
-        case 10:
-          RefundPaymentRunner.run();
-          break;
-        case 11:
-          System.out.println("\n프로그램을 종료합니다.");
-          return;
-      }
+            switch (choice) {
+                case 1:
+                    AccidentReportRunner.run();
+                    break;
+                case 2:
+                    DispatchRecordRunner.run();
+                    break;
+                case 3:
+                    ClaimRequestRunner.run();
+                    break;
+                case 4:
+                    DamageInvestigationRunner.run();
+                    break;
+                case 5:
+                    ClaimCalculationRunner.run();
+                    break;
+                case 6:
+                    ClaimPaymentRunner.run();
+                    break;
+                case 7:
+                    PaymentRunner.run();
+                    break;
+                case 8:
+                    PaymentRecordRunner.run();
+                    break;
+                case 9:
+                    RefundCalculationRunner.run();
+                    break;
+                case 10:
+                    RefundPaymentRunner.run();
+                    break;
+                case 11:
+                    EducationPlanRunner.run();
+                    break;
+                case 12:
+                    EducationPreparationRunner.run();
+                    break;
+                case 13:
+                    EducationExecutionRunner.run();
+                    break;
+                case 14:
+                    ConsultationRequestRunner.run();
+                    break;
+                case 15:
+                    InterviewScheduleRunner.run();
+                    break;
+                case 16:
+                    InterviewRecordRunner.run();
+                    break;
+                case 17:
+                    ProposalRunner.run();
+                    break;
+                case 18:
+                    PolicyApplicationRunner.run();
+                    break;
+                case 19:
+                    InsuranceApplicationRunner.run();
+                    break;
+                case 20:
+                    RevivalRunner.run();
+                    break;
+                case 21:
+                    UnderwritingRunner.run();
+                    break;
+                case 22:
+                    System.out.println("\n프로그램을 종료합니다.");
+                    return;
+            }
+        }
     }
-  }
 }

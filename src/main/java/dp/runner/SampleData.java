@@ -1,23 +1,23 @@
 package dp.runner;
 
-import dp.actor.ClaimsHandler;
-import dp.actor.Customer;
-import dp.actor.DispatchAgent;
-import dp.actor.FinanceManager;
+import dp.actor.*;
 import dp.common.BankAccount;
+import dp.consultation.InsuranceProduct;
 import dp.contract.InsuranceContract;
 import dp.payment.OverdueNoticeSetting;
+
 import java.time.LocalDate;
 
 /**
  * 샘플 데이터 생성 (유스케이스 외부의 구동 코드)
- *
+ * <p>
  * 프로그램 시작 시 시연을 위해 기본 객체들을 메모리에 등록한다.
  * 각 유스케이스가 시작될 때 새로 입력받지 않아도 되도록 도와준다.
  */
 public class SampleData {
 
-    private SampleData() {}
+    private SampleData() {
+    }
 
     public static void initialize() {
         createCustomers();
@@ -25,6 +25,23 @@ public class SampleData {
         createContracts();
         createSettings();
         System.out.println("[시스템] 샘플 데이터 초기화 완료");
+        // ===== 교육/상담 도메인 샘플 데이터 =====
+
+        // 액터
+        Repository.educationTrainers.add(new EducationTrainer("김영교", "010-1111-2222", "trainer@ins.com"));
+        Repository.salesManagers.add(new SalesManager("이영관", "010-3333-4444", "manager@ins.com"));
+        Repository.insuranceReviewers.add(new InsuranceReviewer("박심사", "010-5555-6666", "reviewer@ins.com"));
+        Repository.designers.add(new Designer(1, "최설계", "서울", "L-2024-001"));
+        Repository.agencies.add(new Agency(2, "한국대리점", "부산", "A-2024-001"));
+
+        // 보험상품 샘플
+        Repository.insuranceProducts.add(new InsuranceProduct(
+                "실손의료보험", "건강", 50000, "의료비 전액 보장", "치과 제외"));
+        Repository.insuranceProducts.add(new InsuranceProduct(
+                "종신보험", "생명", 150000, "사망 시 1억 지급", "없음"));
+        Repository.insuranceProducts.add(new InsuranceProduct(
+                "자동차보험", "손해", 80000, "대인/대물 무제한", "음주운전 제외"));
+
     }
 
     private static void createCustomers() {
