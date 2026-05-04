@@ -17,7 +17,10 @@ public class Customer extends User {
 
     private static int sequence = 0;    // 고객번호 자동 부여용
 
+    /** 4.4.5의 customerId와 중복 */
     private String customerNo;                       // 고객번호
+    private String name;
+    private String phone;
     private String residentNo;                       // 주민등록번호
     private String address;                          // 주소
     private LocalDate birthDate;                     // 생년월일
@@ -62,6 +65,8 @@ public class Customer extends User {
 
     // Getter
     public String getCustomerNo() { return customerNo; }
+    public String getName() { return name; }
+    public String getPhone() { return phone; }
     public String getResidentNo() { return residentNo; }
     public String getAddress() { return address; }
     public LocalDate getBirthDate() { return birthDate; }
