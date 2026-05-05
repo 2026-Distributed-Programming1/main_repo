@@ -16,8 +16,10 @@ import java.util.List;
 public class Customer extends User {
 
     private static int sequence = 0;    // 고객번호 자동 부여용
-
+/** customerNo vs customerId 통일하기 */
+    private String customerId;  // 고객번호
     private String customerNo;                       // 고객번호
+    private String phone; //연락처
     private String residentNo;                       // 주민등록번호
     private String address;                          // 주소
     private LocalDate birthDate;                     // 생년월일
@@ -61,6 +63,7 @@ public class Customer extends User {
     // 다른 도메인(상담, 청약, 문의 등)의 진입점은 해당 도메인 구현 시 추가한다.
 
     // Getter
+    public String getCustomerId() { return customerId; }
     public String getCustomerNo() { return customerNo; }
     public String getResidentNo() { return residentNo; }
     public String getAddress() { return address; }

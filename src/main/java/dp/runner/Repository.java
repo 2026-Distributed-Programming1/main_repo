@@ -12,7 +12,10 @@ import dp.claim.DamageInvestigation;
 import dp.claim.Dispatch;
 import dp.claim.DispatchRecord;
 import dp.contract.Cancellation;
+import dp.contract.Contract;
+import dp.contract.ContractStatistics;
 import dp.contract.InsuranceContract;
+import dp.inquiry.Inquiry;
 import dp.payment.OverdueNoticeSetting;
 import dp.payment.Payment;
 import dp.payment.PaymentRecord;
@@ -58,6 +61,8 @@ public class Repository {
     public static final List<InsuranceContract> contracts = new ArrayList<>();
     public static final List<Cancellation> cancellations = new ArrayList<>();
 
+    public static final List<Contract> contractInfos = new ArrayList<>();
+    public static final List<ContractStatistics> contractStatisticsList = new ArrayList<>();
     // ===== 7️⃣ 도메인 =====
     public static final List<AccidentReport> accidentReports = new ArrayList<>();
     public static final List<Dispatch> dispatches = new ArrayList<>();
@@ -108,5 +113,6 @@ public class Repository {
     public static final List<CustomerRegistration> customerRegistrations = new ArrayList<>();
     public static final List<ActivityPlan> activityPlans = new ArrayList<>();
 
-
+    // ===== 고객 문의 도메인 =====
+    public static final List<Inquiry> inquiries = new ArrayList<>();
 }

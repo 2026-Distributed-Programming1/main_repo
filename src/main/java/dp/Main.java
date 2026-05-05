@@ -52,6 +52,9 @@ public class Main {
                     "판매채널 채용을 심사한다",
                     "고객 정보를 등록한다",
                     "활동 계획을 작성한다",
+                    "계약 정보를 조회한다",
+                    "계약 통계 정보를 관리한다",
+                    "문의한다",
                     "종료");
 
             switch (choice) {
@@ -140,6 +143,15 @@ public class Main {
                     ActivityPlanRunner.run();
                     break;
                 case 29:
+                    ContractInfoRunner.run();
+                    break;
+                case 30:
+                    ContractStatisticsRunner.run();
+                    break;
+                case 31:
+                    InquiryRunner.run();
+                    break;
+                case 32:
                     System.out.println("\n프로그램을 종료합니다.");
                     return;
             }
