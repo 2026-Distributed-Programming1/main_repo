@@ -1,5 +1,6 @@
 package dp.consultation;
 
+import dp.actor.Customer;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,8 @@ public class InsuranceApplication {
     private static int sequence = 0;
 
     private int applicationNumber;
+    private Customer customer;
+    private InsuranceProduct product;
     private LocalDateTime appliedAt;
     private String paymentMethod;
     private List<String> selectedSpecialTerms;
@@ -22,6 +25,12 @@ public class InsuranceApplication {
         this.applicationNumber = sequence;
         this.selectedSpecialTerms = new ArrayList<>();
     }
+
+    public void setCustomer(Customer customer) { this.customer = customer; }
+    public Customer getCustomer() { return customer; }
+
+    public void setProduct(InsuranceProduct product) { this.product = product; }
+    public InsuranceProduct getProduct() { return product; }
 
     public void enterPersonalInfo(String name, String birthDate,
                                    String contact, String address) {

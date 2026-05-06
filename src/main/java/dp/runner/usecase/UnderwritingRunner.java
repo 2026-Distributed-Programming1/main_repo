@@ -1,11 +1,18 @@
 package dp.runner.usecase;
 
+import dp.actor.Customer;
 import dp.actor.InsuranceReviewer;
+import dp.consultation.InsuranceApplication;
+import dp.consultation.InsuranceProduct;
 import dp.consultation.PolicyApplication;
 import dp.consultation.ReviewResult;
 import dp.consultation.Underwriting;
+import dp.contract.Contract;
 import dp.runner.ConsoleHelper;
 import dp.runner.Repository;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * UC: 인수 심사를 한다 / 심사 결과를 전달한다 시나리오 진행자
@@ -61,22 +68,47 @@ public class UnderwritingRunner {
         }
 
         InsuranceReviewer reviewerActor = Repository.insuranceReviewers.get(0);
-        PolicyApplication application = Repository.policyApplications.isEmpty()
-                ? new PolicyApplication()
-                : Repository.policyApplications.get(Repository.policyApplications.size() - 1);
+
+        // 3. 심사 대기 목록 구성 (청약서 + 보험신청 통합)
+        List<Object> pendingApps = new ArrayList<>();
+        List<String> pendingLabels = new ArrayList<>();
+        for (PolicyApplication pa : Repository.policyApplications) {
+            pendingApps.add(pa);
+            pendingLabels.add("[청약] #" + pa.getApplicationNumber()
+                    + " - " + (pa.getCustomerName() != null ? pa.getCustomerName() : "미정")
+                    + " / " + pa.getProductName());
+        }
+        for (InsuranceApplication ia : Repository.insuranceApplications) {
+            pendingApps.add(ia);
+            pendingLabels.add("[신청] #" + ia.getApplicationNumber()
+                    + " - " + (ia.getCustomer() != null ? ia.getCustomer().getName() : "미정")
+                    + " / " + (ia.getProduct() != null ? ia.getProduct().getProductName() : "미정"));
+        }
 
         ConsoleHelper.printStage("시스템", "심사 대기 목록을 출력합니다.");
-        ConsoleHelper.printInfo("신청번호: " + application.getApplicationNumber()
-                + " | 고객명: " + (application.getCustomerName() != null ? application.getCustomerName() : "미정"));
+        int appChoice = ConsoleHelper.readMenuChoice(
+                "[보험심사자] 심사할 건을 선택하세요:",
+                pendingLabels.toArray(new String[0]));
+        Object selected = pendingApps.get(appChoice - 1);
 
-        // 3~4. 보험 심사자는 심사 건을 선택한다.
+        // 4. 신청 상세 정보 출력
         ConsoleHelper.printStage("보험심사자", "신청 상세 정보를 확인합니다.");
-        ConsoleHelper.printInfo("상품명: " + application.getProductName()
-                + " | 보험기간: " + application.getPeriod() + "년"
-                + " | 납입방법: " + application.getPaymentMethod());
+        PolicyApplication application = null;
+        InsuranceApplication insApplication = null;
+        if (selected instanceof PolicyApplication pa) {
+            application = pa;
+            ConsoleHelper.printInfo("상품명: " + pa.getProductName()
+                    + " | 보험기간: " + pa.getPeriod() + "년"
+                    + " | 납입방법: " + pa.getPaymentMethod());
+        } else if (selected instanceof InsuranceApplication ia) {
+            insApplication = ia;
+            ConsoleHelper.printInfo("상품명: " + (ia.getProduct() != null ? ia.getProduct().getProductName() : "미정")
+                    + " | 납입방법: " + ia.getPaymentMethod());
+        }
 
         // 5. 보험 심사자는 [심사 시작] 버튼을 클릭한다.
-        Underwriting underwriting = reviewerActor.startUnderwriting(application);
+        PolicyApplication reviewTarget = (application != null) ? application : new PolicyApplication();
+        Underwriting underwriting = reviewerActor.startUnderwriting(reviewTarget);
 
         // 6. 시스템은 자동 심사 결과를 출력한다. (A1)
         int reviewMethod = ConsoleHelper.readMenuChoice(
@@ -171,6 +203,41 @@ public class UnderwritingRunner {
         ConsoleHelper.printInfo("심사번호: " + underwriting.getReviewNumber()
                 + " | 심사일시: " + underwriting.getReviewedAt()
                 + " | 처리결과: " + result.getResult());
+
+        // 승인된 경우 계약 생성
+        if ("승인".equals(resultStr)) {
+            Customer approvedCustomer = null;
+            String productName = null;
+            long premium = 0L;
+            int period = 1;
+
+            if (application != null && application.getCustomer() != null) {
+                approvedCustomer = application.getCustomer();
+                productName = application.getProductName();
+                period = application.getPeriod();
+                final String pName = productName;
+                premium = Repository.insuranceProducts.stream()
+                        .filter(p -> p.getProductName().equals(pName))
+                        .mapToLong(InsuranceProduct::getMonthlyPremium)
+                        .findFirst().orElse(0L);
+            } else if (insApplication != null && insApplication.getCustomer() != null) {
+                approvedCustomer = insApplication.getCustomer();
+                InsuranceProduct prod = insApplication.getProduct();
+                if (prod != null) {
+                    productName = prod.getProductName();
+                    premium = prod.getMonthlyPremium();
+                }
+            }
+
+            if (approvedCustomer != null) {
+                LocalDate today = LocalDate.now();
+                Contract contract = new Contract(approvedCustomer, today, today.plusYears(period), premium);
+                contract.setInsuranceType(productName);
+                Repository.contracts.add(contract);
+                ConsoleHelper.printSuccess("[시스템] 계약이 생성되었습니다: " + contract.getContractNo()
+                        + " (증권번호: " + contract.getPolicyNo() + ")");
+            }
+        }
 
         ConsoleHelper.waitEnter();
     }

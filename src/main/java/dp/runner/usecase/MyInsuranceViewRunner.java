@@ -262,8 +262,11 @@ public class MyInsuranceViewRunner {
 
     private static String statusLabel(Contract contract) {
         if (contract.getStatus() == null) return "정상유지";
-        if (contract.getStatus() == ContractStatus.EXPIRED) return "만기";
-        return "정상유지";
+        return switch (contract.getStatus()) {
+            case EXPIRED   -> "만기";
+            case CANCELLED -> "해지";
+            default        -> "정상유지";
+        };
     }
 
     private static String nvl(String value, String fallback) {

@@ -46,12 +46,23 @@ public class InsuranceApplicationRunner {
         ConsoleHelper.printInfo("입력 항목: 개인정보 / 보장내용 / 특약 선택 / 납입방법");
 
         List<InsuranceProduct> products = Repository.insuranceProducts;
+        if (products.isEmpty()) {
+            ConsoleHelper.printError("등록된 보험상품이 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
         for (int i = 0; i < products.size(); i++) {
             ConsoleHelper.printInfo("[" + (i + 1) + "] " + products.get(i).getProductName()
                     + " | 월 " + products.get(i).getMonthlyPremium() + "원");
         }
+        int productChoice = ConsoleHelper.readMenuChoice(
+                "[고객] 신청할 상품을 선택하세요:",
+                products.stream().map(InsuranceProduct::getProductName).toArray(String[]::new));
+        InsuranceProduct selectedProduct = products.get(productChoice - 1);
 
         InsuranceApplication application = new InsuranceApplication();
+        application.setCustomer(customer);
+        application.setProduct(selectedProduct);
 
         // 3. 고객은 개인정보를 입력한다.
         ConsoleHelper.printStage("고객", "개인정보를 입력합니다.");
