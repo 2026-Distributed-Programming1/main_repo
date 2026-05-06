@@ -15,21 +15,21 @@ import java.util.List;
 public class ChannelScreening {
     private String applicantName;           // 지원자명
     private ChannelType channelType;        // 채널 유형 - 설계사/대리점 (enum)
-    private LocalDate applicationDate;      // 지원일
+    private LocalDate applicationDate = LocalDate.now();      // 지원일
     private String career;                  // 경력 사항
-    private List<String> certifications;    // 자격증 목록
-    private ScreeningStatus screeningStatus; // 심사 상태 - 대기/승인/거절 (enum)
+    private List<String> certifications = new ArrayList<>();    // 자격증 목록
+    private ScreeningStatus screeningStatus = ScreeningStatus.PENDING; // 심사 상태 - 대기/승인/거절 (enum)
     private String approvalNo;              // 승인번호
     private LocalDateTime approvedAt;       // 승인 일시
     private String rejectionReason;         // 거절 사유
     private LocalDate filterStartDate;      // 조회 시작일
     private LocalDate filterEndDate;        // 조회 종료일
 
-    public ChannelScreening() {
-        this.certifications = new ArrayList<>();
-        this.screeningStatus = ScreeningStatus.PENDING;
-        this.applicationDate = LocalDate.now();
-    }
+//    public ChannelScreening() {
+//        this.certifications = new ArrayList<>();
+//        this.screeningStatus = ScreeningStatus.PENDING;
+//        this.applicationDate = LocalDate.now();
+//    }
 
     public void loadApplicantList() {}
 

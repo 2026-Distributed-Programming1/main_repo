@@ -8,7 +8,7 @@
         <option name="gradleJvm" value="21" />
         <option name="modules">
           <set>
-            <option value="$USER_HOME$/2026년 1학기/분산프로그래밍1/DP-pure-java" />
+            <option value="$PROJECT_DIR$" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -19,19 +19,19 @@ public class ActivityPlan {
     private LocalDate endDate;                   // 종료일 필수
     private String author;                       // 작성자 - 자동입력
     private String memo;                         // 메모 선택
-    private List<ScheduleItem> schedules;        // 일정 목록
+    private List<ScheduleItem> schedules = new ArrayList<>();        // 일정 목록
     private Integer targetContractCount;         // 목표 계약 건수 필수
     private Long targetContractAmount;           // 목표 계약 금액 필수
     private Integer targetNewCustomer;           // 목표 신규 고객 수 선택
     private String proposedCustomerId;           // 제안 대상 고객번호 필수
     private InsuranceType proposedInsuranceType; // 제안 보험 종류 필수 (enum)
     private String proposalReason;               // 제안 사유 선택
-    private PlanStatus status;                   // 계획 상태 - 임시저장/검토중 (enum)
+    private PlanStatus status = PlanStatus.TEMP_SAVE;                   // 계획 상태 - 임시저장/검토중 (enum)
 
-    public ActivityPlan() {
-        this.schedules = new ArrayList<>();
-        this.status = PlanStatus.TEMP_SAVE;
-    }
+//    public ActivityPlan() {
+//        this.schedules = new ArrayList<>();
+//        this.status = PlanStatus.TEMP_SAVE;
+//    }
 
     public Boolean validateDateRange() {
         if (startDate == null || endDate == null) return false;

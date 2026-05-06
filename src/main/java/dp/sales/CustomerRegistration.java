@@ -15,7 +15,7 @@ public class CustomerRegistration {
     private String customerId;              // 고객번호 - 자동부여
     private String name;                    // 이름 필수
     private String ssn;                     // 주민등록번호 필수
-    private Boolean isSsnMasked;            // 뒷자리 마스킹 여부
+    private Boolean isSsnMasked = true;            // 뒷자리 마스킹 여부
     private String phone;                   // 연락처 필수
     private String address;                 // 주소 선택
     private String contractNo;              // 계약번호 - 자동부여
@@ -23,12 +23,12 @@ public class CustomerRegistration {
     private LocalDate contractDate;         // 계약일 필수
     private LocalDate expiryDate;           // 만료일 필수
     private Long monthlyPremium;            // 월 보험료 필수
-    private List<String> specialClauses;    // 특약 정보 선택
+    private List<String> specialClauses = new ArrayList<>();    // 특약 정보 선택
 
-    public CustomerRegistration() {
-        this.isSsnMasked = true;
-        this.specialClauses = new ArrayList<>();
-    }
+//    public CustomerRegistration() {
+//        this.isSsnMasked = true;
+//        this.specialClauses = new ArrayList<>();
+//    }
 
     public void toggleSsnMask() {
         this.isSsnMasked = !this.isSsnMasked;

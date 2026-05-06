@@ -62,7 +62,7 @@ public class ChannelRecruitmentRunner {
                         + " | " + type
                         + " | " + r.getRecruitCount() + "명"
                         + " | " + r.getLocalStartDate() + "~" + r.getLocalEndDate()
-                        + " | " + r.getLocalRegisteredAt());
+                        + " | " + r.getRegisteredAt());
             }
         }
         ConsoleHelper.printInfo("└─────────────────────────────────────────────────────────┘");
@@ -171,7 +171,7 @@ public class ChannelRecruitmentRunner {
         ConsoleHelper.printStage("시스템", "등록 완료 결과를 출력합니다.");
         String channelTypeStr = recruitment.getChannelType() == ChannelType.DESIGNER ? "설계사" : "대리점";
         ConsoleHelper.printInfo("모집번호: " + recruitment.getRecruitmentNo()
-                + " | 등록일시: " + recruitment.getLocalRegisteredAt()
+                + " | 등록일시: " + recruitment.getRegisteredAt()
                 + " | 채널유형: " + channelTypeStr
                 + " | 모집기간: " + recruitment.getLocalStartDate() + " ~ " + recruitment.getLocalEndDate());
         recruitment.returnToActivityManagement();

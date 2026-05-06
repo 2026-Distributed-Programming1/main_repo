@@ -16,16 +16,16 @@ public class BonusRequest {
     private EvaluationGrade evaluationGrade; // 평가 등급 - S/A (enum)
     private Double bonusRatio;              // 등급별 지급 비율 - S:150%, A:120%
     private Long baseSalary;               // 기본급
-    private Long bonusAmount;              // 산출된 성과급 금액
+    private Double bonusAmount;              // 산출된 성과급 금액
     private String requestReason;          // 요청 사유 선택
     private String requestNo;              // 요청 번호
     private LocalDateTime requestedAt;     // 요청일시
 
     public void loadRequestScreen() {}
 
-    public Long calculateBonus() {
-        if (baseSalary == null || bonusRatio == null) return 0L;
-        this.bonusAmount = Math.round(baseSalary * bonusRatio);
+    public Double calculateBonus() {
+        if (baseSalary == null || bonusRatio == null) return (double) 0L;
+        this.bonusAmount = (double) Math.round(baseSalary * bonusRatio);
         return this.bonusAmount;
     }
 
@@ -59,7 +59,7 @@ public class BonusRequest {
     }
     public Double getBonusRatio() { return bonusRatio; }
     public void setBaseSalary(Long baseSalary) { this.baseSalary = baseSalary; }
-    public Long getBonusAmount() { return bonusAmount; }
+    public Double getBonusAmount() { return bonusAmount; }
     public void setRequestReason(String requestReason) { this.requestReason = requestReason; }
     public String getRequestNo() { return requestNo; }
     public LocalDateTime getRequestedAt() { return requestedAt; }

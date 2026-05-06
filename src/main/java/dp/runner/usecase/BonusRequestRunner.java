@@ -76,7 +76,7 @@ public class BonusRequestRunner {
         bonusRequest.setRequestReason(requestReason);
 
         // 성과급 금액 자동 산출
-        Long bonusAmount = bonusRequest.calculateBonus();
+        Double bonusAmount = bonusRequest.calculateBonus();
         String gradeStr = bonusRequest.getEvaluationGrade() == EvaluationGrade.S ? "S" : "A";
         ConsoleHelper.printStage("시스템", "성과급 금액을 자동 산출합니다.");
         ConsoleHelper.printInfo("평가등급: " + gradeStr

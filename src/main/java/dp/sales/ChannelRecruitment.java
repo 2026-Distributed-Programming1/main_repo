@@ -54,5 +54,5 @@ public class ChannelRecruitment {
     public void setLocalEndDate(LocalDate endDate) { this.endDate = endDate; }
     public String getCondition() { return condition; }
     public void setCondition(String condition) { this.condition = condition; }
-    public LocalDateTime getLocalRegisteredAt() { return registeredAt; }
+    public LocalDateTime getRegisteredAt() { return registeredAt; }
 }

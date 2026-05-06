@@ -71,7 +71,7 @@ public class Contract {
     public void search() {}
     public void getDetail() {}
     public void edit() {}
-    public void naviageToExpiry() {}
+    public void navigateToExpiry() {}
     public void navigateToStats() {}
     public void retry() {}
     public void showNoSpecialClause() {}

@@ -148,7 +148,12 @@ public class ActivityPlanRunner {
             }
             String scheduleLocation = ConsoleHelper.readLine("    장소 (없으면 엔터): ");
             String scheduleMemo = ConsoleHelper.readLine("    메모 (없으면 엔터): ");
-            ScheduleItem item = new ScheduleItem(scheduleCustomerId, actType, scheduleLocation, scheduleMemo);
+//            ScheduleItem item = new ScheduleItem(scheduleCustomerId, actType, scheduleLocation, scheduleMemo);
+            ScheduleItem item = new ScheduleItem();
+            item.setCustomerId(scheduleCustomerId);
+            item.setActivityType(actType);
+            item.setLocation(scheduleLocation);
+            item.setMemo(scheduleMemo);
             plan.addSchedule(item);
             ConsoleHelper.printSuccess("일정이 추가되었습니다.");
             addSchedule = ConsoleHelper.readYesNo("  일정을 추가로 등록하시겠습니까?");
