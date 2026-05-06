@@ -85,7 +85,7 @@ public class ChannelRecruitmentTest {
     public void save_후_등록일시가_설정된다() {
         ChannelRecruitment recruitment = new ChannelRecruitment();
         recruitment.save();
-        assertNotNull(recruitment.getLocalRegisteredAt());
+        assertNotNull(recruitment.getRegisteredAt());
     }
 
     @Test

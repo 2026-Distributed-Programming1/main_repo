@@ -35,7 +35,7 @@ public class BonusRequestTest {
         BonusRequest request = new BonusRequest();
         request.setBaseSalary(3000000L);
         request.setEvaluationGrade(EvaluationGrade.S);
-        Long bonus = request.calculateBonus();
+        Double bonus = request.calculateBonus();
         assertEquals(4500000L, bonus);
     }
 
@@ -44,7 +44,7 @@ public class BonusRequestTest {
         BonusRequest request = new BonusRequest();
         request.setBaseSalary(3000000L);
         request.setEvaluationGrade(EvaluationGrade.A);
-        Long bonus = request.calculateBonus();
+        Double bonus = request.calculateBonus();
         assertEquals(3600000L, bonus);
     }
 
