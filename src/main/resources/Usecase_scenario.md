@@ -1,4 +1,4 @@
-# Usecase_senario
+# Usecase_scenario
 
 ## 영업 활동을 관리한다
 
