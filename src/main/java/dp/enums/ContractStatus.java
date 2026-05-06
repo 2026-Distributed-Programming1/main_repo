@@ -4,6 +4,7 @@ package dp.enums;
  * [정상, 만기]
  */
 public enum ContractStatus {
-    NORMAL, // 정상
-    EXPIRED // 만기
+    NORMAL,    // 정상
+    EXPIRED,   // 만기
+    CANCELLED  // 해지
 }
