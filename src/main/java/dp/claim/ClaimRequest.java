@@ -3,7 +3,7 @@ package dp.claim;
 import dp.actor.Customer;
 import dp.common.Attachment;
 import dp.common.BankAccount;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.AuthMethod;
 import dp.enums.ClaimRequestStatus;
 import dp.enums.ClaimType;
@@ -25,7 +25,7 @@ public class ClaimRequest {
 
     private String claimNo;                      // 청구번호
     private Customer customer;                   // 청구 고객
-    private InsuranceContract contract;          // 대상 계약
+    private Contract contract;          // 대상 계약
     private Customer insured;                    // 피보험자
     private AuthMethod authMethod;               // 본인인증 방법
     private boolean authenticated;               // 본인인증 성공 여부
@@ -44,7 +44,7 @@ public class ClaimRequest {
     private ClaimRequestStatus status;           // 상태
 
     /** 생성자 - 청구번호 자동 부여 */
-    public ClaimRequest(Customer customer, InsuranceContract contract) {
+    public ClaimRequest(Customer customer, Contract contract) {
         sequence += 1;
         this.claimNo = "CLM" + String.format("%05d", sequence);
         this.customer = customer;
@@ -194,7 +194,7 @@ public class ClaimRequest {
     // Getter
     public String getClaimNo() { return claimNo; }
     public Customer getCustomer() { return customer; }
-    public InsuranceContract getContract() { return contract; }
+    public Contract getContract() { return contract; }
     public Customer getInsured() { return insured; }
     public AuthMethod getAuthMethod() { return authMethod; }
     public boolean isAuthenticated() { return authenticated; }

@@ -1,7 +1,7 @@
 package dp.payment;
 
 import dp.contract.Cancellation;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.RefundStatus;
 import java.io.File;
 import java.time.LocalDateTime;
@@ -63,7 +63,7 @@ public class RefundCalculation {
      */
     public void loadContractData() {
         if (cancellation != null) {
-            InsuranceContract contract = cancellation.getContract();
+            Contract contract = cancellation.getContract();
             if (contract != null) {
                 long premium = contract.getMonthlyPremium();
                 // 단순화된 가상 데이터 산출

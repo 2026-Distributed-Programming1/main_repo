@@ -1,6 +1,6 @@
 package dp.payment;
 
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.PaymentRecordStatus;
 import dp.enums.RejectCategory;
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ public class PaymentRecord {
     private static int sequence = 0;          // 결제번호 자동 부여용
 
     private String recordNo;                  // 결제번호
-    private InsuranceContract contract;       // 대상 계약
+    private Contract contract;       // 대상 계약
     private LocalDate paymentDate;            // 결제 일자
     private long amount;                      // 결제 금액
     private String method;                    // 결제 수단 - 카드/계좌이체/가상계좌
@@ -32,7 +32,7 @@ public class PaymentRecord {
     private LocalDateTime rejectedAt;         // 반려일시
 
     /** 생성자 - 결제번호 자동 부여, paymentDate=now() */
-    public PaymentRecord(InsuranceContract contract, long amount, String method) {
+    public PaymentRecord(Contract contract, long amount, String method) {
         sequence += 1;
         this.recordNo = "PRC" + String.format("%05d", sequence);
         this.contract = contract;
@@ -74,7 +74,7 @@ public class PaymentRecord {
 
     /**
      * 계약 상태 자동 업데이트
-     * 6️⃣ 도메인의 InsuranceContract 미완 구현 상태이므로 더미로 처리한다.
+     * 6️⃣ 도메인의 Contract 미완 구현 상태이므로 더미로 처리한다.
      */
     public void updateContractStatus() {
         if (this.contract != null) {
@@ -106,7 +106,7 @@ public class PaymentRecord {
 
     // Getter
     public String getRecordNo() { return recordNo; }
-    public InsuranceContract getContract() { return contract; }
+    public Contract getContract() { return contract; }
     public LocalDate getPaymentDate() { return paymentDate; }
     public long getAmount() { return amount; }
     public String getMethod() { return method; }

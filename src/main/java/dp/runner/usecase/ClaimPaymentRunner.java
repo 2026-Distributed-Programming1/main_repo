@@ -99,6 +99,72 @@ public class ClaimPaymentRunner {
         ConsoleHelper.waitEnter();
     }
 
+    /** UC5에서 이관받아 실행 — 지급 건 선택 없이 직접 처리 (UC5 → UC6 체인) */
+    static void run(ClaimPayment payment) {
+        ConsoleHelper.printDoubleDivider();
+        System.out.println("UC6: 보험금을 지급한다");
+        ConsoleHelper.printDoubleDivider();
+
+        showPayment(payment);
+
+        int typeChoice = ConsoleHelper.readMenuChoice(
+                "[보상담당자] 지급 유형을 선택하세요:",
+                "즉시 지급 (정상)",
+                "예약 지급 (A1)",
+                "이전 페이지 (A2)");
+        if (typeChoice == 3) {
+            payment.goBack();
+            return;
+        }
+
+        if (typeChoice == 1) {
+            payment.selectPaymentType(PaymentType.IMMEDIATE);
+        } else {
+            payment.selectPaymentType(PaymentType.SCHEDULED);
+            LocalDateTime when = ConsoleHelper.readDateTime("  예약 일시");
+            payment.setScheduledDateTime(when);
+        }
+
+        List<Integer> noticeIdx = ConsoleHelper.readMultiChoice(
+                "[보상담당자] 안내 메시지 옵션을 선택하세요 (다중 선택 가능):",
+                "알림톡", "문자");
+        List<NoticeMethod> noticeOptions = new ArrayList<>();
+        for (int i : noticeIdx) {
+            noticeOptions.add(i == 1 ? NoticeMethod.KAKAO : NoticeMethod.SMS);
+        }
+        payment.setNoticeOption(noticeOptions);
+
+        if (!handleOTP(payment)) {
+            ConsoleHelper.printError("OTP 인증 실패로 지급을 진행할 수 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
+        if (payment.getPaymentType() == PaymentType.SCHEDULED) {
+            payment.schedule();
+        } else {
+            boolean simulateFail = ConsoleHelper.readYesNo(
+                    "  [E2 시뮬레이션] 이체 실패 상황을 시뮬레이션하시겠습니까?");
+            if (simulateFail) {
+                payment.handleTransferFailure("계좌 정보 오류");
+                payment.sendAccountChangeNotice();
+                ConsoleHelper.printError("[E2] 이체에 실패했습니다. 고객에게 계좌 변경 안내를 발송했습니다.");
+                ConsoleHelper.waitEnter();
+                return;
+            }
+            payment.execute();
+        }
+
+        if (payment.getStatus() == ClaimPaymentStatus.COMPLETED) {
+            payment.sendCompletionNotice();
+            payment.close();
+        } else if (payment.getStatus() == ClaimPaymentStatus.SCHEDULED) {
+            ConsoleHelper.printInfo("예약 지급이 등록되었습니다. 예약 시점에 자동으로 이체됩니다.");
+        }
+
+        ConsoleHelper.waitEnter();
+    }
+
     /** OTP 인증 처리 (E1: 인증 실패 시 재시도 허용) */
     private static boolean handleOTP(ClaimPayment payment) {
         int attempt = 0;

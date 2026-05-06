@@ -94,6 +94,68 @@ public class RefundPaymentRunner {
         ConsoleHelper.waitEnter();
     }
 
+    /** RefundListRunner에서 이관받아 실행 — 지급 건 선택 없이 직접 처리 */
+    static void run(RefundPayment payment) {
+        ConsoleHelper.printDoubleDivider();
+        System.out.println("UC10: 해약 환급금을 지급한다");
+        ConsoleHelper.printDoubleDivider();
+
+        if (payment.getAccount() == null) {
+            ConsoleHelper.printWarning("수령 계좌가 로드되지 않았습니다. 고객 등록 계좌를 사용합니다.");
+            if (payment.getRefund() != null
+                    && payment.getRefund().getCancellation() != null
+                    && payment.getRefund().getCancellation().getContract() != null) {
+                List<BankAccount> accounts = payment.getRefund().getCancellation().getContract()
+                        .getCustomer().getRegisteredAccounts();
+                if (!accounts.isEmpty()) {
+                    payment.setAccount(accounts.get(0));
+                    ConsoleHelper.printInfo("계좌가 자동으로 설정되었습니다: "
+                            + accounts.get(0).getBankName() + " " + accounts.get(0).getAccountNo());
+                }
+            }
+        }
+
+        showPayment(payment);
+
+        int choice = ConsoleHelper.readMenuChoice("[재무회계 담당자] 다음 작업을 선택하세요:",
+                "OTP 인증 후 이체 실행 (정상)",
+                "목록으로 돌아가기 (A1)");
+        if (choice == 2) {
+            payment.goBackToList();
+            return;
+        }
+
+        if (!handleOTP(payment)) {
+            return;
+        }
+
+        boolean simulateFail = ConsoleHelper.readYesNo(
+                "  [E2 시뮬레이션] 이체 실패 상황을 시뮬레이션하시겠습니까?");
+        if (simulateFail) {
+            BankAccount fakeAccount = new BankAccount();
+            payment.setAccount(fakeAccount);
+        }
+
+        payment.execute();
+
+        if (payment.getStatus() == RefundPaymentStatus.FAILED) {
+            ConsoleHelper.printError("[E2] 이체 처리에 실패했습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
+        boolean noticeFail = ConsoleHelper.readYesNo(
+                "  [E3 시뮬레이션] 알림톡 발송 실패 상황을 시뮬레이션하시겠습니까?");
+        if (noticeFail) {
+            payment.handleNoticeFailure();
+            ConsoleHelper.printError("[E3] 알림톡 발송에 실패했습니다. (이체는 이미 완료됨)");
+        } else {
+            payment.sendNotice();
+        }
+
+        ConsoleHelper.waitEnter();
+    }
+
     /** OTP 인증 (E1: 5회 실패 시 잠금) */
     private static boolean handleOTP(RefundPayment payment) {
         while (!payment.isLocked() && !payment.isOtpVerified()) {

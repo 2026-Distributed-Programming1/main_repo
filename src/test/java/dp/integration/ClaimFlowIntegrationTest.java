@@ -19,7 +19,7 @@ import dp.claim.Dispatch;
 import dp.claim.DispatchRecord;
 import dp.common.Attachment;
 import dp.common.BankAccount;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.AccidentReportStatus;
 import dp.enums.AccidentSubType;
 import dp.enums.AccidentType;
@@ -53,7 +53,7 @@ import org.junit.jupiter.api.Test;
 public class ClaimFlowIntegrationTest {
 
     private Customer customer;
-    private InsuranceContract contract;
+    private Contract contract;
     private DispatchAgent agent;
     private ClaimsHandler handler;
     private BankAccount account;
@@ -66,7 +66,7 @@ public class ClaimFlowIntegrationTest {
         account.verify();
         customer.registerAccount(account);
 
-        contract = new InsuranceContract(customer,
+        contract = new Contract(customer,
                 LocalDate.now().minusYears(2), LocalDate.now().plusYears(8), 500_000L);
 
         agent = new DispatchAgent("이출동", "현장출동팀", "사원", "강남", "12가3456");

@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dp.actor.Customer;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.PaymentRecordStatus;
 import dp.enums.RejectCategory;
 import java.time.LocalDate;
@@ -20,12 +20,12 @@ import org.junit.jupiter.api.Test;
  */
 public class PaymentRecordTest {
 
-  private InsuranceContract contract;
+  private Contract contract;
 
   @BeforeEach
   public void setUp() {
     Customer customer = new Customer("테스트", "900101-1234567", "010-0000-0000", "test@test.com");
-    contract = new InsuranceContract(customer,
+    contract = new Contract(customer,
         LocalDate.now().minusYears(1), LocalDate.now().plusYears(9), 100_000L);
   }
 

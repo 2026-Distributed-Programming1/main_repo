@@ -2,7 +2,7 @@ package dp.payment;
 
 import dp.actor.Customer;
 import dp.common.BankAccount;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.PaymentMethod;
 import dp.enums.PaymentStatus;
 import java.time.LocalDateTime;
@@ -41,8 +41,8 @@ public class Payment {
     }
 
     /** 납입 대상 계약 1건 이상 선택 - PaymentItem 생성 */
-    public void selectContracts(List<InsuranceContract> contracts) {
-        for (InsuranceContract contract : contracts) {
+    public void selectContracts(List<Contract> contracts) {
+        for (Contract contract : contracts) {
             this.items.add(new PaymentItem(this, contract));
         }
     }

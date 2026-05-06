@@ -3,7 +3,7 @@ package dp.payment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import dp.actor.Customer;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,13 +17,13 @@ import org.junit.jupiter.api.Test;
 public class PaymentItemTest {
 
   private Customer customer;
-  private InsuranceContract contract;
+  private Contract contract;
   private Payment payment;
 
   @BeforeEach
   public void setUp() {
     customer = new Customer("테스트", "900101-1234567", "010-0000-0000", "test@test.com");
-    contract = new InsuranceContract(customer,
+    contract = new Contract(customer,
         LocalDate.now().minusYears(1), LocalDate.now().plusYears(9), 100_000L);
     payment = new Payment(customer);
   }

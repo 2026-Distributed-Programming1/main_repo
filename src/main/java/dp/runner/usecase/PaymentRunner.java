@@ -2,7 +2,7 @@ package dp.runner.usecase;
 
 import dp.actor.Customer;
 import dp.common.BankAccount;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.PaymentMethod;
 import dp.payment.Payment;
 import dp.payment.PaymentItem;
@@ -36,7 +36,7 @@ public class PaymentRunner {
         Payment payment = new Payment(customer);
 
         // 2) 계약 선택 (1건 이상)
-        List<InsuranceContract> contracts = selectContracts(customer);
+        List<Contract> contracts = selectContracts(customer);
         if (contracts == null || contracts.isEmpty()) return;
         payment.selectContracts(contracts);
 
@@ -85,6 +85,72 @@ public class PaymentRunner {
         Repository.payments.add(payment);
 
         // 8) 결제가 발생했으므로 PaymentRecord(납부 내역)를 생성하여 시스템에 등록
+        ConsoleHelper.printStage("시스템", "결제가 발생하여 납부 내역을 시스템에 등록합니다.");
+        for (PaymentItem item : payment.getItems()) {
+            PaymentRecord record = new PaymentRecord(
+                    item.getContract(),
+                    item.getSubtotal(),
+                    method.name());
+            Repository.paymentRecords.add(record);
+            ConsoleHelper.printInfo("  납부 내역 생성: " + record.getRecordNo()
+                    + " (계약 " + item.getContract().getContractNo()
+                    + ", 금액 " + item.getSubtotal() + "원)");
+        }
+
+        ConsoleHelper.waitEnter();
+    }
+
+    /** MyInsuranceViewRunner에서 이관받아 실행 — 고객 선택 없이 직접 처리 */
+    static void run(Customer customer) {
+        ConsoleHelper.printDoubleDivider();
+        System.out.println("UC7: 보험료를 납입한다");
+        ConsoleHelper.printDoubleDivider();
+
+        Payment payment = new Payment(customer);
+
+        List<Contract> contracts = selectContracts(customer);
+        if (contracts == null || contracts.isEmpty()) return;
+        payment.selectContracts(contracts);
+
+        ConsoleHelper.printStage("고객", "계약별 납입 횟수를 입력합니다.");
+        for (PaymentItem item : payment.getItems()) {
+            int count = ConsoleHelper.readPositiveInt(
+                    "  " + item.getContract().getContractNo()
+                            + " (월 " + item.getPremiumPerCount() + "원) 납입 횟수: ");
+            payment.enterPaymentCount(item, count);
+        }
+
+        if (!payment.validatePaymentCount()) {
+            ConsoleHelper.printError("[E1] 납입 횟수 검증에 실패했습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
+        int methodChoice = ConsoleHelper.readMenuChoice("[고객] 납입 방법을 선택하세요:",
+                "즉시이체", "가상계좌 (A2)");
+        PaymentMethod method = (methodChoice == 1)
+                ? PaymentMethod.IMMEDIATE_TRANSFER
+                : PaymentMethod.VIRTUAL_ACCOUNT;
+        payment.selectPaymentMethod(method);
+
+        if (!handleAccount(payment, customer)) return;
+
+        payment.calculateTotal();
+        ConsoleHelper.printDivider();
+        ConsoleHelper.printInfo("총 신청 금액: " + payment.getTotalAmount() + "원");
+        ConsoleHelper.printInfo("선납 할인액: " + payment.getEarlyDiscount() + "원");
+        ConsoleHelper.printInfo("최종 결제액: " + payment.getDiscountedAmount() + "원");
+        ConsoleHelper.printDivider();
+
+        if (!ConsoleHelper.readYesNo("[고객] 위 내용으로 납입 신청을 진행하시겠습니까?")) {
+            payment.cancel();
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
+        payment.submit();
+        Repository.payments.add(payment);
+
         ConsoleHelper.printStage("시스템", "결제가 발생하여 납부 내역을 시스템에 등록합니다.");
         for (PaymentItem item : payment.getItems()) {
             PaymentRecord record = new PaymentRecord(
@@ -150,8 +216,8 @@ public class PaymentRunner {
         return customers.get(choice - 1);
     }
 
-    private static List<InsuranceContract> selectContracts(Customer customer) {
-        List<InsuranceContract> contracts = Repository.contracts.stream()
+    private static List<Contract> selectContracts(Customer customer) {
+        List<Contract> contracts = Repository.contracts.stream()
                 .filter(c -> c.getCustomer() == customer)
                 .collect(Collectors.toList());
         if (contracts.isEmpty()) {

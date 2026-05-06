@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dp.actor.Customer;
 import dp.common.BankAccount;
 import dp.contract.Cancellation;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.RefundPaymentStatus;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ public class RefundPaymentTest {
     account.verify();
     customer.registerAccount(account);
 
-    InsuranceContract contract = new InsuranceContract(customer,
+    Contract contract = new Contract(customer,
         LocalDate.now().minusYears(2), LocalDate.now().plusYears(8), 100_000L);
     Cancellation cancellation = new Cancellation(contract);
     cancellation.calculateExpectedRefund();

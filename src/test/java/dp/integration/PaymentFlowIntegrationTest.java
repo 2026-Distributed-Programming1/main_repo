@@ -3,7 +3,7 @@ package dp.integration;
 import dp.actor.Customer;
 import dp.common.BankAccount;
 import dp.contract.Cancellation;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.PaymentMethod;
 import dp.enums.PaymentStatus;
 import dp.enums.RefundPaymentStatus;
@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PaymentFlowIntegrationTest {
 
     private Customer customer;
-    private InsuranceContract contract1;
-    private InsuranceContract contract2;
+    private Contract contract1;
+    private Contract contract2;
     private BankAccount account;
 
     @BeforeEach
@@ -42,9 +42,9 @@ public class PaymentFlowIntegrationTest {
         account.verify();
         customer.registerAccount(account);
 
-        contract1 = new InsuranceContract(customer,
+        contract1 = new Contract(customer,
                 LocalDate.now().minusYears(2), LocalDate.now().plusYears(8), 100_000L);
-        contract2 = new InsuranceContract(customer,
+        contract2 = new Contract(customer,
                 LocalDate.now().minusMonths(6), LocalDate.now().plusYears(9), 200_000L);
     }
 
