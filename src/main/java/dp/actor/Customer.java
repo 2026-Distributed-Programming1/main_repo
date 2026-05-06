@@ -12,17 +12,18 @@ import java.util.List;
  *
  * 시스템에 등록된 고객을 표현하는 클래스로, User를 상속한다.
  * 보험 가입, 보험금 청구, 사고 접수, 문의 등 다양한 유스케이스의 시작점이 된다.
+ *
+ * 클래스 다이어그램 기준 필드: customerId(고객번호), name(User 상속), phone
+ * ※ 7·8 도메인 호환을 위해 추가 필드를 유지한다.
  */
 public class Customer extends User {
 
     private static int sequence = 0;    // 고객번호 자동 부여용
-/** customerNo vs customerId 통일하기 */
-    private String customerId;  // 고객번호
-    private String customerNo;                       // 고객번호
-    private String phone; //연락처
-    private String residentNo;                       // 주민등록번호
-    private String address;                          // 주소
-    private LocalDate birthDate;                     // 생년월일
+    private String customerId;           // 고객번호 (클래스 다이어그램 기준)
+    private String phone;                // 연락처
+    private String residentNo;           // 주민등록번호
+    private String address;              // 주소
+    private LocalDate birthDate;         // 생년월일
     private List<BankAccount> registeredAccounts;    // 등록된 계좌 목록
     private LocalDateTime registeredAt;              // 가입일시
 
@@ -30,11 +31,12 @@ public class Customer extends User {
     public Customer(String name, String residentNo, String contact, String email) {
         super(name, contact, email);
         sequence += 1;
-        this.customerNo = "CUS" + String.format("%05d", sequence);
+        this.customerId = "CUS" + String.format("%05d", sequence);
         this.residentNo = residentNo;
         this.registeredAccounts = new ArrayList<>();
         this.registeredAt = LocalDateTime.now();
     }
+
     /** 정보 수정 */
     public void updateInfo() {
         System.out.println("고객 정보(주소: " + address + ", 연락처: " + getContact() + ")가 업데이트되었습니다.");
@@ -55,16 +57,10 @@ public class Customer extends User {
         this.registeredAccounts.add(account);
     }
 
-    // ====== 유스케이스 진입점 ======
-    // 시나리오 추적성을 위해 정의된 메서드들. 실제 객체 생성과 협력은
-    // 호출 측(Main 또는 외부)에서 처리하지만, 시작점을 명시한다.
-    //
-    // 7️⃣·8️⃣ 도메인과 직접 관련된 메서드만 본 구현에 포함하고,
-    // 다른 도메인(상담, 청약, 문의 등)의 진입점은 해당 도메인 구현 시 추가한다.
-
-    // Getter
+    // Getters
     public String getCustomerId() { return customerId; }
-    public String getCustomerNo() { return customerNo; }
+    /** Alias: customerNo == customerId (7·8 도메인 호환) */
+    public String getCustomerNo() { return customerId; }
     public String getResidentNo() { return residentNo; }
     public String getAddress() { return address; }
     public LocalDate getBirthDate() { return birthDate; }
