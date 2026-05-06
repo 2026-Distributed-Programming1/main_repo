@@ -5,10 +5,10 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="temurin-21" />
+        <option name="gradleJvm" value="21" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../../../2026년 1학기/분산프로그래밍1/DP-pure-java" />
+            <option value="$USER_HOME$/2026년 1학기/분산프로그래밍1/DP-pure-java" />
           </set>
         </option>
       </GradleProjectSettings>

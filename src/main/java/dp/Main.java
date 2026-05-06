@@ -8,6 +8,10 @@ import dp.runner.usecase.*;
  * 인터랙티브 메인 진입점
  * <p>
  * 사용자가 메뉴에서 유스케이스를 선택하면 해당 시나리오 진행자(Runner)를 실행한다. 도메인 클래스는 일절 변경하지 않으며, 본 파일과 runner 패키지는 모두 클래스 다이어그램 외부의 "구동 코드"이다.
+ *
+ * Runner는 Usecase Scenario, Usecase Diagram을 참고
+ * Main이 Usecase Diagram 참고
+ * 다른 클래스들은 Class Diagram 참고
  */
 public class Main {
 
@@ -33,24 +37,18 @@ public class Main {
                     "[8] 해약 환급 내역을 조회한다  (UC9 산출 · UC10 지급 포함)",
                     "[4-UC1] 교육 계획안을 작성한다",
                     "[4-UC2] 교육 제반을 등록한다",
-                    "[4-UC3] 교육을 진행한다",
                     "[4-UC4] 상담을 요청한다",
                     "[4-UC5] 면담일정을 관리한다",
                     "[4-UC6] 면담기록을 관리한다",
-                    "[4-UC7] 보험상품을 제안한다",
                     "[4-UC8] 청약서를 작성한다",
-                    "[4-UC9] 보험을 신청한다",
-                    "[4-UC10] 부활을 요청한다",
                     "[4-UC11] 인수 심사를 한다",
-                    "판매채널을 모집한다",
-                    "성과급 지급을 요청한다",
+                    "[4] 보험상품을 조회한다  (→ A3 보험 신청 · A4 부활 신청 연결)",
                     "영업 활동을 관리한다",
                     "영업조직을 평가한다",
                     "판매채널 채용을 심사한다",
                     "고객 정보를 등록한다",
                     "활동 계획을 작성한다",
                     "계약 정보를 조회한다",
-                    "계약 통계 정보를 관리한다",
                     "문의한다",
                     "종료");
 
@@ -82,64 +80,53 @@ public class Main {
                 case 9:
                     EducationPreparationRunner.run();
                     break;
-                case 10: //삭제
-                    EducationExecutionRunner.run();
-                    break;
-                case 11:
+                // [4-UC3] 교육을 진행한다 → EducationPreparationRunner 내 extend로 연결
+                case 10:
                     ConsultationRequestRunner.run();
                     break;
-                case 12:
+                case 11:
                     InterviewScheduleRunner.run();
                     break;
-                case 13:
+                case 12:
                     InterviewRecordRunner.run();
                     break;
-                case 14: //삭제
-                    ProposalRunner.run();
-                    break;
-                case 15:
+                // [4-UC7] 보험상품을 제안한다 → InterviewRecordRunner 내 include로 연결
+                case 13:
                     PolicyApplicationRunner.run();
                     break;
-                case 16: //삭제
-                    InsuranceApplicationRunner.run();
-                    break;
-                case 17: //삭제
-                    RevivalRunner.run();
-                    break;
-                case 18:
+                case 14:
                     UnderwritingRunner.run();
                     break;
-                case 19: //삭제
-                    ChannelRecruitmentRunner.run();
+                // [4-UC9] 보험을 신청한다 → InsuranceProductInquiryRunner 내 extend로 연결
+                // [4-UC10] 부활을 요청한다 → InsuranceProductInquiryRunner 내 extend로 연결
+                case 15:
+                    InsuranceProductInquiryRunner.run();
                     break;
-                case 20: //삭제
-                    BonusRequestRunner.run();
-                    break;
-                case 21:
+                // 판매채널을 모집한다 → SalesActivityRunner 내 extend로 연결
+                // 성과급 지급을 요청한다 → SalesOrgEvaluationRunner 내 extend로 연결
+                case 16:
                     SalesActivityRunner.run();
                     break;
-                case 22:
+                case 17:
                     SalesOrgEvaluationRunner.run();
                     break;
-                case 23:
+                case 18:
                     ChannelScreeningRunner.run();
                     break;
-                case 24:
+                case 19:
                     CustomerRegistrationRunner.run();
                     break;
-                case 25:
+                case 20:
                     ActivityPlanRunner.run();
                     break;
-                case 26:
+                case 21:
                     ContractInfoRunner.run();
                     break;
-                case 27: //삭제
-                    ContractStatisticsRunner.run();
-                    break;
-                case 28:
+                // 계약 통계 정보를 관리한다 → ContractInfoRunner 내 extend로 연결
+                case 22:
                     InquiryRunner.run();
                     break;
-                case 29:
+                case 23:
                     System.out.println("\n프로그램을 종료합니다.");
                     return;
             }
