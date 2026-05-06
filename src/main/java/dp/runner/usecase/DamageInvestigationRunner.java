@@ -52,7 +52,7 @@ public class DamageInvestigationRunner {
                     "메인 메뉴로 돌아가기");
             switch (choice) {
                 case 1:
-                    if (mainFlow(investigation)) return;
+                    if (mainFlow(investigation, handler)) return;
                     break;
                 case 2:
                     requestSupplement(investigation);
@@ -72,8 +72,8 @@ public class DamageInvestigationRunner {
         }
     }
 
-    /** 정상 흐름: 입력 → 검증 → 완료 */
-    private static boolean mainFlow(DamageInvestigation inv) {
+    /** 정상 흐름: 입력 → 검증 → 완료 → UC5 이관 */
+    private static boolean mainFlow(DamageInvestigation inv, ClaimsHandler handler) {
         // 손해액
         long damage = ConsoleHelper.readLong("[보상담당자] 총 인정 손해액(원): ");
         inv.enterRecognizedDamage(damage);
@@ -111,19 +111,20 @@ public class DamageInvestigationRunner {
             return false;
         }
 
-        // 완료 (지급 승인 시 산출 이관)
+        // 완료 (지급 승인 시 UC5 → UC6 체인 이관)
         if (inv.getResult() == InvestigationResult.APPROVED) {
             ClaimCalculation calc = inv.complete();
             if (calc != null) {
                 Repository.calculations.add(calc);
                 ConsoleHelper.printSuccess("조사 완료, 보험금 산출로 이관: " + calc.getCalculationNo());
+                ConsoleHelper.printInfo("→ 보험금 산출 단계로 이관합니다.");
+                ClaimCalculationRunner.run(handler, calc);
             }
         } else {
             inv.closeAsRejected();
             ConsoleHelper.printInfo("면책으로 종결되었습니다.");
+            ConsoleHelper.waitEnter();
         }
-
-        ConsoleHelper.waitEnter();
         return true;
     }
 

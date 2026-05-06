@@ -5,35 +5,62 @@ import java.time.LocalDateTime;
 /**
  * 해지 (Cancellation)
  *
- * 본 클래스는 6️⃣ 계약 관리 도메인에 속하지만, 8️⃣ 도메인의 RefundCalculation이 참조하므로
- * 클래스 다이어그램에 명시된 필드와 메서드 중 본 도메인에서 활용되는 부분만 구현한다.
- *
- * 6️⃣ 도메인 자체의 모든 메서드(해지 절차, 본인인증 등)는 별도 작업 시 구현한다.
+ * 6️⃣ 계약 관리 도메인 + 8️⃣ 도메인의 RefundCalculation이 함께 참조한다.
  */
 public class Cancellation {
 
-    private static int sequence = 0;     // 해지번호 자동 부여용
+    private static int sequence = 0;
 
-    private String cancellationNo;       // 해지번호
-    private InsuranceContract contract;  // 대상 계약
+    private String cancellationNo;       // 해지번호 - 자동 부여
+    private Contract contract;           // 대상 계약
+    private String reason;               // 해지 사유 - 경제적 사정/타사가입/.../기타
+    private String detailReason;         // 상세 사유 - 기타 시 필수
+    private boolean noticeAgreed;        // 유의사항 동의 여부
+    private boolean authResult;          // 본인인증 결과
     private long expectedRefund;         // 예상 환급금
-    private LocalDateTime canceledAt;    // 해지일시
+    private LocalDateTime canceledAt;    // 해지일시 - confirm() 시 설정
+    private String status;               // 상태 - 작성중/완료/실패
 
-    /** 생성자 - 해지번호 자동 부여 (8 도메인용 단순화 버전) */
-    public Cancellation(InsuranceContract contract) {
+    /** 생성자 - 해지번호 자동 부여 */
+    public Cancellation(Contract contract) {
         sequence += 1;
         this.cancellationNo = "CAN" + String.format("%05d", sequence);
         this.contract = contract;
+        this.status   = "작성중";
     }
 
-    /** 해약 확정 - canceledAt=now() */
-    public void confirm() {
-        this.canceledAt = LocalDateTime.now();
+    /** 해지 사유 선택 - A1 */
+    public void selectReason(String reason) {
+        this.reason = reason;
+    }
+
+    /** 상세 사유 입력 - 기타 시 필수 */
+    public void enterDetailReason(String detail) {
+        this.detailReason = detail;
+    }
+
+    /** 기타 선택 시 1자 이상 검증 */
+    public boolean validateReasonInput() {
+        if ("기타".equals(reason)) {
+            return detailReason != null && !detailReason.isEmpty();
+        }
+        return reason != null && !reason.isEmpty();
+    }
+
+    /** 유의사항 동의 */
+    public void agreeToNotice() {
+        this.noticeAgreed = true;
+    }
+
+    /** 본인인증 - E1 (시뮬레이션에서 Runner가 제어) */
+    public boolean authenticate() {
+        this.authResult = true;
+        return authResult;
     }
 
     /**
      * 예상 환급금 산출
-     * 본 구현에서는 단순화하여 월 보험료의 12배로 설정 (실제 계산 로직은 6️⃣ 도메인에서 다룸)
+     * 단순화: 월 보험료 × 12
      */
     public long calculateExpectedRefund() {
         if (contract != null) {
@@ -42,9 +69,35 @@ public class Cancellation {
         return this.expectedRefund;
     }
 
+    /** 해약 신청 확정 - canceledAt=now(), status="완료" */
+    public void submit() {
+        this.canceledAt = LocalDateTime.now();
+        this.status = "완료";
+    }
+
+    /** 신청 처리 오류 - E2 */
+    public void handleSubmitError() {
+        this.status = "실패";
+    }
+
+    /** 해약 확정 (8 도메인 호환 - submit() 과 동일) */
+    public void confirm() {
+        this.canceledAt = LocalDateTime.now();
+        this.status = "완료";
+    }
+
+    /** 중간 취소 - A2 */
+    public void cancel() {
+        this.status = "취소";
+    }
+
     // Getter
     public String getCancellationNo() { return cancellationNo; }
-    public InsuranceContract getContract() { return contract; }
-    public long getExpectedRefund() { return expectedRefund; }
+    public Contract getContract()     { return contract; }
+    public String getReason()         { return reason; }
+    public long getExpectedRefund()   { return expectedRefund; }
     public LocalDateTime getCanceledAt() { return canceledAt; }
+    public String getStatus()         { return status; }
+    public boolean isNoticeAgreed()   { return noticeAgreed; }
+    public boolean isAuthResult()     { return authResult; }
 }

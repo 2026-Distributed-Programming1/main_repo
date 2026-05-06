@@ -3,7 +3,7 @@ package dp.runner;
 import dp.actor.*;
 import dp.common.BankAccount;
 import dp.consultation.InsuranceProduct;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.payment.OverdueNoticeSetting;
 
 import java.time.LocalDate;
@@ -94,28 +94,28 @@ public class SampleData {
 
     private static void createContracts() {
         // 김고객의 자동차 보험 계약
-        InsuranceContract con1 = new InsuranceContract(
+        Contract con1 = new Contract(
                 Repository.customers.get(0),
                 LocalDate.of(2023, 1, 1),
                 LocalDate.of(2033, 1, 1),
                 500_000L);
 
         // 김고객의 건강 보험 계약
-        InsuranceContract con2 = new InsuranceContract(
+        Contract con2 = new Contract(
                 Repository.customers.get(0),
                 LocalDate.of(2022, 6, 1),
                 LocalDate.of(2032, 6, 1),
                 100_000L);
 
         // 이고객의 종신 보험 계약
-        InsuranceContract con3 = new InsuranceContract(
+        Contract con3 = new Contract(
                 Repository.customers.get(1),
                 LocalDate.of(2024, 3, 1),
                 LocalDate.of(2054, 3, 1),
                 300_000L);
 
         // 최고객의 자동차 보험 계약
-        InsuranceContract con4 = new InsuranceContract(
+        Contract con4 = new Contract(
                 Repository.customers.get(2),
                 LocalDate.of(2024, 1, 1),
                 LocalDate.of(2034, 1, 1),

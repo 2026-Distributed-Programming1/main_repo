@@ -2,7 +2,7 @@ package dp.claim;
 
 import dp.actor.Customer;
 import dp.common.BankAccount;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.AuthMethod;
 import dp.enums.ClaimPaymentStatus;
 import dp.enums.InvestigationResult;
@@ -35,7 +35,7 @@ public class ClaimPaymentTest {
     @BeforeEach
     public void setUp() {
         Customer customer = new Customer("청구고객", "900101-1234567", "010-1111-2222", "test@test.com");
-        InsuranceContract contract = new InsuranceContract(customer,
+        Contract contract = new Contract(customer,
                 LocalDate.now().minusYears(1), LocalDate.now().plusYears(9), 500_000L);
 
         account = new BankAccount();

@@ -1,78 +1,152 @@
 package dp.contract;
 
+import dp.actor.Customer;
+import dp.common.BankAccount;
 import dp.enums.ContractStatus;
-
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 계약 (Contract)
- * 계약 정보를 조회하는 유스케이스의 주요 도메인 클래스이다.
+ * 보험계약 (Contract)
+ *
+ * InsuranceContract(7·8 도메인용)과 Contract(6 도메인용)를 통합한 클래스.
+ * - 파라미터 생성자: 7·8 도메인에서 계약번호·증권번호 자동 부여
+ * - 기본 생성자: 6 도메인 계약 관리 담당자 화면에서 수동 입력
  */
 public class Contract {
-    private String contractNo;              // 계약 번호
-    private String insuranceType;           // 보험 종류
-    private LocalDate startDate;            // 계약 시작일
-    private LocalDate endDate;              // 계약 종료일
-    private Long monthlyPremium;            // 월 보험료
-    private ContractStatus status;          // 계약 상태 - 정상/만기 (enum)
-    private Boolean isExpiringSoon;         // 만기 임박 여부
-    private Integer totalPayCount;          // 전체 납입 횟수
-    private Integer paidCount;              // 정상 납입 횟수
-    private LocalDate lastPaymentDate;      // 최근 납입일
-    private Boolean isOverdue;              // 연체 여부
-    private Integer overdueCount;           // 연체 횟수
-    private List<String> specialClauses;    // 특약명 목록
-    private List<Long> clausePremiums;      // 특약 보험료 목록
 
+    private static int sequence = 0;
+    private static int policySequence = 0;
+
+    // 7·8 도메인 공통 필드
+    private String contractNo;
+    private String policyNo;
+    private Customer customer;
+    private LocalDate contractDate;     // alias: startDate
+    private LocalDate expiryDate;       // alias: endDate
+    private long monthlyPremium;
+
+    // 6 도메인 추가 필드
+    private String insuranceType;
+    private ContractStatus status;
+    private Boolean isExpiringSoon;
+    private Integer totalPayCount;
+    private Integer paidCount;
+    private LocalDate lastPaymentDate;
+    private Boolean isOverdue;
+    private Integer overdueCount;
+    private List<String> specialClauses;
+    private List<Long> clausePremiums;
+
+    /** 7·8 도메인 생성자 — 계약번호·증권번호 자동 부여 */
+    public Contract(Customer customer, LocalDate contractDate, LocalDate expiryDate, long monthlyPremium) {
+        sequence += 1;
+        policySequence += 1;
+        this.contractNo = "CON" + String.format("%05d", sequence);
+        this.policyNo   = "POL" + String.format("%05d", policySequence);
+        this.customer      = customer;
+        this.contractDate  = contractDate;
+        this.expiryDate    = expiryDate;
+        this.monthlyPremium = monthlyPremium;
+        this.status        = ContractStatus.NORMAL;
+        this.isExpiringSoon = false;
+        this.isOverdue     = false;
+        this.specialClauses = new ArrayList<>();
+        this.clausePremiums = new ArrayList<>();
+    }
+
+    /** 6 도메인 기본 생성자 */
     public Contract() {
         this.specialClauses = new ArrayList<>();
         this.clausePremiums = new ArrayList<>();
-        this.status = ContractStatus.NORMAL;
+        this.status        = ContractStatus.NORMAL;
         this.isExpiringSoon = false;
-        this.isOverdue = false;
+        this.isOverdue     = false;
     }
 
+    // ── 클래스 다이어그램 정의 메서드 (스텁) ──────────────────────────────────
+
     public void search() {}
-
     public void getDetail() {}
-
     public void edit() {}
-
     public void naviageToExpiry() {}
-
     public void navigateToStats() {}
-
     public void retry() {}
-
     public void showNoSpecialClause() {}
-
     public void showNotFoundMessage() {}
 
-    // Runner에서 실제 사용하는 getter/setter만 유지
+    /** 만기 임박 여부 (30일 이내) */
+    public boolean isMaturityNear() {
+        if (expiryDate == null) return false;
+        long days = ChronoUnit.DAYS.between(LocalDate.now(), expiryDate);
+        return days >= 0 && days <= 30;
+    }
+
+    /** 계약 상태 갱신 */
+    public void updateStatus(String newStatus) {
+        if ("정상".equals(newStatus) || "정상유지".equals(newStatus)) {
+            this.status = ContractStatus.NORMAL;
+        } else if ("만기".equals(newStatus)) {
+            this.status = ContractStatus.EXPIRED;
+        }
+    }
+
+    public void changePaymentMethod(String method, BankAccount account) {}
+
+    public boolean verifyAccount(int amount, String code) { return true; }
+
+    public void getCertificatePDF() {}
+
+    public void getPolicyPDF() {}
+
+    public void initiateCancellation() {}
+
+    // ── Getters / Setters ─────────────────────────────────────────────────────
+
     public String getContractNo() { return contractNo; }
-    public void setContractNo(String contractNo) { this.contractNo = contractNo; }
+    public void   setContractNo(String contractNo) { this.contractNo = contractNo; }
+
+    public String getPolicyNo() { return policyNo; }
+
+    public Customer getCustomer() { return customer; }
+
+    public LocalDate getContractDate() { return contractDate; }
+    public LocalDate getExpiryDate()   { return expiryDate; }
+    public long      getMonthlyPremium() { return monthlyPremium; }
+    public void      setMonthlyPremium(long monthlyPremium) { this.monthlyPremium = monthlyPremium; }
+
+    /** Alias: startDate == contractDate */
+    public LocalDate getStartDate() { return contractDate; }
+    public void      setStartDate(LocalDate startDate) { this.contractDate = startDate; }
+
+    /** Alias: endDate == expiryDate */
+    public LocalDate getEndDate() { return expiryDate; }
+    public void      setEndDate(LocalDate endDate) { this.expiryDate = endDate; }
+
     public String getInsuranceType() { return insuranceType; }
-    public void setInsuranceType(String insuranceType) { this.insuranceType = insuranceType; }
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-    public Long getMonthlyPremium() { return monthlyPremium; }
-    public void setMonthlyPremium(Long monthlyPremium) { this.monthlyPremium = monthlyPremium; }
+    public void   setInsuranceType(String insuranceType) { this.insuranceType = insuranceType; }
+
     public ContractStatus getStatus() { return status; }
-    public void setStatus(ContractStatus status) { this.status = status; }
+    public void           setStatus(ContractStatus status) { this.status = status; }
+
     public Boolean getIsExpiringSoon() { return isExpiringSoon; }
-    public void setIsExpiringSoon(Boolean isExpiringSoon) { this.isExpiringSoon = isExpiringSoon; }
+    public void    setIsExpiringSoon(Boolean isExpiringSoon) { this.isExpiringSoon = isExpiringSoon; }
+
     public Integer getTotalPayCount() { return totalPayCount; }
-    public void setTotalPayCount(Integer totalPayCount) { this.totalPayCount = totalPayCount; }
+    public void    setTotalPayCount(Integer totalPayCount) { this.totalPayCount = totalPayCount; }
+
     public Integer getPaidCount() { return paidCount; }
-    public void setPaidCount(Integer paidCount) { this.paidCount = paidCount; }
+    public void    setPaidCount(Integer paidCount) { this.paidCount = paidCount; }
+
     public void setLastPaymentDate(LocalDate lastPaymentDate) { this.lastPaymentDate = lastPaymentDate; }
+
     public Boolean getIsOverdue() { return isOverdue; }
-    public void setIsOverdue(Boolean isOverdue) { this.isOverdue = isOverdue; }
+    public void    setIsOverdue(Boolean isOverdue) { this.isOverdue = isOverdue; }
+
     public Integer getOverdueCount() { return overdueCount; }
-    public void setOverdueCount(Integer overdueCount) { this.overdueCount = overdueCount; }
+    public void    setOverdueCount(Integer overdueCount) { this.overdueCount = overdueCount; }
+
     public List<String> getSpecialClauses() { return specialClauses; }
 }

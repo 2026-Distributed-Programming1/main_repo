@@ -27,13 +27,10 @@ public class Main {
                     "[7-UC1] 사고를 접수한다",
                     "[7-UC2] 현장 출동 정보를 기록한다",
                     "[7-UC3] 보험금을 요청한다",
-                    "[7-UC4] 손해 조사를 한다",
-                    "[7-UC5] 보험금을 산출한다",
-                    "[7-UC6] 보험금을 지급한다",
-                    "[8-UC7] 보험료를 납입한다",
+                    "[7-UC4] 손해 조사를 한다  (→ UC5 산출 → UC6 지급 자동 연결)",
+                    "[8] 가입 보험을 조회한다  (→ A2 납입 · A3 해지 연결)",
                     "[8-UC8] 납부 내역을 관리한다",
-                    "[8-UC9] 해약 환급금을 산출한다",
-                    "[8-UC10] 해약 환급금을 지급한다",
+                    "[8] 해약 환급 내역을 조회한다  (UC9 산출 · UC10 지급 포함)",
                     "[4-UC1] 교육 계획안을 작성한다",
                     "[4-UC2] 교육 제반을 등록한다",
                     "[4-UC3] 교육을 진행한다",
@@ -70,88 +67,79 @@ public class Main {
                 case 4:
                     DamageInvestigationRunner.run();
                     break;
-                case 5://삭제
-                    ClaimCalculationRunner.run();
+                case 5:
+                    MyInsuranceViewRunner.run();
                     break;
-                case 6://삭제
-                    ClaimPaymentRunner.run();
-                    break;
-                case 7://삭제
-                    PaymentRunner.run();
-                    break;
-                case 8:
+                case 6:
                     PaymentRecordRunner.run();
                     break;
-                case 9://삭제
-                    RefundCalculationRunner.run();
+                case 7:
+                    RefundListRunner.run();
                     break;
-                case 10://삭제
-                    RefundPaymentRunner.run();
-                    break;
-                case 11:
+                case 8:
                     EducationPlanRunner.run();
                     break;
-                case 12:
+                case 9:
                     EducationPreparationRunner.run();
                     break;
-                case 13://삭제
+                case 10: //삭제
                     EducationExecutionRunner.run();
                     break;
-                case 14:
+                case 11:
                     ConsultationRequestRunner.run();
                     break;
-                case 15:
+                case 12:
                     InterviewScheduleRunner.run();
                     break;
-                case 16:
+                case 13:
                     InterviewRecordRunner.run();
                     break;
-                case 17://삭제
+                case 14: //삭제
                     ProposalRunner.run();
                     break;
-                case 18:
+                case 15:
                     PolicyApplicationRunner.run();
                     break;
-                case 19://삭제
+                case 16: //삭제
                     InsuranceApplicationRunner.run();
                     break;
-                case 20://삭제
+                case 17: //삭제
                     RevivalRunner.run();
                     break;
-                case 21:
+                case 18:
                     UnderwritingRunner.run();
                     break;
-                case 22://삭제
+                case 19: //삭제
                     ChannelRecruitmentRunner.run();
                     break;
-                case 23://삭제
+                case 20: //삭제
                     BonusRequestRunner.run();
                     break;
-                case 24:
+                case 21:
                     SalesActivityRunner.run();
                     break;
-                case 25:
+                case 22:
                     SalesOrgEvaluationRunner.run();
                     break;
-                case 26:
+                case 23:
                     ChannelScreeningRunner.run();
                     break;
-                case 27:
+                case 24:
                     CustomerRegistrationRunner.run();
                     break;
-                case 28:
+                case 25:
                     ActivityPlanRunner.run();
                     break;
-                case 29:
+                case 26:
                     ContractInfoRunner.run();
                     break;
-                case 30://삭제
+                case 27: //삭제
                     ContractStatisticsRunner.run();
                     break;
-                case 31:
+                case 28:
                     InquiryRunner.run();
                     break;
-                case 32:
+                case 29:
                     System.out.println("\n프로그램을 종료합니다.");
                     return;
             }

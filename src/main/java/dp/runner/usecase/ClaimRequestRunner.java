@@ -5,7 +5,7 @@ import dp.claim.AccidentDetail;
 import dp.claim.ClaimRequest;
 import dp.common.Attachment;
 import dp.common.BankAccount;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.AccidentSubType;
 import dp.enums.AuthMethod;
 import dp.enums.ClaimType;
@@ -38,7 +38,7 @@ public class ClaimRequestRunner {
         if (customer == null) return;
 
         // 2) 대상 계약 선택
-        InsuranceContract contract = selectContract(customer);
+        Contract contract = selectContract(customer);
         if (contract == null) return;
 
         // 3) ClaimRequest 생성
@@ -204,8 +204,8 @@ public class ClaimRequestRunner {
         return customers.get(choice - 1);
     }
 
-    private static InsuranceContract selectContract(Customer customer) {
-        List<InsuranceContract> contracts = Repository.contracts.stream()
+    private static Contract selectContract(Customer customer) {
+        List<Contract> contracts = Repository.contracts.stream()
                 .filter(c -> c.getCustomer() == customer)
                 .collect(Collectors.toList());
         if (contracts.isEmpty()) {

@@ -1,7 +1,7 @@
 package dp.runner.usecase;
 
 import dp.contract.Cancellation;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.RefundStatus;
 import dp.payment.RefundCalculation;
 import dp.payment.RefundPayment;
@@ -45,6 +45,46 @@ public class RefundCalculationRunner {
         }
 
         // 3) 산출 결과 검토 및 처리 루프
+        while (true) {
+            showRefund(refund);
+            int choice = ConsoleHelper.readMenuChoice(
+                    "[재무회계 담당자] 작업을 선택하세요:",
+                    "환급금 확정 → 지급 이관 (정상)",
+                    "공제 항목 수기 조정 (A1)",
+                    "산출 내역서 PDF 다운로드 (A2)",
+                    "목록으로 돌아가기 (A3)");
+            switch (choice) {
+                case 1:
+                    confirmAndProceed(refund);
+                    return;
+                case 2:
+                    adjustDeduction(refund);
+                    break;
+                case 3:
+                    refund.exportPDF();
+                    break;
+                case 4:
+                    refund.goBackToList();
+                    return;
+            }
+        }
+    }
+
+    /** RefundListRunner에서 이관받아 실행 — 해지 건 선택 없이 직접 처리 */
+    static void run(Cancellation cancellation) {
+        ConsoleHelper.printDoubleDivider();
+        System.out.println("UC9: 해약 환급금을 산출한다");
+        ConsoleHelper.printDoubleDivider();
+
+        RefundCalculation refund = new RefundCalculation(cancellation);
+        Repository.refundCalculations.add(refund);
+
+        if (refund.getStatus() == RefundStatus.CALCULATION_PENDING) {
+            ConsoleHelper.printError("[E1] 환급금 산출에 필요한 데이터가 누락되었습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
         while (true) {
             showRefund(refund);
             int choice = ConsoleHelper.readMenuChoice(
@@ -140,7 +180,7 @@ public class RefundCalculationRunner {
                         + " (월 " + c.getMonthlyPremium() + "원)")
                 .toArray(String[]::new);
         int choice = ConsoleHelper.readMenuChoice("[시연용] 해지할 계약을 선택하세요:", options);
-        InsuranceContract contract = Repository.contracts.get(choice - 1);
+        Contract contract = Repository.contracts.get(choice - 1);
         Cancellation cancellation = new Cancellation(contract);
         cancellation.calculateExpectedRefund();
         cancellation.confirm();

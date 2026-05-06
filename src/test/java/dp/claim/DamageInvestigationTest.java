@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dp.actor.ClaimsHandler;
 import dp.actor.Customer;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.InvestigationResult;
 import dp.enums.InvestigationStatus;
 import java.time.LocalDate;
@@ -30,7 +30,7 @@ public class DamageInvestigationTest {
   @BeforeEach
   public void setUp() {
     Customer customer = new Customer("테스트고객", "900101-1234567", "010-0000-0000", "test@test.com");
-    InsuranceContract contract = new InsuranceContract(customer,
+    Contract contract = new Contract(customer,
         LocalDate.now().minusYears(1), LocalDate.now().plusYears(9), 500_000L);
     claim = new ClaimRequest(customer, contract);
     handler = new ClaimsHandler("박보상", "보상팀", "대리", 5_000_000L);

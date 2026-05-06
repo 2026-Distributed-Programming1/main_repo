@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dp.actor.Customer;
 import dp.common.BankAccount;
-import dp.contract.InsuranceContract;
+import dp.contract.Contract;
 import dp.enums.AccidentSubType;
 import dp.enums.AuthMethod;
 import dp.enums.ClaimRequestStatus;
@@ -28,12 +28,12 @@ import org.junit.jupiter.api.Test;
 public class ClaimRequestTest {
 
   private Customer customer;
-  private InsuranceContract contract;
+  private Contract contract;
 
   @BeforeEach
   public void setUp() {
     customer = new Customer("청구고객", "900101-1234567", "010-0000-0000", "test@test.com");
-    contract = new InsuranceContract(customer, LocalDate.now().minusYears(1),
+    contract = new Contract(customer, LocalDate.now().minusYears(1),
         LocalDate.now().plusYears(9), 500_000L);
   }
 

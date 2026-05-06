@@ -14,7 +14,6 @@ import dp.claim.DispatchRecord;
 import dp.contract.Cancellation;
 import dp.contract.Contract;
 import dp.contract.ContractStatistics;
-import dp.contract.InsuranceContract;
 import dp.inquiry.Inquiry;
 import dp.payment.OverdueNoticeSetting;
 import dp.payment.Payment;
@@ -58,7 +57,7 @@ public class Repository {
     public static final List<FinanceManager> financeManagers = new ArrayList<>();
 
     // ===== 6️⃣ 도메인 (참조용) =====
-    public static final List<InsuranceContract> contracts = new ArrayList<>();
+    public static final List<Contract> contracts = new ArrayList<>();
     public static final List<Cancellation> cancellations = new ArrayList<>();
 
     public static final List<Contract> contractInfos = new ArrayList<>();
