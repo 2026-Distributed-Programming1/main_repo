@@ -1,5 +1,5 @@
 package dp.actor;
-/** 수정 필요 */
+
 /**
  * 설계사 (Designer)
  * SalesChannel 상속
