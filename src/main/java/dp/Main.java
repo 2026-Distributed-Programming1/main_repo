@@ -70,22 +70,22 @@ public class Main {
                 case 4:
                     DamageInvestigationRunner.run();
                     break;
-                case 5:
+                case 5://삭제
                     ClaimCalculationRunner.run();
                     break;
-                case 6:
+                case 6://삭제
                     ClaimPaymentRunner.run();
                     break;
-                case 7:
+                case 7://삭제
                     PaymentRunner.run();
                     break;
                 case 8:
                     PaymentRecordRunner.run();
                     break;
-                case 9:
+                case 9://삭제
                     RefundCalculationRunner.run();
                     break;
-                case 10:
+                case 10://삭제
                     RefundPaymentRunner.run();
                     break;
                 case 11:
@@ -94,7 +94,7 @@ public class Main {
                 case 12:
                     EducationPreparationRunner.run();
                     break;
-                case 13:
+                case 13://삭제
                     EducationExecutionRunner.run();
                     break;
                 case 14:
@@ -106,25 +106,25 @@ public class Main {
                 case 16:
                     InterviewRecordRunner.run();
                     break;
-                case 17:
+                case 17://삭제
                     ProposalRunner.run();
                     break;
                 case 18:
                     PolicyApplicationRunner.run();
                     break;
-                case 19:
+                case 19://삭제
                     InsuranceApplicationRunner.run();
                     break;
-                case 20:
+                case 20://삭제
                     RevivalRunner.run();
                     break;
                 case 21:
                     UnderwritingRunner.run();
                     break;
-                case 22:
+                case 22://삭제
                     ChannelRecruitmentRunner.run();
                     break;
-                case 23:
+                case 23://삭제
                     BonusRequestRunner.run();
                     break;
                 case 24:
@@ -145,7 +145,7 @@ public class Main {
                 case 29:
                     ContractInfoRunner.run();
                     break;
-                case 30:
+                case 30://삭제
                     ContractStatisticsRunner.run();
                     break;
                 case 31:
