@@ -82,7 +82,7 @@ public class Main {
                 case 9:
                     EducationPreparationRunner.run();
                     break;
-                case 10:
+                case 10: //삭제
                     EducationExecutionRunner.run();
                     break;
                 case 11:
@@ -94,25 +94,25 @@ public class Main {
                 case 13:
                     InterviewRecordRunner.run();
                     break;
-                case 14:
+                case 14: //삭제
                     ProposalRunner.run();
                     break;
                 case 15:
                     PolicyApplicationRunner.run();
                     break;
-                case 16:
+                case 16: //삭제
                     InsuranceApplicationRunner.run();
                     break;
-                case 17:
+                case 17: //삭제
                     RevivalRunner.run();
                     break;
                 case 18:
                     UnderwritingRunner.run();
                     break;
-                case 19:
+                case 19: //삭제
                     ChannelRecruitmentRunner.run();
                     break;
-                case 20:
+                case 20: //삭제
                     BonusRequestRunner.run();
                     break;
                 case 21:
@@ -133,7 +133,7 @@ public class Main {
                 case 26:
                     ContractInfoRunner.run();
                     break;
-                case 27:
+                case 27: //삭제
                     ContractStatisticsRunner.run();
                     break;
                 case 28:
