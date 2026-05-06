@@ -37,9 +37,11 @@ public class ActivityPlan {
         if (startDate == null || endDate == null) return false;
         return !endDate.isBefore(startDate);
     }
-/** addSchedule() 부분 고민. 파라미터 문제. ActivityPlanRunner관련 */
-    public void addSchedule() {}
-    public void addSchedule(ScheduleItem item) {}
+    public void addSchedule(ScheduleItem item) {
+        if (item != null) {
+            this.schedules.add(item);
+        }
+    }
 
     public void deleteSchedule() {}
 
@@ -55,7 +57,7 @@ public class ActivityPlan {
                 && proposedInsuranceType != null;
     }
 
-    public void highlighterError() {}
+    public void highlightError() {}
 
     public void tempSave() {
         this.status = PlanStatus.TEMP_SAVE;

@@ -1,5 +1,5 @@
 package dp.actor;
-/** 수정 필요 */
+
 import dp.enums.ChannelType;
 
 /**
@@ -11,5 +11,16 @@ public class Applicant {
     private String name;             // 이름
     private ChannelType channelType; // 지원 채널 유형 (enum)
 
+    public Applicant(String applicantId, String name, ChannelType channelType) {
+        this.applicantId = applicantId;
+        this.name = name;
+        this.channelType = channelType;
+    }
+
     public void getDetail() {}
+
+    // Getters
+    public String getApplicantId() { return applicantId; }
+    public String getName() { return name; }
+    public ChannelType getChannelType() { return channelType; }
 }

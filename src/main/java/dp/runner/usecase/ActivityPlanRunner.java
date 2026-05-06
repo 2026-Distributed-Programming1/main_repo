@@ -135,7 +135,6 @@ public class ActivityPlanRunner {
         plan.sortSchedules();
         boolean addSchedule = ConsoleHelper.readYesNo("  [A2] 일정을 추가하시겠습니까?");
         while (addSchedule) {
-            plan.addSchedule();
             ConsoleHelper.printStage("시스템", "[일정 추가] 버튼이 배치됩니다. 일정 정보를 입력하세요.");
             String scheduleCustomerId = ConsoleHelper.readNonEmpty("    일정 고객번호: ");
             int actTypeChoice = ConsoleHelper.readMenuChoice(
@@ -176,7 +175,7 @@ public class ActivityPlanRunner {
         ConsoleHelper.printStage("시스템", "필수 항목 누락 여부를 검증합니다.");
         if (!plan.validateRequired()) {
             // E1) 필수 항목 누락
-            plan.highlighterError();
+            plan.highlightError();
             plan.retainValues();
             ConsoleHelper.printStage("시스템", "필수 항목을 확인해주세요.");
             ConsoleHelper.printError("[E1] 누락된 필드: 필수 항목입니다.");

@@ -139,7 +139,7 @@ public class ChannelRecruitmentRunner {
         ConsoleHelper.printStage("시스템", "필수 항목 누락 여부를 검증합니다.");
         if (!recruitment.validateRequired()) {
             // E1) 필수 항목이 누락된 경우
-            recruitment.highlighterError();
+            recruitment.highlightError();
             recruitment.showRequiredError();
             ConsoleHelper.printError("[E1] 필수 항목을 입력해주세요. (채널유형 / 모집인원 / 모집기간)");
             ConsoleHelper.waitEnter();
