@@ -1,5 +1,6 @@
 package dp.runner.usecase;
 
+import dp.actor.Customer;
 import dp.actor.Designer;
 import dp.consultation.InsuranceProduct;
 import dp.consultation.PolicyApplication;
@@ -38,18 +39,31 @@ public class PolicyApplicationRunner {
 
         Designer designer = Repository.designers.get(0);
 
+        // 고객 선택 (시스템에 등록된 고객 중 선택)
+        List<Customer> customers = Repository.customers;
+        if (customers.isEmpty()) {
+            ConsoleHelper.printError("등록된 고객이 없습니다. 먼저 고객을 등록해 주세요.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        String[] customerOptions = customers.stream()
+                .map(c -> c.getName() + " (" + c.getCustomerNo() + ")")
+                .toArray(String[]::new);
+        int customerIdx = ConsoleHelper.readMenuChoice("[판매채널] 청약 고객을 선택하세요:", customerOptions);
+        Customer selectedCustomer = customers.get(customerIdx - 1);
+
         // 2. 시스템은 청약서 작성 화면을 출력한다.
         ConsoleHelper.printStage("시스템", "청약서 작성 화면을 출력합니다.");
-        ConsoleHelper.printInfo("입력 항목: 고객명 / 생년월일 / 연락처 / 주소");
+        ConsoleHelper.printInfo("입력 항목: 생년월일 / 연락처 / 주소");
         PolicyApplication application = designer.createPolicyApplication();
+        application.setCustomer(selectedCustomer);
 
         // 3. 판매채널은 고객 기본정보를 입력한다.
         ConsoleHelper.printStage("판매채널", "고객 기본 정보를 입력합니다.");
-        String customerName = ConsoleHelper.readNonEmpty("  고객명: ");
         String birthDate = ConsoleHelper.readNonEmpty("  생년월일 (yyyy-MM-dd): ");
         String contact = ConsoleHelper.readNonEmpty("  연락처: ");
         String address = ConsoleHelper.readNonEmpty("  주소: ");
-        application.enterCustomerInfo(customerName, birthDate, contact, address);
+        application.enterCustomerInfo(selectedCustomer.getName(), birthDate, contact, address);
 
         // 4. 시스템은 가입 가능한 상품 목록을 출력한다.
         ConsoleHelper.printStage("시스템", "가입 가능한 보험상품 목록을 출력합니다.");

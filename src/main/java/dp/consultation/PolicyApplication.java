@@ -1,5 +1,6 @@
 package dp.consultation;
 
+import dp.actor.Customer;
 import java.time.LocalDateTime;
 
 /**
@@ -12,6 +13,7 @@ public class PolicyApplication {
 
     private int applicationNumber;
     private LocalDateTime submittedAt;
+    private Customer customer;
     private String customerName;
     private String productName;
     private int period;
@@ -21,6 +23,13 @@ public class PolicyApplication {
         sequence += 1;
         this.applicationNumber = sequence;
     }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+        this.customerName = customer.getName();
+    }
+
+    public Customer getCustomer() { return customer; }
 
     public void enterCustomerInfo(String customerName, String birthDate,
                                    String contact, String address) {

@@ -95,7 +95,9 @@ public class CustomerRegistration {
     public void setAddress(String address) { this.address = address; }
     public InsuranceType getInsuranceType() { return insuranceType; }
     public void setInsuranceType(InsuranceType insuranceType) { this.insuranceType = insuranceType; }
+    public LocalDate getContractDate() { return contractDate; }
     public void setContractDate(LocalDate contractDate) { this.contractDate = contractDate; }
+    public LocalDate getExpiryDate() { return expiryDate; }
     public void setExpiryDate(LocalDate expiryDate) { this.expiryDate = expiryDate; }
     public Long getMonthlyPremium() { return monthlyPremium; }
     public void setMonthlyPremium(Long monthlyPremium) { this.monthlyPremium = monthlyPremium; }

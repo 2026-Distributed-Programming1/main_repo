@@ -90,6 +90,8 @@ public class Contract {
             this.status = ContractStatus.NORMAL;
         } else if ("만기".equals(newStatus)) {
             this.status = ContractStatus.EXPIRED;
+        } else if ("해지".equals(newStatus)) {
+            this.status = ContractStatus.CANCELLED;
         }
     }
 

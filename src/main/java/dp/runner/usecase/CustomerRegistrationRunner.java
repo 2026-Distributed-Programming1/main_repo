@@ -1,5 +1,7 @@
 package dp.runner.usecase;
 
+import dp.actor.Customer;
+import dp.contract.Contract;
 import dp.enums.InsuranceType;
 import dp.runner.ConsoleHelper;
 import dp.runner.Repository;
@@ -161,9 +163,22 @@ public class CustomerRegistrationRunner {
         registration.assignIds();
         registration.save();
         Repository.customerRegistrations.add(registration);
+
+        Customer customer = new Customer(
+                registration.getName(), registration.getSsn(), registration.getPhone(), "");
+        Repository.customers.add(customer);
+
+        Contract contract = new Contract(
+                customer,
+                registration.getContractDate(),
+                registration.getExpiryDate(),
+                registration.getMonthlyPremium());
+        contract.setInsuranceType(registration.getInsuranceType().name());
+        Repository.contracts.add(contract);
+
         ConsoleHelper.printStage("시스템", "고객번호와 계약번호를 자동으로 부여합니다.");
-        ConsoleHelper.printInfo("고객번호: " + registration.getCustomerId()
-                + " | 계약번호: " + registration.getContractNo());
+        ConsoleHelper.printInfo("고객번호: " + customer.getCustomerNo()
+                + " | 계약번호: " + contract.getContractNo());
 
         // 10. 시스템은 "고객 정보가 성공적으로 등록되었습니다." 팝업 메시지를 출력한다.
         registration.showSuccessPopup();
