@@ -11,14 +11,16 @@ public class ActivityPlanDAO {
                 ? p.getProposedInsuranceType().name() : null;
         DBA.executeUpdate(
             "INSERT INTO activity_plans (plan_no, author_name, activity_type, scheduled_date,"
-            + " target, status)"
-            + " VALUES (?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE status=VALUES(status)",
+            + " target, proposed_insurance_type, status)"
+            + " VALUES (?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE status=VALUES(status),"
+            + " target=VALUES(target), proposed_insurance_type=VALUES(proposed_insurance_type)",
             p.getPlanId(),
-            p.getAuthor(),
-            insuranceType,
+            p.getPlanName(),
+            null,
             p.getStartDate(),
             p.getProposedCustomerId(),
+            insuranceType,
             status);
     }
 }

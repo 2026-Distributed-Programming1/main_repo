@@ -17,7 +17,7 @@ public class SalesActivityManagementDAO {
             a.getManagementNo(),
             a.getManagerName(),
             a.getChannelName(),
-            channelType,
+            a.getActivityType(),
             a.getRegisteredAt());
     }
 
@@ -27,13 +27,12 @@ public class SalesActivityManagementDAO {
             + " FROM sales_activity_managements",
             rs -> {
                 SalesActivityManagement a = new SalesActivityManagement();
+                a.setManagementNo(rs.getString("activity_no"));
                 a.setManagerName(rs.getString("manager_name"));
                 a.setChannelName(rs.getString("channel_name"));
-                String ct = rs.getString("activity_type");
-                if (ct != null) {
-                    try { a.setChannelType(dp.enums.ChannelType.valueOf(ct)); }
-                    catch (IllegalArgumentException ignored) {}
-                }
+                a.setActivityType(rs.getString("activity_type"));
+                java.sql.Timestamp ts = rs.getTimestamp("created_at");
+                if (ts != null) a.setRegisteredAt(ts.toLocalDateTime());
                 return a;
             });
     }
