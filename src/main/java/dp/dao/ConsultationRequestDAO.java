@@ -7,11 +7,15 @@ public class ConsultationRequestDAO {
 
     public static void save(ConsultationRequest r) {
         DBA.executeUpdate(
-            "INSERT INTO consultation_requests (consult_no, channel, requested_at)"
-            + " VALUES (?,?,?)"
-            + " ON DUPLICATE KEY UPDATE channel=VALUES(channel)",
+            "INSERT INTO consultation_requests (consult_no, channel, contact, content, status, requested_at)"
+            + " VALUES (?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE channel=VALUES(channel),"
+            + " contact=VALUES(contact), content=VALUES(content), status=VALUES(status)",
             String.valueOf(r.getConsultationNumber()),
             r.getType(),
+            r.getContact(),
+            r.getContent(),
+            r.getStatus(),
             r.getScheduledAt());
     }
 }
