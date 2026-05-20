@@ -34,7 +34,7 @@ public class ClaimRequestDAO {
     public static List<ClaimRequest> findAll() {
         return DBA.executeQuery(
             "SELECT claim_no, customer_id, customer_name, contract_no, claim_type,"
-            + " diagnosis, status FROM claim_requests",
+            + " diagnosis, claim_reasons, status FROM claim_requests",
             rs -> {
                 String cid  = rs.getString("customer_id");
                 String cname = rs.getString("customer_name");
@@ -52,8 +52,13 @@ public class ClaimRequestDAO {
                     try { status = ClaimRequestStatus.valueOf(st); }
                     catch (IllegalArgumentException ignored) {}
                 }
-                return new ClaimRequest(
+                ClaimRequest req = new ClaimRequest(
                     rs.getString("claim_no"), customerShell, contractShell, status);
+                String reasons = rs.getString("claim_reasons");
+                if (reasons != null && !reasons.isEmpty()) {
+                    req.selectClaimReasons(java.util.Arrays.asList(reasons.split(",")));
+                }
+                return req;
             });
     }
 
