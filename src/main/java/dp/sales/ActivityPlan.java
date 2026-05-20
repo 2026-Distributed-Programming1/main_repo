@@ -108,6 +108,7 @@ public class ActivityPlan {
     public Long getTargetContractAmount() { return targetContractAmount; }
     public void setTargetContractAmount(Long targetContractAmount) { this.targetContractAmount = targetContractAmount; }
     public void setTargetNewCustomer(Integer targetNewCustomer) { this.targetNewCustomer = targetNewCustomer; }
+    public String getProposedCustomerId() { return proposedCustomerId; }
     public void setProposedCustomerId(String proposedCustomerId) { this.proposedCustomerId = proposedCustomerId; }
     public InsuranceType getProposedInsuranceType() { return proposedInsuranceType; }
     public void setProposedInsuranceType(InsuranceType proposedInsuranceType) { this.proposedInsuranceType = proposedInsuranceType; }
