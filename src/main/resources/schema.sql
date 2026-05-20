@@ -417,6 +417,7 @@ CREATE TABLE IF NOT EXISTS damage_investigations (
     investigation_no  VARCHAR(20)  PRIMARY KEY,
     claim_no          VARCHAR(20),          -- → claim_requests.claim_no
     claim_customer    VARCHAR(100),
+    customer_id       VARCHAR(20),          -- → customers.customer_id
     handler_emp_id    VARCHAR(20),
     handler_name      VARCHAR(100),
     our_fault_ratio   DOUBLE       DEFAULT 0,
