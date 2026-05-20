@@ -26,6 +26,18 @@ public class Inquiry {
     private String faqQuestion;             // FAQ 질문
     private String faqAnswer;              // FAQ 답변
 
+    public Inquiry() {}
+
+    /** DB 로딩용 생성자 */
+    public Inquiry(String inquiryNo, InquiryType inquiryType, String title, String content, LocalDateTime receivedAt, InquiryStatus status) {
+        this.inquiryNo = inquiryNo;
+        this.inquiryType = inquiryType;
+        this.title = title;
+        this.content = content;
+        this.receivedAt = receivedAt;
+        this.status = status;
+    }
+
     public Boolean validateRequired() {
         return inquiryType != null
                 && title != null && !title.isEmpty() && title.length() <= 50
