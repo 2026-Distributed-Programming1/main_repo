@@ -38,11 +38,12 @@ public class InterviewSchedule {
     }
 
     public static InterviewSchedule fromDb(int interviewNumber, String customerName,
-                                            LocalDateTime scheduledAt, String location,
-                                            String status) {
+                                            String type, LocalDateTime scheduledAt,
+                                            String location, String status) {
         InterviewSchedule s = new InterviewSchedule(true);
         s.interviewNumber = interviewNumber;
         s.customerName    = customerName;
+        s.type            = type;
         s.scheduledAt     = scheduledAt;
         s.location        = location;
         s.status          = status;

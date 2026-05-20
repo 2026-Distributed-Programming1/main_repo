@@ -23,14 +23,18 @@ public class EducationPreparationDAO {
 
     public static List<EducationPreparation> findAll() {
         return DBA.executeQuery(
-            "SELECT prep_no, trainer_name, venue, status FROM education_preparations",
-            rs -> new EducationPreparation(
-                rs.getInt("prep_no"),
-                null,
-                rs.getString("venue"),
-                rs.getString("trainer_name"),
-                null,
-                null,
-                new ArrayList<>()));
+            "SELECT prep_no, plan_no, trainer_name, venue FROM education_preparations",
+            rs -> {
+                EducationPreparation e = new EducationPreparation(
+                    rs.getInt("prep_no"),
+                    null,
+                    rs.getString("venue"),
+                    rs.getString("trainer_name"),
+                    null,
+                    null,
+                    new ArrayList<>());
+                e.setPlanNo(rs.getString("plan_no"));
+                return e;
+            });
     }
 }

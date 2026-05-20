@@ -9,17 +9,17 @@ public class InterviewScheduleDAO {
 
     public static void save(InterviewSchedule s) {
         DBA.executeUpdate(
-            "INSERT INTO interview_schedules (schedule_no, customer_name, scheduled_at,"
+            "INSERT INTO interview_schedules (schedule_no, customer_name, type, scheduled_at,"
             + " location, status)"
-            + " VALUES (?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE status=VALUES(status)",
+            + " VALUES (?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE status=VALUES(status), type=VALUES(type)",
             String.valueOf(s.getInterviewNumber()),
-            s.getCustomerName(), s.getScheduledAt(), s.getLocation(), s.getStatus());
+            s.getCustomerName(), s.getType(), s.getScheduledAt(), s.getLocation(), s.getStatus());
     }
 
     public static List<InterviewSchedule> findAll() {
         return DBA.executeQuery(
-            "SELECT schedule_no, customer_name, scheduled_at, location, status"
+            "SELECT schedule_no, customer_name, type, scheduled_at, location, status"
             + " FROM interview_schedules",
             rs -> {
                 String scheduleNo = rs.getString("schedule_no");
@@ -33,6 +33,7 @@ public class InterviewScheduleDAO {
                 return InterviewSchedule.fromDb(
                         interviewNumber,
                         rs.getString("customer_name"),
+                        rs.getString("type"),
                         scheduledAt,
                         rs.getString("location"),
                         rs.getString("status"));
