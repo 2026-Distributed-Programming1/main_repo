@@ -78,7 +78,6 @@ public class SalesActivityManagement {
     public void setManagementNo(String managementNo) { this.managementNo = managementNo; }
     public LocalDateTime getRegisteredAt() { return registeredAt; }
     public void setRegisteredAt(LocalDateTime registeredAt) { this.registeredAt = registeredAt; }
-    public ChannelType getChannelType() { return channelType; }
     public String getActivityType() { return channelType != null ? channelType.name() : null; }
     public void setActivityType(String activityType) {
         if (activityType != null) {
