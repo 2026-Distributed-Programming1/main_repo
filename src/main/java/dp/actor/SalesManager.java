@@ -40,7 +40,7 @@ public class SalesManager {
     }
 
     public void approveEducationPlan(EducationPlan plan) {
-        plan.setStatus("승인");
+        plan.approve();
         System.out.println("  [영업관리자] 교육계획안이 승인되었습니다.");
     }
 

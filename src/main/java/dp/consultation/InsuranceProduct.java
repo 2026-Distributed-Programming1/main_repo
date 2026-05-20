@@ -2,7 +2,7 @@ package dp.consultation;
 
 /**
  * 보험상품 (InsuranceProduct)
- * UC: 보험상품을 조회한다, 보험상품을 제안한다
+ * 🌟 Entity 개념
  */
 public class InsuranceProduct {
 
@@ -12,14 +12,18 @@ public class InsuranceProduct {
     private String coverage;
     private String specialTerms;
 
+
     public InsuranceProduct(String productName, String type, long monthlyPremium,
-                             String coverage, String specialTerms) {
+                            String coverage, String specialTerms) {
         this.productName = productName;
         this.type = type;
         this.monthlyPremium = monthlyPremium;
         this.coverage = coverage;
         this.specialTerms = specialTerms;
     }
+
+
+    public InsuranceProduct() {}
 
     public String getProductName() { return productName; }
     public String getType() { return type; }

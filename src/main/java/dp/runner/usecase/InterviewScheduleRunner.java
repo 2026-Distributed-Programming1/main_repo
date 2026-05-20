@@ -133,6 +133,7 @@ public class InterviewScheduleRunner {
                 return;
             }
             schedule.modify(scheduledAt, location, preparation);
+            InterviewScheduleDAO.save(schedule);
 
             // 5. 시스템은 수정 완료 결과를 출력한다.
             ConsoleHelper.printStage("시스템", "수정 완료 결과를 출력합니다.");
@@ -150,6 +151,7 @@ public class InterviewScheduleRunner {
             if (confirm) {
                 InterviewSchedule schedule = interviewSchedules.get(interviewSchedules.size() - 1);
                 schedule.cancel();
+                InterviewScheduleDAO.save(schedule);
                 ConsoleHelper.printStage("시스템", "취소 완료 결과를 출력합니다.");
                 ConsoleHelper.printInfo("면담번호: " + schedule.getInterviewNumber()
                         + " | 상태: " + schedule.getStatus());

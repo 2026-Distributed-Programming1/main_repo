@@ -8,7 +8,7 @@ public class Agency extends SalesChannel {
 
     private String agencyNumber;
 
-    public Agency(int channelId, String name, String location, String agencyNumber) {
+    public Agency(String channelId, String name, String location, String agencyNumber) {
         super(channelId, name, location);
         this.agencyNumber = agencyNumber;
     }

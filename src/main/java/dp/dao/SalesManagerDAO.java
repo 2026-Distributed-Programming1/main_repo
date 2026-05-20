@@ -17,6 +17,9 @@ public class SalesManagerDAO {
     public static List<SalesManager> findAll() {
         return DBA.executeQuery(
             "SELECT manager_id, name, department FROM sales_managers",
-            rs -> new SalesManager(rs.getString("name"), rs.getString("department")));
+            rs -> SalesManager.fromDb(
+                rs.getString("manager_id"),
+                rs.getString("name"),
+                rs.getString("department")));
     }
 }

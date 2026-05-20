@@ -43,13 +43,20 @@ public class ChannelRecruitmentRunner {
         System.out.println("UC: 판매채널을 모집한다");
         ConsoleHelper.printDoubleDivider();
 
-        SalesManager manager = SalesManagerDAO.findAll().get(0);
+        List<SalesManager> managers = SalesManagerDAO.findAll();
+        if (managers.isEmpty()) {
+            ConsoleHelper.printError("등록된 영업 관리자가 없습니다. 먼저 영업 관리자를 등록해주세요.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        SalesManager manager = managers.get(0);
 
         // 1. [영업 활동을 관리한다] A1)으로부터 넘어온다.
         ConsoleHelper.printInfo("[영업 활동을 관리한다] A1) 인원 충당 필요로 채널 모집 화면으로 이동합니다.");
 
         // 2. 시스템은 채널 모집 화면을 출력한다.
         ChannelRecruitment recruitment = new ChannelRecruitment();
+        recruitment.setManagerName(manager.getName());
         recruitment.loadRecruitmentList();
         ConsoleHelper.printStage("시스템", "채널 모집 화면을 출력합니다.");
         ConsoleHelper.printInfo(" ───────────────────────────────────────────────────────── ");

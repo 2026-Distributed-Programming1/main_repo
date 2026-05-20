@@ -41,6 +41,7 @@ public class RevivalRunner {
         if (customer == null) return;
 
         Revival revival = new Revival();
+        revival.setCustomer(customer);
 
         // 2. 시스템은 부활 신청 화면을 출력한다.
         ConsoleHelper.printStage("시스템", "부활 신청 화면을 출력합니다.");

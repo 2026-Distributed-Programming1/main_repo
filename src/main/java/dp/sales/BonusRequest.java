@@ -61,6 +61,7 @@ public class BonusRequest {
     public void setBaseSalary(Long baseSalary) { this.baseSalary = baseSalary; }
     public Double getBonusAmount() { return bonusAmount; }
     public void setRequestReason(String requestReason) { this.requestReason = requestReason; }
+    public String getRequestReason() { return requestReason; }
     public String getRequestNo() { return requestNo; }
     public LocalDateTime getRequestedAt() { return requestedAt; }
 }

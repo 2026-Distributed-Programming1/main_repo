@@ -33,10 +33,7 @@ public class CancellationDAO {
                 long premium = rs.getLong("monthly_premium");
                 Customer custShell = new Customer(
                     cno != null ? cno : "?", cname != null ? cname : "", null, null, null);
-                Contract contractShell = new Contract();
-                contractShell.setContractNo(cno);
-                contractShell.setMonthlyPremium(premium);
-                contractShell.setCustomer(custShell);
+                Contract contractShell = Contract.shellOf(cno, custShell, premium);
                 return new Cancellation(
                     rs.getString("cancellation_no"),
                     contractShell,

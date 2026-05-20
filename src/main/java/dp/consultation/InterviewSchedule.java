@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * 면담일정 (InterviewSchedule)
- * UC: 면담일정을 관리한다
+ * UC: 면담 일정을 정한다
  */
 public class InterviewSchedule {
 
@@ -21,6 +21,35 @@ public class InterviewSchedule {
     private String status;
     private List<InterviewRecord> interviewRecordList;
 
+    public InterviewSchedule(int interviewNumber, String customerName, String type, LocalDateTime scheduledAt,
+                             String location, String preparation, String status, List<InterviewRecord> interviewRecordList) {
+        this.interviewNumber = interviewNumber;
+        this.customerName = customerName;
+        this.type = type;
+        this.scheduledAt = scheduledAt;
+        this.location = location;
+        this.preparation = preparation;
+        this.status = status;
+        this.interviewRecordList = interviewRecordList != null ? interviewRecordList : new ArrayList<>();
+    }
+  
+    private InterviewSchedule(boolean fromDb) {
+        this.interviewRecordList = new ArrayList<>();
+    }
+
+    public static InterviewSchedule fromDb(int interviewNumber, String customerName,
+                                            String type, LocalDateTime scheduledAt,
+                                            String location, String status) {
+        InterviewSchedule s = new InterviewSchedule(true);
+        s.interviewNumber = interviewNumber;
+        s.customerName    = customerName;
+        s.type            = type;
+        s.scheduledAt     = scheduledAt;
+        s.location        = location;
+        s.status          = status;
+        return s;
+    }
+
     public InterviewSchedule() {
         sequence += 1;
         this.interviewNumber = sequence;
@@ -28,8 +57,7 @@ public class InterviewSchedule {
         this.status = "예정";
     }
 
-    public void register(String customerName, LocalDateTime scheduledAt,
-                          String location, String preparation) {
+    public void register(String customerName, LocalDateTime scheduledAt, String location, String preparation) {
         this.customerName = customerName;
         this.scheduledAt = scheduledAt;
         this.location = location;
@@ -63,6 +91,5 @@ public class InterviewSchedule {
     public String getLocation() { return location; }
     public String getPreparation() { return preparation; }
     public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
     public List<InterviewRecord> getInterviewRecordList() { return interviewRecordList; }
 }

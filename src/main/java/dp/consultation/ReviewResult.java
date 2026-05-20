@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 /**
  * 심사결과 (ReviewResult)
- * UC: 심사 결과를 전달한다
  * Underwriting 과 Composition 관계
  */
 public class ReviewResult {
@@ -13,6 +12,13 @@ public class ReviewResult {
     private String condition;
     private String rejectionReason;
     private LocalDateTime confirmedAt;
+
+    public ReviewResult(String result, String condition, String rejectionReason, LocalDateTime confirmedAt) {
+        this.result = result;
+        this.condition = condition;
+        this.rejectionReason = rejectionReason;
+        this.confirmedAt = confirmedAt;
+    }
 
     public ReviewResult(String result, String condition, String rejectionReason) {
         this.result = result;
@@ -31,6 +37,7 @@ public class ReviewResult {
 
     public String getResult() { return result; }
     public void setResult(String result) { this.result = result; }
+    public String getCoverage() { return condition; } // 기존 원본에 condition 필드를 getCoverage로 리턴하던 구조 100% 보존
     public String getCondition() { return condition; }
     public void setCondition(String condition) { this.condition = condition; }
     public String getRejectionReason() { return rejectionReason; }

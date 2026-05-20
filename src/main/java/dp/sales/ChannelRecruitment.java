@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  */
 public class ChannelRecruitment {
     private String recruitmentNo;           // 모집번호
+    private String managerName;             // 등록 영업 관리자명
     private ChannelType channelType;        // 채널 유형 - 설계사/대리점 (enum) 필수
     private Integer recruitCount;           // 모집 인원 필수
     private LocalDate startDate;            // 모집 기간 시작일 필수
@@ -20,15 +21,14 @@ public class ChannelRecruitment {
 
     public ChannelRecruitment() {}
 
-    /** DB 로딩용 생성자 */
-    public ChannelRecruitment(String recruitmentNo, ChannelType channelType, Integer recruitCount, LocalDate startDate, LocalDate endDate, String condition, LocalDateTime registeredAt) {
-        this.recruitmentNo = recruitmentNo;
-        this.channelType = channelType;
-        this.recruitCount = recruitCount;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.condition = condition;
-        this.registeredAt = registeredAt;
+    public static ChannelRecruitment fromDb(String recruitmentNo, ChannelType channelType,
+                                             String managerName, LocalDateTime registeredAt) {
+        ChannelRecruitment r = new ChannelRecruitment();
+        r.recruitmentNo = recruitmentNo;
+        r.channelType   = channelType;
+        r.managerName   = managerName;
+        r.registeredAt  = registeredAt;
+        return r;
     }
 
     public void loadRecruitmentList() {}
@@ -57,6 +57,8 @@ public class ChannelRecruitment {
 
     // Getters / Setters
     public String getRecruitmentNo() { return recruitmentNo; }
+    public String getManagerName() { return managerName; }
+    public void setManagerName(String managerName) { this.managerName = managerName; }
     public ChannelType getChannelType() { return channelType; }
     public void setChannelType(ChannelType channelType) { this.channelType = channelType; }
     public Integer getRecruitCount() { return recruitCount; }

@@ -9,6 +9,11 @@ public class Attendance {
     private String attendeeName;
     private boolean isAttended;
 
+    public Attendance(String attendeeName, boolean isAttended) {
+        this.attendeeName = attendeeName;
+        this.isAttended = isAttended;
+    }
+
     public Attendance(String attendeeName) {
         this.attendeeName = attendeeName;
         this.isAttended = false;

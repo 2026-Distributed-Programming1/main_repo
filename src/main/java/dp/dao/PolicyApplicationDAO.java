@@ -26,14 +26,12 @@ public class PolicyApplicationDAO {
         return DBA.executeQuery(
             "SELECT application_no, customer_id, customer_name, product_name,"
             + " period, payment_method FROM policy_applications",
-            rs -> {
-                PolicyApplication pa = new PolicyApplication();
-                pa.enterCustomerInfo(rs.getString("customer_name"), null, null, null);
-                pa.selectProduct(
-                    rs.getString("product_name"),
-                    rs.getInt("period"),
-                    rs.getString("payment_method"));
-                return pa;
-            });
+            rs -> PolicyApplication.fromDb(
+                rs.getInt("application_no"),
+                rs.getString("customer_id"),
+                rs.getString("customer_name"),
+                rs.getString("product_name"),
+                rs.getInt("period"),
+                rs.getString("payment_method")));
     }
 }

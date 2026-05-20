@@ -17,7 +17,7 @@ public class InquiryDAO {
             + " VALUES (?,?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE status=VALUES(status)",
             i.getInquiryNo(),
-            null,
+            i.getCustomerName(),
             inquiryType,
             i.getTitle(),
             i.getContent(),

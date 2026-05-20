@@ -1,7 +1,6 @@
 package dp.education;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * 교육계획안 (EducationPlan)
@@ -12,6 +11,7 @@ public class EducationPlan {
     private static int sequence = 0;
 
     private int planNumber;
+    private String trainerName;
     private String educationName;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -20,14 +20,40 @@ public class EducationPlan {
     private long budget;
     private String status;
 
+    public EducationPlan(int planNumber, String educationName, LocalDate startDate, LocalDate endDate,
+                         String channelType, int targetCount, long budget, String status) {
+        this.planNumber = planNumber;
+        this.educationName = educationName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.channelType = channelType;
+        this.targetCount = targetCount;
+        this.budget = budget;
+        this.status = status;
+    }
+
     public EducationPlan() {
         sequence += 1;
         this.planNumber = sequence;
         this.status = "작성중";
     }
 
+    private EducationPlan(boolean fromDb) {}
+
+    public static EducationPlan fromDb(int planNumber, String trainerName, String educationName,
+                                        String channelType, LocalDate startDate, String status) {
+        EducationPlan p = new EducationPlan(true);
+        p.planNumber    = planNumber;
+        p.trainerName   = trainerName;
+        p.educationName = educationName;
+        p.channelType   = channelType;
+        p.startDate     = startDate;
+        p.status        = status;
+        return p;
+    }
+
     public void enterPlanInfo(String educationName, LocalDate startDate, LocalDate endDate,
-                               String channelType, int targetCount, long budget) {
+                              String channelType, int targetCount, long budget) {
         this.educationName = educationName;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -60,6 +86,8 @@ public class EducationPlan {
     }
 
     public int getPlanNumber() { return planNumber; }
+    public String getTrainerName() { return trainerName; }
+    public void setTrainerName(String trainerName) { this.trainerName = trainerName; }
     public String getEducationName() { return educationName; }
     public LocalDate getStartDate() { return startDate; }
     public LocalDate getEndDate() { return endDate; }
@@ -67,5 +95,4 @@ public class EducationPlan {
     public int getTargetCount() { return targetCount; }
     public long getBudget() { return budget; }
     public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
 }

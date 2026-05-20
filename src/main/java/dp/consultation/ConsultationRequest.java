@@ -3,8 +3,8 @@ package dp.consultation;
 import java.time.LocalDateTime;
 
 /**
- * 상담요청 (ConsultationRequest)
- * UC: 상담을 요청한다
+ * 상담신청 (ConsultationRequest)
+ * UC: 상담을 신청한다
  */
 public class ConsultationRequest {
 
@@ -18,6 +18,17 @@ public class ConsultationRequest {
     private String content;
     private String status;
 
+    public ConsultationRequest(int consultationNumber, String type, LocalDateTime scheduledAt,
+                               String location, String contact, String content, String status) {
+        this.consultationNumber = consultationNumber;
+        this.type = type;
+        this.scheduledAt = scheduledAt;
+        this.location = location;
+        this.contact = contact;
+        this.content = content;
+        this.status = status;
+    }
+
     public ConsultationRequest() {
         sequence += 1;
         this.consultationNumber = sequence;
@@ -28,8 +39,7 @@ public class ConsultationRequest {
         this.type = type;
     }
 
-    public void enterConsultationInfo(LocalDateTime scheduledAt, String location,
-                                       String contact, String content) {
+    public void enterConsultationInfo(LocalDateTime scheduledAt, String location, String contact, String content) {
         this.scheduledAt = scheduledAt;
         this.location = location;
         this.contact = contact;

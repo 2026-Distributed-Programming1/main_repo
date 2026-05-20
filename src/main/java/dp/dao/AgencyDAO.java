@@ -18,7 +18,7 @@ public class AgencyDAO {
         return DBA.executeQuery(
             "SELECT channel_id, name, location, agency_number FROM agencies",
             rs -> new Agency(
-                Integer.parseInt(rs.getString("channel_id")),
+                rs.getString("channel_id"),
                 rs.getString("name"),
                 rs.getString("location"),
                 rs.getString("agency_number")));

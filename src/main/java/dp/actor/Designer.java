@@ -8,7 +8,7 @@ public class Designer extends SalesChannel {
 
     private String licenseNumber;
 
-    public Designer(int channelId, String name, String location, String licenseNumber) {
+    public Designer(String channelId, String name, String location, String licenseNumber) {
         super(channelId, name, location);
         this.licenseNumber = licenseNumber;
     }

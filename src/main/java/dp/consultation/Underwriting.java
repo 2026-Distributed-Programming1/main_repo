@@ -11,11 +11,23 @@ public class Underwriting {
     private static int sequence = 0;
 
     private int reviewNumber;
+    private String appNo;
+    private String customerName;
     private LocalDateTime reviewedAt;
     private String riskGrade;
     private String reviewType;
     private String reviewOpinion;
     private ReviewResult reviewResult;
+
+    public Underwriting(int reviewNumber, LocalDateTime reviewedAt, String riskGrade, String reviewType,
+                        String reviewOpinion, ReviewResult reviewResult) {
+        this.reviewNumber = reviewNumber;
+        this.reviewedAt = reviewedAt;
+        this.riskGrade = riskGrade;
+        this.reviewType = reviewType;
+        this.reviewOpinion = reviewOpinion;
+        this.reviewResult = reviewResult;
+    }
 
     public Underwriting() {
         sequence += 1;
@@ -51,6 +63,10 @@ public class Underwriting {
     }
 
     public int getReviewNumber() { return reviewNumber; }
+    public String getAppNo() { return appNo; }
+    public void setAppNo(String appNo) { this.appNo = appNo; }
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
     public LocalDateTime getReviewedAt() { return reviewedAt; }
     public String getRiskGrade() { return riskGrade; }
     public String getReviewType() { return reviewType; }

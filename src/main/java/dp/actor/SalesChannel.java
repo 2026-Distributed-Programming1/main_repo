@@ -14,8 +14,8 @@ public class SalesChannel {
     private String channelName;      // 채널명
     private ChannelType channelType; // 채널 유형 - 설계사/대리점 (enum)
 
-    public SalesChannel(int channelId, String channelName, String location) {
-        this.channelId = String.valueOf(channelId);
+    public SalesChannel(String channelId, String channelName, String location) {
+        this.channelId = channelId;
         this.channelName = channelName;
     }
 

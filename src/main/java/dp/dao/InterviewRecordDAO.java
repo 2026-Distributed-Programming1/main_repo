@@ -21,10 +21,16 @@ public class InterviewRecordDAO {
         return DBA.executeQuery(
             "SELECT record_no, customer_name, content FROM interview_records",
             rs -> {
-                InterviewRecord r = new InterviewRecord();
-                r.setCustomerName(rs.getString("customer_name"));
-                r.save(rs.getString("content"), null, null);
-                return r;
+                String recordNo = rs.getString("record_no");
+                int recordNumber = 0;
+                if (recordNo != null) {
+                    try { recordNumber = Integer.parseInt(recordNo); }
+                    catch (NumberFormatException ignored) {}
+                }
+                return InterviewRecord.fromDb(
+                        recordNumber,
+                        rs.getString("customer_name"),
+                        rs.getString("content"));
             });
     }
 }

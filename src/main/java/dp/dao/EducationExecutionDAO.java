@@ -12,8 +12,8 @@ public class EducationExecutionDAO {
             + " VALUES (?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE attendee_count=VALUES(attendee_count)",
             String.valueOf(e.getCompletionNumber()),
-            null,
-            null,
+            e.getPreparation() != null ? String.valueOf(e.getPreparation().getSetupNumber()) : null,
+            e.getPreparation() != null ? e.getPreparation().getInstructorName() : null,
             e.getCompletedAt(),
             e.getAttendanceCount(),
             null);

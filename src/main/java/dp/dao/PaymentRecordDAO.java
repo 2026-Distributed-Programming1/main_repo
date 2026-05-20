@@ -29,8 +29,7 @@ public class PaymentRecordDAO {
             + " FROM payment_records",
             rs -> {
                 String cno = rs.getString("contract_no");
-                Contract contractShell = new Contract();
-                contractShell.setContractNo(cno);
+                Contract contractShell = Contract.shellOf(cno, null, 0L);
                 String st = rs.getString("status");
                 PaymentRecordStatus status = PaymentRecordStatus.WAITING;
                 if (st != null) {

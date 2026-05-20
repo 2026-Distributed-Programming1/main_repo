@@ -117,6 +117,7 @@ public class DamageInvestigationRunner {
         // 완료 (지급 승인 시 UC5 → UC6 체인 이관)
         if (inv.getResult() == InvestigationResult.APPROVED) {
             ClaimCalculation calc = inv.complete();
+            DamageInvestigationDAO.save(inv);
             if (calc != null) {
                 ClaimCalculationDAO.save(calc);
                 ConsoleHelper.printSuccess("조사 완료, 보험금 산출로 이관: " + calc.getCalculationNo());
@@ -125,6 +126,7 @@ public class DamageInvestigationRunner {
             }
         } else {
             inv.closeAsRejected();
+            DamageInvestigationDAO.save(inv);
             ConsoleHelper.printInfo("면책으로 종결되었습니다.");
             ConsoleHelper.waitEnter();
         }
@@ -163,6 +165,7 @@ public class DamageInvestigationRunner {
         inv.selectResult(InvestigationResult.REJECTED);
         inv.enterRejectReason(reason);
         inv.closeAsRejected();
+        DamageInvestigationDAO.save(inv);
         ConsoleHelper.printInfo("면책 종결되었습니다.");
         ConsoleHelper.waitEnter();
     }
@@ -209,7 +212,8 @@ public class DamageInvestigationRunner {
 
         // 조사가 시작되지 않은 청구 건
         List<ClaimRequest> pendingClaims = ClaimRequestDAO.findAll().stream()
-                .filter(c -> allInvestigations.stream().noneMatch(i -> i.getClaim() == c))
+                .filter(c -> allInvestigations.stream().noneMatch(
+                        i -> i.getClaim().getClaimNo().equals(c.getClaimNo())))
                 .collect(Collectors.toList());
 
         if (ongoing.isEmpty() && pendingClaims.isEmpty()) {

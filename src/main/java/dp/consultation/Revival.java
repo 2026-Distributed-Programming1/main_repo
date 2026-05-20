@@ -1,19 +1,28 @@
 package dp.consultation;
 
+import dp.actor.Customer;
 import java.time.LocalDateTime;
 
 /**
  * 부활신청 (Revival)
- * UC: 부활을 요청한다
+ * UC: 계약 부활을 신청한다
  */
 public class Revival {
 
     private static int sequence = 0;
 
     private int revivalNumber;
+    private Customer customer;
     private LocalDateTime appliedAt;
     private long unpaidAmount;
     private String paymentMethod;
+
+    public Revival(int revivalNumber, LocalDateTime appliedAt, long unpaidAmount, String paymentMethod) {
+        this.revivalNumber = revivalNumber;
+        this.appliedAt = appliedAt;
+        this.unpaidAmount = unpaidAmount;
+        this.paymentMethod = paymentMethod;
+    }
 
     public Revival() {
         sequence += 1;
@@ -45,6 +54,8 @@ public class Revival {
     }
 
     public int getRevivalNumber() { return revivalNumber; }
+    public Customer getCustomer() { return customer; }
+    public void setCustomer(Customer customer) { this.customer = customer; }
     public LocalDateTime getAppliedAt() { return appliedAt; }
     public long getUnpaidAmount() { return unpaidAmount; }
     public void setUnpaidAmount(long unpaidAmount) { this.unpaidAmount = unpaidAmount; }

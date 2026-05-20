@@ -12,7 +12,7 @@ public class RevivalDAO {
             + " ON DUPLICATE KEY UPDATE revived_at=VALUES(revived_at)",
             String.valueOf(r.getRevivalNumber()),
             null,
-            null,
+            r.getCustomer() != null ? r.getCustomer().getName() : null,
             r.getAppliedAt());
     }
 }

@@ -67,18 +67,32 @@ public class Contract {
     }
 
     /** DB 로딩용 생성자 */
-    public Contract(String contractNo, String policyNo, Customer customer, LocalDate contractDate, LocalDate expiryDate, long monthlyPremium) {
-        this.contractNo    = contractNo;
-        this.policyNo      = policyNo;
-        this.customer      = customer;
-        this.contractDate  = contractDate;
-        this.expiryDate    = expiryDate;
+    public Contract(String contractNo, String policyNo, Customer customer,
+                    LocalDate contractDate, LocalDate expiryDate, long monthlyPremium,
+                    String insuranceType, ContractStatus status,
+                    Boolean isExpiringSoon, Boolean isOverdue, Integer overdueCount) {
+        this.contractNo     = contractNo;
+        this.policyNo       = policyNo;
+        this.customer       = customer;
+        this.contractDate   = contractDate;
+        this.expiryDate     = expiryDate;
         this.monthlyPremium = monthlyPremium;
+        this.insuranceType  = insuranceType;
+        this.status         = status != null ? status : ContractStatus.NORMAL;
+        this.isExpiringSoon = isExpiringSoon != null ? isExpiringSoon : false;
+        this.isOverdue      = isOverdue != null ? isOverdue : false;
+        this.overdueCount   = overdueCount;
         this.specialClauses = new ArrayList<>();
         this.clausePremiums = new ArrayList<>();
-        this.status        = ContractStatus.NORMAL;
-        this.isExpiringSoon = false;
-        this.isOverdue     = false;
+    }
+
+    /** DB 셸 객체용 — 참조 복원에 필요한 필드만 지정 */
+    public static Contract shellOf(String contractNo, Customer customer, long monthlyPremium) {
+        Contract c = new Contract();
+        c.contractNo    = contractNo;
+        c.customer      = customer;
+        c.monthlyPremium = monthlyPremium;
+        return c;
     }
 
     // ── 클래스 다이어그램 정의 메서드 (스텁) ──────────────────────────────────
@@ -126,10 +140,8 @@ public class Contract {
     public void   setContractNo(String contractNo) { this.contractNo = contractNo; }
 
     public String getPolicyNo() { return policyNo; }
-    public void   setPolicyNo(String policyNo) { this.policyNo = policyNo; }
 
     public Customer getCustomer() { return customer; }
-    public void setCustomer(Customer customer) { this.customer = customer; }
 
     public LocalDate getContractDate() { return contractDate; }
     public LocalDate getExpiryDate()   { return expiryDate; }

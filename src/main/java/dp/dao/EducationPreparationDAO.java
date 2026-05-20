@@ -2,6 +2,7 @@ package dp.dao;
 
 import dp.db.DBA;
 import dp.education.EducationPreparation;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EducationPreparationDAO {
@@ -13,22 +14,26 @@ public class EducationPreparationDAO {
             + " VALUES (?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE venue=VALUES(venue), status=VALUES(status)",
             String.valueOf(e.getSetupNumber()),
-            null,
+            e.getPlanNo(),
             e.getInstructorName(),
             e.getLocation(),
-            false,
+            e.getTextbookStatus() != null,
             null);
     }
 
     public static List<EducationPreparation> findAll() {
         return DBA.executeQuery(
-            "SELECT prep_no, trainer_name, venue, status FROM education_preparations",
+            "SELECT prep_no, plan_no, trainer_name, venue FROM education_preparations",
             rs -> {
-                EducationPreparation e = new EducationPreparation();
-                e.enterPreparationInfo(
+                EducationPreparation e = new EducationPreparation(
+                    rs.getInt("prep_no"),
+                    null,
                     rs.getString("venue"),
                     rs.getString("trainer_name"),
-                    null);
+                    null,
+                    null,
+                    new ArrayList<>());
+                e.setPlanNo(rs.getString("plan_no"));
                 return e;
             });
     }

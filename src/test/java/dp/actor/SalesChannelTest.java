@@ -17,13 +17,13 @@ public class SalesChannelTest {
 
     @Test
     public void 생성_시_채널명이_정상_설정된다() {
-        SalesChannel channel = new Designer(1, "최설계", "서울", "L-2024-001");
+        SalesChannel channel = new Designer("1", "최설계", "서울", "L-2024-001");
         assertEquals("최설계", channel.getName());
     }
 
     @Test
     public void 상담수락_후_상태가_수락으로_변경된다() {
-        SalesChannel channel = new Designer(1, "최설계", "서울", "L-2024-001");
+        SalesChannel channel = new Designer("1", "최설계", "서울", "L-2024-001");
         ConsultationRequest request = new ConsultationRequest();
         request.selectType("방문");
 
@@ -34,7 +34,7 @@ public class SalesChannelTest {
 
     @Test
     public void createPolicyApplication이_청약서_객체를_반환한다() {
-        SalesChannel channel = new Designer(1, "최설계", "서울", "L-2024-001");
+        SalesChannel channel = new Designer("1", "최설계", "서울", "L-2024-001");
         PolicyApplication application = channel.createPolicyApplication();
         assertNotNull(application);
     }

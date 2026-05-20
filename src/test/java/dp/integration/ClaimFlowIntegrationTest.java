@@ -175,7 +175,7 @@ public class ClaimFlowIntegrationTest {
     @Test
     public void E1_가입내역_미확인_시_접수_실패() {
         // null 고객으로 시작 (가입 미확인 시뮬레이션)
-        AccidentReport report = new AccidentReport(null);
+        AccidentReport report = new AccidentReport((Customer) null);
         report.enterVehicleInfo("12가3456", "이름", "010-1111-2222");
         report.selectAccidentType(AccidentType.OBJECT, "파손");
         report.enterLocation("서울");

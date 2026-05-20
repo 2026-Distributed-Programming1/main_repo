@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
  */
 public class Inquiry {
     private String inquiryNo;               // 문의 번호 - 자동부여
+    private String customerName;            // 문의 고객명
     private InquiryType inquiryType;        // 문의 유형 - 보험료/보험금/계약변경/해지/기타 필수 (enum)
     private String title;                   // 제목 필수, 최대 50자
     private String content;                 // 내용 필수, 최대 1000자
@@ -77,6 +78,8 @@ public class Inquiry {
 
     // Runner에서 실제 사용하는 getter/setter만 유지
     public String getInquiryNo() { return inquiryNo; }
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
     public InquiryType getInquiryType() { return inquiryType; }
     public void setInquiryType(InquiryType inquiryType) { this.inquiryType = inquiryType; }
     public String getTitle() { return title; }

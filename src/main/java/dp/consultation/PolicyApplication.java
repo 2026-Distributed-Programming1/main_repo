@@ -19,9 +19,38 @@ public class PolicyApplication {
     private int period;
     private String paymentMethod;
 
+    public PolicyApplication(int applicationNumber, LocalDateTime submittedAt, Customer customer,
+                             String customerName, String productName, int period, String paymentMethod) {
+        this.applicationNumber = applicationNumber;
+        this.submittedAt = submittedAt;
+        this.customer = customer;
+        this.customerName = customerName;
+        this.productName = productName;
+        this.period = period;
+        this.paymentMethod = paymentMethod;
+    }
+
     public PolicyApplication() {
         sequence += 1;
         this.applicationNumber = sequence;
+    }
+
+    private PolicyApplication(boolean fromDb) {}
+
+    public static PolicyApplication fromDb(int applicationNumber, String customerId,
+                                            String customerName, String productName,
+                                            int period, String paymentMethod) {
+        PolicyApplication pa = new PolicyApplication(true);
+        pa.applicationNumber = applicationNumber;
+        if (customerId != null) {
+            pa.customer = new dp.actor.Customer(
+                    customerId, customerName != null ? customerName : "", null, null, null);
+        }
+        pa.customerName = customerName;
+        pa.productName = productName;
+        pa.period = period;
+        pa.paymentMethod = paymentMethod;
+        return pa;
     }
 
     public void setCustomer(Customer customer) {
@@ -31,8 +60,7 @@ public class PolicyApplication {
 
     public Customer getCustomer() { return customer; }
 
-    public void enterCustomerInfo(String customerName, String birthDate,
-                                   String contact, String address) {
+    public void enterCustomerInfo(String customerName, String birthDate, String contact, String address) {
         this.customerName = customerName;
     }
 

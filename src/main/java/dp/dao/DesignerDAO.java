@@ -18,7 +18,7 @@ public class DesignerDAO {
         return DBA.executeQuery(
             "SELECT channel_id, name, location, license_number FROM designers",
             rs -> new Designer(
-                Integer.parseInt(rs.getString("channel_id")),
+                rs.getString("channel_id"),
                 rs.getString("name"),
                 rs.getString("location"),
                 rs.getString("license_number")));

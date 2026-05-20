@@ -31,10 +31,9 @@ public class RefundCalculationDAO {
             + " FROM refund_calculations",
             rs -> {
                 String cno = rs.getString("cancellation_no");
-                Contract contractShell = new Contract();
-                contractShell.setMonthlyPremium(rs.getLong("total_paid_premium") / 24);
                 Customer custShell = new Customer("?", "", null, null, null);
-                contractShell.setCustomer(custShell);
+                Contract contractShell = Contract.shellOf(
+                        null, custShell, rs.getLong("total_paid_premium") / 24);
                 Cancellation cancShell = new Cancellation(
                     cno != null ? cno : "?", contractShell, null, 0L, "완료");
                 String st = rs.getString("status");

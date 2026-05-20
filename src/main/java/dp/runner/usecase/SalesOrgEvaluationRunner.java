@@ -149,13 +149,14 @@ public class SalesOrgEvaluationRunner {
         // 평가등급 선택 (필수)
         int gradeChoice = ConsoleHelper.readMenuChoice(
                 "  평가등급을 선택하세요. (필수)",
-                "S등급", "A등급", "B등급", "C등급");
+                "S등급", "A등급", "B등급", "C등급", "D등급");
         EvaluationGrade grade;
         switch (gradeChoice) {
             case 1: grade = EvaluationGrade.S; break;
             case 2: grade = EvaluationGrade.A; break;
             case 3: grade = EvaluationGrade.B; break;
-            default: grade = EvaluationGrade.C; break;
+            case 4: grade = EvaluationGrade.C; break;
+            default: grade = EvaluationGrade.D; break;
         }
         evaluation.setEvaluationGrade(grade);
 

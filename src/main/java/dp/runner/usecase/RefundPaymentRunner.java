@@ -75,6 +75,7 @@ public class RefundPaymentRunner {
         payment.execute();
 
         if (payment.getStatus() == RefundPaymentStatus.FAILED) {
+            RefundPaymentDAO.save(payment);
             ConsoleHelper.printError("[E2] 이체 처리에 실패했습니다.");
             ConsoleHelper.waitEnter();
             return;
@@ -89,6 +90,7 @@ public class RefundPaymentRunner {
         } else {
             payment.sendNotice();
         }
+        RefundPaymentDAO.save(payment);
 
         ConsoleHelper.waitEnter();
     }
@@ -137,6 +139,7 @@ public class RefundPaymentRunner {
         payment.execute();
 
         if (payment.getStatus() == RefundPaymentStatus.FAILED) {
+            RefundPaymentDAO.save(payment);
             ConsoleHelper.printError("[E2] 이체 처리에 실패했습니다.");
             ConsoleHelper.waitEnter();
             return;
@@ -150,6 +153,7 @@ public class RefundPaymentRunner {
         } else {
             payment.sendNotice();
         }
+        RefundPaymentDAO.save(payment);
 
         ConsoleHelper.waitEnter();
     }

@@ -5,6 +5,8 @@ import dp.payment.OverdueNoticeSetting;
 
 public class OverdueNoticeSettingDAO {
 
+    // DB 컬럼명(max_overdue_count → daysAfterDue, notice_method → messageTemplate)이
+    // 도메인 필드명과 다르지만, save/find 양방향이 동일하게 매핑하므로 데이터 왕복은 정상이다.
     public static void save(OverdueNoticeSetting s) {
         DBA.executeUpdate(
             "INSERT INTO overdue_notice_settings (id, max_overdue_count, notice_method, auto_cancel_enabled)"

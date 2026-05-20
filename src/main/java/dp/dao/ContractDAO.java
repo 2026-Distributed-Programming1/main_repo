@@ -53,29 +53,29 @@ public class ContractDAO {
     }
 
     private static Contract mapRow(java.sql.ResultSet rs) throws java.sql.SQLException {
-        Contract c = new Contract();
-        c.setContractNo(rs.getString("contract_no"));
-        c.setPolicyNo(rs.getString("policy_no"));
-        c.setStartDate(toLocalDate(rs.getDate("contract_date")));
-        c.setEndDate(toLocalDate(rs.getDate("expiry_date")));
-        c.setMonthlyPremium(rs.getLong("monthly_premium"));
-        c.setInsuranceType(rs.getString("insurance_type"));
         String st = rs.getString("status");
+        ContractStatus status = ContractStatus.NORMAL;
         if (st != null) {
-            try { c.setStatus(ContractStatus.valueOf(st)); }
-            catch (IllegalArgumentException ignored) { c.setStatus(ContractStatus.NORMAL); }
+            try { status = ContractStatus.valueOf(st); }
+            catch (IllegalArgumentException ignored) {}
         }
-        c.setIsExpiringSoon(rs.getBoolean("is_expiring_soon"));
-        c.setIsOverdue(rs.getBoolean("is_overdue"));
-        c.setOverdueCount(rs.getInt("overdue_count"));
-        // Attach a lightweight customer shell
         String cid  = rs.getString("customer_id");
         String name = rs.getString("customer_name");
-        if (cid != null) {
-            Customer shell = new Customer(cid, name != null ? name : "", null, null, null);
-            c.setCustomer(shell);
-        }
-        return c;
+        Customer customer = cid != null
+                ? new Customer(cid, name != null ? name : "", null, null, null)
+                : null;
+        return new Contract(
+                rs.getString("contract_no"),
+                rs.getString("policy_no"),
+                customer,
+                toLocalDate(rs.getDate("contract_date")),
+                toLocalDate(rs.getDate("expiry_date")),
+                rs.getLong("monthly_premium"),
+                rs.getString("insurance_type"),
+                status,
+                rs.getBoolean("is_expiring_soon"),
+                rs.getBoolean("is_overdue"),
+                rs.getInt("overdue_count"));
     }
 
     private static LocalDate toLocalDate(java.sql.Date d) {

@@ -2,6 +2,7 @@ package dp.dao;
 
 import dp.consultation.InsuranceApplication;
 import dp.db.DBA;
+import java.util.ArrayList;
 import java.util.List;
 
 public class InsuranceApplicationDAO {
@@ -28,11 +29,13 @@ public class InsuranceApplicationDAO {
     public static List<InsuranceApplication> findAll() {
         return DBA.executeQuery(
             "SELECT application_no, customer_id, customer_name, product_name,"
-            + " payment_method FROM insurance_applications",
-            rs -> {
-                InsuranceApplication ia = new InsuranceApplication();
-                ia.selectPaymentMethod(rs.getString("payment_method"));
-                return ia;
-            });
+            + " monthly_premium, payment_method FROM insurance_applications",
+            rs -> InsuranceApplication.fromDb(
+                rs.getInt("application_no"),
+                rs.getString("customer_id"),
+                rs.getString("customer_name"),
+                rs.getString("product_name"),
+                rs.getLong("monthly_premium"),
+                rs.getString("payment_method")));
     }
 }

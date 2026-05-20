@@ -91,9 +91,9 @@ public class EducationPlanTest {
     }
 
     @Test
-    public void setStatus로_승인_처리된다() {
+    public void approve로_승인_처리된다() {
         EducationPlan plan = createCompletePlan();
-        plan.setStatus("승인");
+        plan.approve();
         assertEquals("승인", plan.getStatus());
     }
 

@@ -15,6 +15,13 @@ public class Proposal {
     private String customerName;
     private InsuranceProduct insuranceProduct;
 
+    public Proposal(int proposalId, LocalDateTime sentAt, String customerName, InsuranceProduct insuranceProduct) {
+        this.proposalId = proposalId;
+        this.sentAt = sentAt;
+        this.customerName = customerName;
+        this.insuranceProduct = insuranceProduct;
+    }
+
     public Proposal() {
         sequence += 1;
         this.proposalId = sequence;

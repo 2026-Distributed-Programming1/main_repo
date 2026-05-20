@@ -14,8 +14,8 @@ public class UnderwritingDAO {
             + " ON DUPLICATE KEY UPDATE result=VALUES(result)",
             String.valueOf(u.getReviewNumber()),
             u.getReviewType(),
-            null,
-            null,
+            u.getAppNo(),
+            u.getCustomerName(),
             result,
             u.getReviewedAt());
     }

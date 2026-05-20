@@ -1,5 +1,7 @@
 package dp.db;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,24 +21,27 @@ import java.util.List;
  */
 public class DBA {
 
-    private static final String URL  = "jdbc:mysql://localhost:3306/insurance_db"
-            + "?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true"
-            + "&characterEncoding=UTF-8";
-    private static final String USER = "admin";
-    private static final String PASS = "1234";
+    private static final HikariDataSource DATA_SOURCE;
 
     static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("MySQL JDBC Driver not found", e);
-        }
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://localhost:3306/insurance_db"
+                + "?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true"
+                + "&characterEncoding=UTF-8");
+        config.setUsername("admin");
+        config.setPassword("1234");
+        config.setMaximumPoolSize(10);   // 풀이 유지할 최대 커넥션 수
+        config.setMinimumIdle(2);        // 풀이 유지할 최소 유휴 커넥션 수
+        config.setConnectionTimeout(30_000);  // 커넥션 획득 대기 최대 시간 (ms) — 초과 시 예외
+        config.setIdleTimeout(600_000);       // 유휴 커넥션이 풀에서 제거되기까지의 시간 (ms)
+        config.setMaxLifetime(1_800_000);     // 커넥션 최대 수명 (ms) — 만료 시 풀에서 교체
+        DATA_SOURCE = new HikariDataSource(config);
     }
 
     private DBA() {}
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASS);
+        return DATA_SOURCE.getConnection();
     }
 
     /** ResultSet → 객체 매핑 함수형 인터페이스 */

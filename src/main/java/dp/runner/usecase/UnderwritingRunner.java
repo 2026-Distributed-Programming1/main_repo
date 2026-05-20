@@ -74,7 +74,13 @@ public class UnderwritingRunner {
             return;
         }
 
-        InsuranceReviewer reviewerActor = InsuranceReviewerDAO.findAll().get(0);
+        List<InsuranceReviewer> reviewerList = InsuranceReviewerDAO.findAll();
+        if (reviewerList.isEmpty()) {
+            ConsoleHelper.printError("등록된 보험 심사자가 없습니다. 먼저 심사자를 등록해 주세요.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        InsuranceReviewer reviewerActor = reviewerList.get(0);
 
         // 3. 심사 대기 목록 구성 (청약서 + 보험신청 통합)
         List<Object> pendingApps = new ArrayList<>();
@@ -116,6 +122,15 @@ public class UnderwritingRunner {
         // 5. 보험 심사자는 [심사 시작] 버튼을 클릭한다.
         PolicyApplication reviewTarget = (application != null) ? application : new PolicyApplication();
         Underwriting underwriting = reviewerActor.startUnderwriting(reviewTarget);
+
+        if (application != null) {
+            underwriting.setAppNo(String.valueOf(application.getApplicationNumber()));
+            underwriting.setCustomerName(application.getCustomerName());
+        } else if (insApplication != null) {
+            underwriting.setAppNo(String.valueOf(insApplication.getApplicationNumber()));
+            underwriting.setCustomerName(insApplication.getCustomer() != null
+                    ? insApplication.getCustomer().getName() : null);
+        }
 
         // 6. 시스템은 자동 심사 결과를 출력한다. (A1)
         int reviewMethod = ConsoleHelper.readMenuChoice(

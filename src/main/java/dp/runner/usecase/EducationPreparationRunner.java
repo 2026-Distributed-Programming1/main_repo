@@ -55,16 +55,24 @@ public class EducationPreparationRunner {
             return;
         }
 
-        ConsoleHelper.printStage("시스템", "승인된 교육 계획안 목록:");
-        for (EducationPlan p : approvedPlans) {
-            ConsoleHelper.printInfo("[" + p.getPlanNumber() + "] "
-                    + p.getEducationName()
-                    + " | " + p.getChannelType()
-                    + " | 대상자수: " + p.getTargetCount());
-        }
+        // 5. 영업교육 담당자는 교육 계획안 항목을 클릭한다.
+        String[] planOptions = approvedPlans.stream()
+                .map(p -> "[" + p.getPlanNumber() + "] " + p.getEducationName()
+                        + " | " + p.getChannelType()
+                        + " | 대상자수: " + p.getTargetCount())
+                .toArray(String[]::new);
+        int planChoice = ConsoleHelper.readMenuChoice("[영업교육담당자] 교육 계획안을 선택하세요:", planOptions);
+        EducationPlan selectedPlan = approvedPlans.get(planChoice - 1);
 
-        EducationTrainer trainer = EducationTrainerDAO.findAll().get(0);
+        List<EducationTrainer> trainerList = EducationTrainerDAO.findAll();
+        if (trainerList.isEmpty()) {
+            ConsoleHelper.printError("등록된 영업교육 담당자가 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        EducationTrainer trainer = trainerList.get(0);
         EducationPreparation preparation = trainer.registerEducationPreparation();
+        preparation.setPlanNo(String.valueOf(selectedPlan.getPlanNumber()));
 
         // 6. 시스템은 제반 등록 화면을 출력한다.
         ConsoleHelper.printStage("시스템", "제반 정보 입력 항목: 교육장소 / 강사명 / 교재현황 / 대상자명단 / 기타사항");
