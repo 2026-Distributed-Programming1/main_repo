@@ -364,6 +364,7 @@ CREATE TABLE IF NOT EXISTS inquiries (
     inquiry_no    VARCHAR(20)  PRIMARY KEY,
     customer_name VARCHAR(100),
     inquiry_type  VARCHAR(50),
+    title         VARCHAR(100),
     content       TEXT,
     status        VARCHAR(20),
     created_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP

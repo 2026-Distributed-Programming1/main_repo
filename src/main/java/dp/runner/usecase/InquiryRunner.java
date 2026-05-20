@@ -106,14 +106,43 @@ public class InquiryRunner {
 
         if (tabChoice == 3) {
             // A2) [문의 내역 조회] 탭을 클릭하는 경우
-            Inquiry historyInquiry = new Inquiry();
             page.switchTab();
             ConsoleHelper.printStage("고객", "[A2] [문의 내역 조회] 탭을 클릭합니다.");
-            historyInquiry.getHistoryList();
+
+            List<Inquiry> historyList = InquiryDAO.findAll();
             ConsoleHelper.printStage("시스템", "문의 내역 목록을 출력합니다.");
-            ConsoleHelper.printStage("고객", "확인하고자 하는 문의 항목을 클릭합니다.");
-            historyInquiry.getDetail();
-            ConsoleHelper.printStage("시스템", "문의 상세 페이지를 표시합니다.");
+            if (historyList.isEmpty()) {
+                ConsoleHelper.printInfo("  (접수된 문의 내역이 없습니다.)");
+            } else {
+                ConsoleHelper.printInfo("  번호 | 문의번호 | 문의유형 | 제목 | 접수일시 | 처리상태");
+                for (int i = 0; i < historyList.size(); i++) {
+                    Inquiry h = historyList.get(i);
+                    String type = h.getInquiryType() != null ? h.getInquiryType().name() : "-";
+                    String status = h.getStatus() == InquiryStatus.PENDING ? "답변대기"
+                            : h.getStatus() == InquiryStatus.ANSWERED ? "답변완료" : "-";
+                    ConsoleHelper.printInfo("  " + (i + 1)
+                            + " | " + h.getInquiryNo()
+                            + " | " + type
+                            + " | " + h.getTitle()
+                            + " | " + h.getReceivedAt()
+                            + " | " + status);
+                }
+                ConsoleHelper.printStage("고객", "확인하고자 하는 문의 항목을 클릭합니다.");
+                int selected = ConsoleHelper.readMenuChoice("  문의를 선택하세요.",
+                        historyList.stream().map(Inquiry::getInquiryNo).toArray(String[]::new));
+                Inquiry detail = historyList.get(selected - 1);
+                detail.getDetail();
+                ConsoleHelper.printStage("시스템", "문의 상세 페이지를 표시합니다.");
+                String typeStr = detail.getInquiryType() != null ? detail.getInquiryType().name() : "-";
+                String statusStr = detail.getStatus() == InquiryStatus.PENDING ? "답변대기"
+                        : detail.getStatus() == InquiryStatus.ANSWERED ? "답변완료" : "-";
+                ConsoleHelper.printInfo("문의번호: " + detail.getInquiryNo()
+                        + " | 문의유형: " + typeStr
+                        + " | 제목: " + detail.getTitle()
+                        + " | 내용: " + detail.getContent()
+                        + " | 접수일시: " + detail.getReceivedAt()
+                        + " | 처리상태: " + statusStr);
+            }
             ConsoleHelper.waitEnter();
             return;
         }
