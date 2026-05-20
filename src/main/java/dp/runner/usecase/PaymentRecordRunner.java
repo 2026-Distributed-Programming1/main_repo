@@ -72,6 +72,7 @@ public class PaymentRecordRunner {
                 "취소");
         if (actionChoice == 1) {
             record.confirm();
+            PaymentRecordDAO.save(record);
             ConsoleHelper.printSuccess("수납 확정 완료: " + record.getRecordNo());
         } else if (actionChoice == 2) {
             handleReject(record);
@@ -88,6 +89,7 @@ public class PaymentRecordRunner {
         String reason = ConsoleHelper.readNonEmpty("  상세 반려 사유: ");
         record.enterRejectInfo(cat, reason);
         record.reject();
+        PaymentRecordDAO.save(record);
         ConsoleHelper.printInfo("반려 처리되었습니다.");
     }
 
