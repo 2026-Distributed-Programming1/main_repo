@@ -79,6 +79,7 @@ public class ClaimPaymentRunner {
                     "  [E2 시뮬레이션] 이체 실패 상황을 시뮬레이션하시겠습니까?");
             if (simulateFail) {
                 payment.handleTransferFailure("계좌 정보 오류");
+                ClaimPaymentDAO.save(payment);
                 payment.sendAccountChangeNotice();
                 ConsoleHelper.printError("[E2] 이체에 실패했습니다. 고객에게 계좌 변경 안내를 발송했습니다.");
                 ConsoleHelper.waitEnter();
@@ -94,6 +95,7 @@ public class ClaimPaymentRunner {
         } else if (payment.getStatus() == ClaimPaymentStatus.SCHEDULED) {
             ConsoleHelper.printInfo("예약 지급이 등록되었습니다. 예약 시점에 자동으로 이체됩니다.");
         }
+        ClaimPaymentDAO.save(payment);
 
         ConsoleHelper.waitEnter();
     }
@@ -145,6 +147,7 @@ public class ClaimPaymentRunner {
                     "  [E2 시뮬레이션] 이체 실패 상황을 시뮬레이션하시겠습니까?");
             if (simulateFail) {
                 payment.handleTransferFailure("계좌 정보 오류");
+                ClaimPaymentDAO.save(payment);
                 payment.sendAccountChangeNotice();
                 ConsoleHelper.printError("[E2] 이체에 실패했습니다. 고객에게 계좌 변경 안내를 발송했습니다.");
                 ConsoleHelper.waitEnter();
@@ -159,6 +162,7 @@ public class ClaimPaymentRunner {
         } else if (payment.getStatus() == ClaimPaymentStatus.SCHEDULED) {
             ConsoleHelper.printInfo("예약 지급이 등록되었습니다. 예약 시점에 자동으로 이체됩니다.");
         }
+        ClaimPaymentDAO.save(payment);
 
         ConsoleHelper.waitEnter();
     }
