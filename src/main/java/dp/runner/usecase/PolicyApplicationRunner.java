@@ -41,7 +41,13 @@ public class PolicyApplicationRunner {
         System.out.println("UC: 청약서를 작성한다");
         ConsoleHelper.printDoubleDivider();
 
-        Designer designer = DesignerDAO.findAll().get(0);
+        List<Designer> designers = DesignerDAO.findAll();
+        if (designers.isEmpty()) {
+            ConsoleHelper.printError("등록된 설계사가 없습니다. 먼저 설계사를 등록해 주세요.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        Designer designer = designers.get(0);
 
         // 고객 선택 (시스템에 등록된 고객 중 선택)
         List<Customer> customers = CustomerDAO.findAll();
@@ -72,6 +78,11 @@ public class PolicyApplicationRunner {
         // 4. 시스템은 가입 가능한 상품 목록을 출력한다.
         ConsoleHelper.printStage("시스템", "가입 가능한 보험상품 목록을 출력합니다.");
         List<InsuranceProduct> products = InsuranceProductDAO.findAll();
+        if (products.isEmpty()) {
+            ConsoleHelper.printError("등록된 보험상품이 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
         for (int i = 0; i < products.size(); i++) {
             ConsoleHelper.printInfo("[" + (i + 1) + "] " + products.get(i).getProductName()
                     + " | 월 " + products.get(i).getMonthlyPremium() + "원");
@@ -117,9 +128,11 @@ public class PolicyApplicationRunner {
             PolicyApplicationDAO.save(application);
             // 10. 시스템은 제출 완료 결과를 출력한다.
             ConsoleHelper.printStage("시스템", "제출 완료 결과를 출력합니다.");
+            List<dp.actor.InsuranceReviewer> reviewers = InsuranceReviewerDAO.findAll();
+            String reviewerName = reviewers.isEmpty() ? "미배정" : reviewers.get(0).getName();
             ConsoleHelper.printInfo("청약번호: " + application.getApplicationNumber()
                     + " | 제출일시: " + application.getSubmittedAt()
-                    + " | 담당 심사자: " + InsuranceReviewerDAO.findAll().get(0).getName());
+                    + " | 담당 심사자: " + reviewerName);
         }
 
         ConsoleHelper.waitEnter();

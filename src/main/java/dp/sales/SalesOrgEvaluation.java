@@ -62,6 +62,7 @@ public class SalesOrgEvaluation {
     public void setChannelName(String channelName) { this.channelName = channelName; }
     public void setSalesResult(Long salesResult) { this.salesResult = salesResult; }
     public void setContractCount(Integer contractCount) { this.contractCount = contractCount; }
+    public Double getAchievementRate() { return achievementRate; }
     public void setAchievementRate(Double achievementRate) { this.achievementRate = achievementRate; }
     public EvaluationGrade getEvaluationGrade() { return evaluationGrade; }
     public void setEvaluationGrade(EvaluationGrade evaluationGrade) { this.evaluationGrade = evaluationGrade; }

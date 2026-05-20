@@ -52,7 +52,13 @@ public class SalesActivityRunner {
         // 1. 영업 관리자는 [영업 활동 관리] 항목을 클릭한다.
         ConsoleHelper.printStage("영업관리자", "[영업] 메뉴 > [영업 활동 관리] 항목을 클릭합니다.");
 
-        SalesManager manager = SalesManagerDAO.findAll().get(0);
+        List<SalesManager> managers = SalesManagerDAO.findAll();
+        if (managers.isEmpty()) {
+            ConsoleHelper.printError("등록된 영업 관리자가 없습니다. 먼저 영업 관리자를 등록해주세요.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        SalesManager manager = managers.get(0);
         SalesActivityManagement activity = new SalesActivityManagement();
         activity.setManagerName(manager.getName());
 

@@ -16,13 +16,13 @@ public class SalesOrgEvaluationDAO {
             e.getEvaluationNo(),
             e.getChannelName(),
             grade,
-            0.0,
+            e.getAchievementRate() != null ? e.getAchievementRate() : 0.0,
             e.getEvaluatedAt());
     }
 
     public static List<SalesOrgEvaluation> findAll() {
         return DBA.executeQuery(
-            "SELECT evaluation_no, org_name, grade, evaluated_at FROM sales_org_evaluations",
+            "SELECT evaluation_no, org_name, grade, score, evaluated_at FROM sales_org_evaluations",
             rs -> {
                 SalesOrgEvaluation e = new SalesOrgEvaluation();
                 e.setChannelName(rs.getString("org_name"));
@@ -31,6 +31,7 @@ public class SalesOrgEvaluationDAO {
                     try { e.setEvaluationGrade(EvaluationGrade.valueOf(grade)); }
                     catch (IllegalArgumentException ignored) {}
                 }
+                e.setAchievementRate(rs.getDouble("score"));
                 return e;
             });
     }

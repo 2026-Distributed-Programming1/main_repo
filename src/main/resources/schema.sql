@@ -298,8 +298,11 @@ CREATE TABLE IF NOT EXISTS revivals (
 CREATE TABLE IF NOT EXISTS channel_recruitments (
     recruitment_no VARCHAR(20)  PRIMARY KEY,
     manager_name   VARCHAR(100),
-    candidate_name VARCHAR(100),
     channel_type   VARCHAR(50),
+    recruit_count  INT          DEFAULT 0,
+    start_date     DATE,
+    end_date       DATE,
+    condition_text VARCHAR(200),
     status         VARCHAR(20),
     created_at     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );

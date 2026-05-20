@@ -2,6 +2,7 @@ package dp.dao;
 
 import dp.db.DBA;
 import dp.enums.ChannelType;
+import dp.enums.ScreeningStatus;
 import dp.sales.ChannelScreening;
 import java.util.List;
 
@@ -38,6 +39,11 @@ public class ChannelScreeningDAO {
                     catch (IllegalArgumentException ignored) {}
                 }
                 s.setCareer(rs.getString("qualification"));
+                String st = rs.getString("status");
+                if (st != null) {
+                    try { s.setScreeningStatus(ScreeningStatus.valueOf(st)); }
+                    catch (IllegalArgumentException ignored) {}
+                }
                 return s;
             });
     }

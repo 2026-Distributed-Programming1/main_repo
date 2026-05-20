@@ -74,7 +74,13 @@ public class UnderwritingRunner {
             return;
         }
 
-        InsuranceReviewer reviewerActor = InsuranceReviewerDAO.findAll().get(0);
+        List<InsuranceReviewer> reviewerList = InsuranceReviewerDAO.findAll();
+        if (reviewerList.isEmpty()) {
+            ConsoleHelper.printError("등록된 보험 심사자가 없습니다. 먼저 심사자를 등록해 주세요.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        InsuranceReviewer reviewerActor = reviewerList.get(0);
 
         // 3. 심사 대기 목록 구성 (청약서 + 보험신청 통합)
         List<Object> pendingApps = new ArrayList<>();
