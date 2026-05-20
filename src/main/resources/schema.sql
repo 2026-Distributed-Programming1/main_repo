@@ -238,6 +238,9 @@ CREATE TABLE IF NOT EXISTS education_plans (
 CREATE TABLE IF NOT EXISTS consultation_requests (
     consult_no   VARCHAR(20)  PRIMARY KEY,
     channel      VARCHAR(100),
+    contact      VARCHAR(50),
+    content      TEXT,
+    status       VARCHAR(20),
     requested_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -86,7 +86,13 @@ public class ConsultationRequestRunner {
                 + " | 상태: " + request.getStatus());
 
         // 7~8. 판매채널은 신규 상담 신청 알림을 확인한다.
-        Designer designer = DesignerDAO.findAll().get(0);
+        List<Designer> designers = DesignerDAO.findAll();
+        if (designers.isEmpty()) {
+            ConsoleHelper.printError("등록된 설계사가 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        Designer designer = designers.get(0);
         ConsoleHelper.printStage("시스템", "판매채널(" + designer.getName() + ")에게 신규 상담 신청 알림을 발송합니다.");
         ConsoleHelper.printInfo("고객명: " + customer.getName()
                 + " | 상담유형: " + request.getType()
