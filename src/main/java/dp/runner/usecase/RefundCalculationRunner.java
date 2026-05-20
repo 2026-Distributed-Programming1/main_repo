@@ -117,6 +117,7 @@ public class RefundCalculationRunner {
             return;
         }
         RefundPayment payment = refund.confirm();
+        RefundCalculationDAO.save(refund);
         if (payment != null) {
             RefundPaymentDAO.save(payment);
             ConsoleHelper.printSuccess("환급금 지급 이관 완료: " + payment.getPaymentNo());
@@ -134,6 +135,7 @@ public class RefundCalculationRunner {
         String note = ConsoleHelper.readNonEmpty("  조정 메모: ");
         refund.adjustDeduction(item, amount, note);
         refund.recalculate();
+        RefundCalculationDAO.save(refund);
         ConsoleHelper.printSuccess("재산출 완료. 새 환급금: " + refund.getFinalRefund() + "원");
         ConsoleHelper.waitEnter();
     }
@@ -159,7 +161,9 @@ public class RefundCalculationRunner {
         // 환급 산출이 안 된 해지 건들
         List<Cancellation> cancellations = CancellationDAO.findAll();
         List<Cancellation> pending = cancellations.stream()
-                .filter(c -> RefundCalculationDAO.findAll().stream().noneMatch(r -> r.getCancellation() == c))
+                .filter(c -> RefundCalculationDAO.findAll().stream().noneMatch(
+                        r -> r.getCancellation() != null
+                                && r.getCancellation().getCancellationNo().equals(c.getCancellationNo())))
                 .collect(Collectors.toList());
 
         if (!pending.isEmpty()) {
