@@ -16,7 +16,7 @@ public class ActivityPlanDAO {
             + " ON DUPLICATE KEY UPDATE status=VALUES(status),"
             + " target=VALUES(target), proposed_insurance_type=VALUES(proposed_insurance_type)",
             p.getPlanId(),
-            p.getPlanName(),
+            p.getAuthor(),
             null,
             p.getStartDate(),
             p.getProposedCustomerId(),
