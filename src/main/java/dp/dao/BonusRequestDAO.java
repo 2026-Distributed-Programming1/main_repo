@@ -14,7 +14,7 @@ public class BonusRequestDAO {
             r.getChannelName(),
             r.getBonusAmount() != null ? r.getBonusAmount().longValue() : 0L,
             r.getRequestReason(),
-            null,
+            "SUBMITTED",
             r.getRequestedAt());
     }
 }

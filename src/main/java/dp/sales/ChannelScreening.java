@@ -74,6 +74,7 @@ public class ChannelScreening {
     public List<String> getCertifications() { return certifications; }
     public void addCertification(String cert) { this.certifications.add(cert); }
     public ScreeningStatus getScreeningStatus() { return screeningStatus; }
+    public void setScreeningStatus(ScreeningStatus screeningStatus) { this.screeningStatus = screeningStatus; }
     public String getApprovalNo() { return approvalNo; }
     public LocalDateTime getApprovedAt() { return approvedAt; }
     public String getRejectionReason() { return rejectionReason; }
