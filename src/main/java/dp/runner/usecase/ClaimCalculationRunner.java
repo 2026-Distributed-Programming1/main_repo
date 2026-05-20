@@ -46,6 +46,7 @@ public class ClaimCalculationRunner {
             ConsoleHelper.printError("[E1] 적용 손해액이 자기부담금 이하입니다. 지급할 금액이 없습니다.");
             if (ConsoleHelper.readYesNo("  공제액 초과로 종결 처리하시겠습니까?")) {
                 calc.closeAsExceeded();
+                ClaimCalculationDAO.save(calc);
             }
             ConsoleHelper.waitEnter();
             return;
@@ -72,6 +73,7 @@ public class ClaimCalculationRunner {
                     continue;
                 }
                 ClaimPayment payment = calc.approve();
+                ClaimCalculationDAO.save(calc);
                 if (payment != null) {
                     ClaimPaymentDAO.save(payment);
                     ConsoleHelper.printSuccess("지급 승인 완료, 지급번호: " + payment.getPaymentNo());
@@ -99,6 +101,7 @@ public class ClaimCalculationRunner {
             ConsoleHelper.printError("[E1] 적용 손해액이 자기부담금 이하입니다. 지급할 금액이 없습니다.");
             if (ConsoleHelper.readYesNo("  공제액 초과로 종결 처리하시겠습니까?")) {
                 calc.closeAsExceeded();
+                ClaimCalculationDAO.save(calc);
             }
             ConsoleHelper.waitEnter();
             return;
@@ -123,6 +126,7 @@ public class ClaimCalculationRunner {
                     continue;
                 }
                 ClaimPayment payment = calc.approve();
+                ClaimCalculationDAO.save(calc);
                 if (payment != null) {
                     ClaimPaymentDAO.save(payment);
                     ConsoleHelper.printSuccess("지급 승인 완료, 지급번호: " + payment.getPaymentNo());
@@ -157,10 +161,12 @@ public class ClaimCalculationRunner {
         Employee approver = approvers.get(idx - 1);
         calc.selectApprover(approver);
         calc.submitForApproval();
+        ClaimCalculationDAO.save(calc);
         ConsoleHelper.printSuccess("결재 상신 완료. (시연 단계에서는 자동 승인 처리)");
 
         if (ConsoleHelper.readYesNo("  결재권자가 승인했다고 가정하고 지급 이관을 진행할까요?")) {
             ClaimPayment payment = calc.approve();
+            ClaimCalculationDAO.save(calc);
             if (payment != null) {
                 ClaimPaymentDAO.save(payment);
                 ConsoleHelper.printSuccess("지급 승인 및 이관 완료, 지급번호: " + payment.getPaymentNo());
@@ -190,11 +196,13 @@ public class ClaimCalculationRunner {
         Employee approver = approvers.get(idx - 1);
         calc.selectApprover(approver);
         calc.submitForApproval();
+        ClaimCalculationDAO.save(calc);
         ConsoleHelper.printSuccess("결재 상신 완료. (시연 단계에서는 자동 승인 처리)");
 
         // 시연 단순화: 결재 후 즉시 승인
         if (ConsoleHelper.readYesNo("  결재권자가 승인했다고 가정하고 지급 이관을 진행할까요?")) {
             ClaimPayment payment = calc.approve();
+            ClaimCalculationDAO.save(calc);
             if (payment != null) {
                 ClaimPaymentDAO.save(payment);
                 ConsoleHelper.printSuccess("지급 승인 및 이관 완료, 지급번호: " + payment.getPaymentNo());
