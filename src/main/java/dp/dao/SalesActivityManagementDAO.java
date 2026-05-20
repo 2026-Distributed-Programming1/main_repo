@@ -21,10 +21,16 @@ public class SalesActivityManagementDAO {
 
     public static List<SalesActivityManagement> findAll() {
         return DBA.executeQuery(
-            "SELECT activity_no, channel_name, created_at FROM sales_activity_managements",
+            "SELECT activity_no, manager_name, channel_name, activity_type, created_at"
+            + " FROM sales_activity_managements",
             rs -> {
                 SalesActivityManagement a = new SalesActivityManagement();
+                a.setManagementNo(rs.getString("activity_no"));
+                a.setManagerName(rs.getString("manager_name"));
                 a.setChannelName(rs.getString("channel_name"));
+                a.setActivityType(rs.getString("activity_type"));
+                java.sql.Timestamp ts = rs.getTimestamp("created_at");
+                if (ts != null) a.setRegisteredAt(ts.toLocalDateTime());
                 return a;
             });
     }

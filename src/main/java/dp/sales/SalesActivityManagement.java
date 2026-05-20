@@ -74,7 +74,17 @@ public class SalesActivityManagement {
     public void setImprovementContent(String improvementContent) { this.improvementContent = improvementContent; }
     public void setRevisedTarget(Integer revisedTarget) { this.revisedTarget = revisedTarget; }
     public String getManagementNo() { return managementNo; }
+    public void setManagementNo(String managementNo) { this.managementNo = managementNo; }
     public LocalDateTime getRegisteredAt() { return registeredAt; }
+    public void setRegisteredAt(LocalDateTime registeredAt) { this.registeredAt = registeredAt; }
+    public ChannelType getChannelType() { return channelType; }
+    public String getActivityType() { return channelType != null ? channelType.name() : null; }
+    public void setActivityType(String activityType) {
+        if (activityType != null) {
+            try { this.channelType = ChannelType.valueOf(activityType); }
+            catch (IllegalArgumentException ignored) {}
+        }
+    }
 
     private void recalcConversionRate() {
         if (visitCount != null && visitCount > 0 && contractCount != null) {
