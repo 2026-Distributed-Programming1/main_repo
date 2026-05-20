@@ -238,6 +238,10 @@ CREATE TABLE IF NOT EXISTS education_plans (
 CREATE TABLE IF NOT EXISTS consultation_requests (
     consult_no   VARCHAR(20)  PRIMARY KEY,
     channel      VARCHAR(100),
+    location     VARCHAR(200),
+    contact      VARCHAR(100),
+    content      TEXT,
+    status       VARCHAR(20),
     requested_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -245,6 +249,7 @@ CREATE TABLE IF NOT EXISTS consultation_requests (
 CREATE TABLE IF NOT EXISTS interview_schedules (
     schedule_no   VARCHAR(20)  PRIMARY KEY,
     customer_name VARCHAR(100),
+    type          VARCHAR(20),
     scheduled_at  TIMESTAMP,
     location      VARCHAR(200),
     status        VARCHAR(20)
