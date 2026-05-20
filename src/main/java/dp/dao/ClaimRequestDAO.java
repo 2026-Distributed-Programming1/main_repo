@@ -5,6 +5,8 @@ import dp.claim.ClaimRequest;
 import dp.contract.Contract;
 import dp.db.DBA;
 import dp.enums.ClaimRequestStatus;
+import dp.enums.ClaimType;
+import java.util.Arrays;
 import java.util.List;
 
 public class ClaimRequestDAO {
@@ -52,13 +54,20 @@ public class ClaimRequestDAO {
                     try { status = ClaimRequestStatus.valueOf(st); }
                     catch (IllegalArgumentException ignored) {}
                 }
-                ClaimRequest req = new ClaimRequest(
+                ClaimRequest r = new ClaimRequest(
                     rs.getString("claim_no"), customerShell, contractShell, status);
+                String ct = rs.getString("claim_type");
+                if (ct != null) {
+                    try { r.selectClaimType(ClaimType.valueOf(ct)); }
+                    catch (IllegalArgumentException ignored) {}
+                }
+                String diag = rs.getString("diagnosis");
+                if (diag != null) r.enterDiagnosis(diag);
                 String reasons = rs.getString("claim_reasons");
                 if (reasons != null && !reasons.isEmpty()) {
-                    req.selectClaimReasons(java.util.Arrays.asList(reasons.split(",")));
+                    r.selectClaimReasons(Arrays.asList(reasons.split(",")));
                 }
-                return req;
+                return r;
             });
     }
 

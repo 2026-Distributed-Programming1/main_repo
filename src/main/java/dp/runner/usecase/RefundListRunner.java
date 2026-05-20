@@ -78,25 +78,28 @@ public class RefundListRunner {
     }
 
     private static String refundStatus(Cancellation cancellation) {
+        String cancNo = cancellation.getCancellationNo();
         RefundCalculation refund = RefundCalculationDAO.findAll().stream()
                 .filter(r -> r.getCancellation() != null
-                        && r.getCancellation().getCancellationNo().equals(cancellation.getCancellationNo()))
+                        && cancNo.equals(r.getCancellation().getCancellationNo()))
                 .findFirst().orElse(null);
         if (refund == null) return "산출 대기";
 
+        String refundNo = refund.getRefundNo();
         RefundPayment payment = RefundPaymentDAO.findAll().stream()
                 .filter(p -> p.getRefund() != null
-                        && p.getRefund().getRefundNo().equals(refund.getRefundNo()))
+                        && refundNo.equals(p.getRefund().getRefundNo()))
                 .findFirst().orElse(null);
         if (payment == null) return "산출 완료";
         return payment.getStatus() == RefundPaymentStatus.COMPLETED ? "지급 완료" : "산출 완료";
     }
 
     private static RefundPayment findWaitingPayment(Cancellation cancellation) {
+        String cancNo = cancellation.getCancellationNo();
         return RefundPaymentDAO.findAll().stream()
                 .filter(p -> p.getRefund() != null
                         && p.getRefund().getCancellation() != null
-                        && p.getRefund().getCancellation().getCancellationNo().equals(cancellation.getCancellationNo())
+                        && cancNo.equals(p.getRefund().getCancellation().getCancellationNo())
                         && p.getStatus() == RefundPaymentStatus.WAITING)
                 .findFirst().orElse(null);
     }
@@ -108,8 +111,10 @@ public class RefundListRunner {
         System.out.println("  고객명    : " + cancellation.getContract().getCustomer().getName());
         System.out.println("  진행 상태 : " + refundStatus(cancellation));
 
+        String cancNo = cancellation.getCancellationNo();
         RefundCalculation refund = RefundCalculationDAO.findAll().stream()
-                .filter(r -> r.getCancellation() == cancellation)
+                .filter(r -> r.getCancellation() != null
+                        && cancNo.equals(r.getCancellation().getCancellationNo()))
                 .findFirst().orElse(null);
         if (refund != null) {
             System.out.println("  기본 환급금    : " + refund.getBaseRefund() + "원");

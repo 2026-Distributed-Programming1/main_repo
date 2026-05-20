@@ -54,6 +54,7 @@ public class SalesActivityManagement {
     public void navigateToRecruitment() {}
 
     // Runner에서 실제 사용하는 getter/setter만 유지
+    public ChannelType getChannelType() { return channelType; }
     public String getManagerName() { return managerName; }
     public void setManagerName(String managerName) { this.managerName = managerName; }
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }

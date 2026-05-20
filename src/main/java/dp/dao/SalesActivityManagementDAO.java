@@ -7,11 +7,13 @@ import java.util.List;
 public class SalesActivityManagementDAO {
 
     public static void save(SalesActivityManagement a) {
+        String channelType = a.getChannelType() != null ? a.getChannelType().name() : null;
         DBA.executeUpdate(
             "INSERT INTO sales_activity_managements (activity_no, manager_name, channel_name,"
             + " activity_type, created_at)"
             + " VALUES (?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE channel_name=VALUES(channel_name)",
+            + " ON DUPLICATE KEY UPDATE channel_name=VALUES(channel_name),"
+            + " manager_name=VALUES(manager_name)",
             a.getManagementNo(),
             a.getManagerName(),
             a.getChannelName(),
