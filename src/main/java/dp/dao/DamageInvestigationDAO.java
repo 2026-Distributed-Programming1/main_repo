@@ -42,7 +42,7 @@ public class DamageInvestigationDAO {
                 String cn    = rs.getString("claim_no");
                 String cname = rs.getString("claim_customer");
                 Customer custShell = new Customer(
-                    cn != null ? cn : "?", cname != null ? cname : "", null, null, null);
+                    "?", cname != null ? cname : "", null, null, null);
                 ClaimRequest claimShell = new ClaimRequest(
                     cn != null ? cn : "?", custShell, null, ClaimRequestStatus.RECEIVED);
                 String st = rs.getString("status");

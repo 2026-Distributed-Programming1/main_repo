@@ -15,10 +15,10 @@ public class ActivityPlanDAO {
             + " VALUES (?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE status=VALUES(status)",
             p.getPlanId(),
-            p.getPlanName(),
+            p.getAuthor(),
             insuranceType,
             p.getStartDate(),
-            null,
+            p.getProposedCustomerId(),
             status);
     }
 }

@@ -96,6 +96,7 @@ public class ActivityPlan {
     public String getPlanId() { return planId; }
     public String getPlanName() { return planName; }
     public void setPlanName(String planName) { this.planName = planName; }
+    public String getAuthor() { return author; }
     public LocalDate getStartDate() { return startDate; }
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
     public LocalDate getEndDate() { return endDate; }
@@ -109,6 +110,7 @@ public class ActivityPlan {
     public void setTargetContractAmount(Long targetContractAmount) { this.targetContractAmount = targetContractAmount; }
     public void setTargetNewCustomer(Integer targetNewCustomer) { this.targetNewCustomer = targetNewCustomer; }
     public void setProposedCustomerId(String proposedCustomerId) { this.proposedCustomerId = proposedCustomerId; }
+    public String getProposedCustomerId() { return proposedCustomerId; }
     public InsuranceType getProposedInsuranceType() { return proposedInsuranceType; }
     public void setProposedInsuranceType(InsuranceType proposedInsuranceType) { this.proposedInsuranceType = proposedInsuranceType; }
     public void setProposalReason(String proposalReason) { this.proposalReason = proposalReason; }
