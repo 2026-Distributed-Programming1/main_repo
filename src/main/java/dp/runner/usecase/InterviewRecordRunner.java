@@ -118,6 +118,7 @@ public class InterviewRecordRunner {
             }
 
             record.modify(content, reaction, followUp);
+            InterviewRecordDAO.save(record);
             ConsoleHelper.printStage("시스템", "수정 완료 결과를 출력합니다.");
             ConsoleHelper.printInfo("기록번호: " + record.getRecordNumber());
         }
