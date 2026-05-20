@@ -81,7 +81,6 @@ public class DispatchRecordRunner {
         dispatch.arrive();
 
         DispatchRecord record = new DispatchRecord(dispatch);
-        DispatchRecordDAO.save(record);
 
         // 사진 업로드 (시연용 - 실제로는 카메라/파일 선택)
         ConsoleHelper.printStage("현장출동 직원", "현장 사진을 업로드합니다.");
@@ -118,7 +117,9 @@ public class DispatchRecordRunner {
             return false;
         }
         record.transmit();
+        DispatchRecordDAO.save(record);
         dispatch.complete();
+        DispatchDAO.save(dispatch);
         ConsoleHelper.printSuccess("기록 ID: " + record.getRecordId() + " 전송 완료");
         ConsoleHelper.waitEnter();
         return true;
