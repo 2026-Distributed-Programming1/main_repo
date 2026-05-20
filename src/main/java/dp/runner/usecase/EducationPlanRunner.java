@@ -8,6 +8,7 @@ import dp.dao.EducationTrainerDAO;
 import dp.dao.SalesManagerDAO;
 import dp.runner.ConsoleHelper;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * UC: 교육 계획안을 작성한다 시나리오 진행자
@@ -40,8 +41,21 @@ public class EducationPlanRunner {
         System.out.println("UC: 교육 계획안을 작성한다");
         ConsoleHelper.printDoubleDivider();
 
-        EducationTrainer trainer = EducationTrainerDAO.findAll().get(0);
-        SalesManager manager = SalesManagerDAO.findAll().get(0);
+        List<EducationTrainer> trainerList = EducationTrainerDAO.findAll();
+        if (trainerList.isEmpty()) {
+            ConsoleHelper.printError("등록된 영업교육 담당자가 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        EducationTrainer trainer = trainerList.get(0);
+
+        List<SalesManager> managerList = SalesManagerDAO.findAll();
+        if (managerList.isEmpty()) {
+            ConsoleHelper.printError("등록된 영업 관리자가 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        SalesManager manager = managerList.get(0);
 
         // 2. 시스템은 교육 계획 작성 화면을 출력한다.
         ConsoleHelper.printStage("시스템", "교육계획안 작성 화면을 출력합니다.");
@@ -125,6 +139,7 @@ public class EducationPlanRunner {
             // A3) 영업 관리자가 반려하는 경우
             String reason = ConsoleHelper.readNonEmpty("  [A3] 반려 사유: ");
             manager.rejectEducationPlan(plan, reason);
+            EducationPlanDAO.save(plan);
             ConsoleHelper.printStage("시스템", "반려 알림을 영업교육담당자에게 발송합니다.");
             ConsoleHelper.printInfo("반려 사유: " + reason);
         }

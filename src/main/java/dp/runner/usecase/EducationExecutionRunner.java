@@ -47,7 +47,13 @@ public class EducationExecutionRunner {
         }
 
         EducationPreparation preparation = educationPreparations.get(educationPreparations.size() - 1);
-        EducationTrainer trainer = EducationTrainerDAO.findAll().get(0);
+        List<EducationTrainer> trainerList = EducationTrainerDAO.findAll();
+        if (trainerList.isEmpty()) {
+            ConsoleHelper.printError("등록된 영업교육 담당자가 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        EducationTrainer trainer = trainerList.get(0);
         EducationExecution execution = trainer.conductEducation(preparation);
 
         // 2. 시스템은 교육 진행 화면을 출력한다. (출석 대상자 명단 자동 로드)
