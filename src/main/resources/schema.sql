@@ -311,12 +311,13 @@ CREATE TABLE IF NOT EXISTS channel_screenings (
 
 -- 활동 계획
 CREATE TABLE IF NOT EXISTS activity_plans (
-    plan_no        VARCHAR(20)  PRIMARY KEY,
-    author_name    VARCHAR(100),
-    activity_type  VARCHAR(50),
-    scheduled_date DATE,
-    target         VARCHAR(200),
-    status         VARCHAR(20)
+    plan_no                VARCHAR(20)  PRIMARY KEY,
+    author_name            VARCHAR(100),
+    activity_type          VARCHAR(50),
+    scheduled_date         DATE,
+    target                 VARCHAR(200),
+    proposed_insurance_type VARCHAR(50),
+    status                 VARCHAR(20)
 );
 
 -- 성과급 요청

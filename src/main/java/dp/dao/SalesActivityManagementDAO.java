@@ -15,7 +15,7 @@ public class SalesActivityManagementDAO {
             a.getManagementNo(),
             a.getManagerName(),
             a.getChannelName(),
-            null,
+            a.getActivityType(),
             a.getRegisteredAt());
     }
 
