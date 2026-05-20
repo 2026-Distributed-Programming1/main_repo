@@ -249,6 +249,7 @@ public class MyInsuranceViewRunner {
         if (contract.verifyAccount(1, code)) {
             account.verify();
             contract.changePaymentMethod("계좌이체", account);
+            ContractDAO.save(contract);
             ConsoleHelper.printSuccess("납입 방법이 정상적으로 변경되었습니다.");
         } else {
             ConsoleHelper.printError("인증 실패. 납입방법 변경이 취소되었습니다.");

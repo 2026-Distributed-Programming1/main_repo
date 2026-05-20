@@ -4,6 +4,7 @@ import dp.contract.Cancellation;
 import dp.contract.Contract;
 import dp.enums.ContractStatus;
 import dp.dao.CancellationDAO;
+import dp.dao.ContractDAO;
 import dp.runner.ConsoleHelper;
 
 /**
@@ -133,6 +134,7 @@ public class InsuranceCancellationRunner {
         cancellation.submit();
         contract.setStatus(ContractStatus.CANCELLED);
         CancellationDAO.save(cancellation);
+        ContractDAO.save(contract);
         ConsoleHelper.printSuccess("[시스템] 보험 해약이 완료되었습니다. 환급금은 추후 별도 안내 드리겠습니다.");
         ConsoleHelper.waitEnter();
 

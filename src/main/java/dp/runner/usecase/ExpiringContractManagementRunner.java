@@ -217,6 +217,8 @@ public class ExpiringContractManagementRunner {
             ConsoleHelper.printStage("계약관리담당자", "[갱신 확정] 버튼을 클릭합니다.");
             mgmt.confirmRenewal();
             mgmt.saveRenewalContract();
+            selectedContract.setMonthlyPremium(mgmt.getRenewalPremium());
+            ContractDAO.save(selectedContract);
 
             // A1-6~7) 완료 팝업 + [처리 이력] 반영
             ConsoleHelper.printStage("시스템", "[" + mgmt.getContractorName() + "]님의 계약 ["
