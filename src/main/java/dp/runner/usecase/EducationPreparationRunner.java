@@ -64,7 +64,13 @@ public class EducationPreparationRunner {
         int planChoice = ConsoleHelper.readMenuChoice("[영업교육담당자] 교육 계획안을 선택하세요:", planOptions);
         EducationPlan selectedPlan = approvedPlans.get(planChoice - 1);
 
-        EducationTrainer trainer = EducationTrainerDAO.findAll().get(0);
+        List<EducationTrainer> trainerList = EducationTrainerDAO.findAll();
+        if (trainerList.isEmpty()) {
+            ConsoleHelper.printError("등록된 영업교육 담당자가 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        EducationTrainer trainer = trainerList.get(0);
         EducationPreparation preparation = trainer.registerEducationPreparation();
         preparation.setPlanNo(String.valueOf(selectedPlan.getPlanNumber()));
 
