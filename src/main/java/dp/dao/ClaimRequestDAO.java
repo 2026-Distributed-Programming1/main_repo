@@ -5,6 +5,8 @@ import dp.claim.ClaimRequest;
 import dp.contract.Contract;
 import dp.db.DBA;
 import dp.enums.ClaimRequestStatus;
+import dp.enums.ClaimType;
+import java.util.Arrays;
 import java.util.List;
 
 public class ClaimRequestDAO {
@@ -34,7 +36,7 @@ public class ClaimRequestDAO {
     public static List<ClaimRequest> findAll() {
         return DBA.executeQuery(
             "SELECT claim_no, customer_id, customer_name, contract_no, claim_type,"
-            + " diagnosis, status FROM claim_requests",
+            + " diagnosis, claim_reasons, status FROM claim_requests",
             rs -> {
                 String cid  = rs.getString("customer_id");
                 String cname = rs.getString("customer_name");
@@ -52,8 +54,20 @@ public class ClaimRequestDAO {
                     try { status = ClaimRequestStatus.valueOf(st); }
                     catch (IllegalArgumentException ignored) {}
                 }
-                return new ClaimRequest(
+                ClaimRequest r = new ClaimRequest(
                     rs.getString("claim_no"), customerShell, contractShell, status);
+                String ct = rs.getString("claim_type");
+                if (ct != null) {
+                    try { r.selectClaimType(ClaimType.valueOf(ct)); }
+                    catch (IllegalArgumentException ignored) {}
+                }
+                String diag = rs.getString("diagnosis");
+                if (diag != null) r.enterDiagnosis(diag);
+                String reasons = rs.getString("claim_reasons");
+                if (reasons != null && !reasons.isEmpty()) {
+                    r.selectClaimReasons(Arrays.asList(reasons.split(",")));
+                }
+                return r;
             });
     }
 
