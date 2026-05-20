@@ -79,12 +79,14 @@ public class RefundListRunner {
 
     private static String refundStatus(Cancellation cancellation) {
         RefundCalculation refund = RefundCalculationDAO.findAll().stream()
-                .filter(r -> r.getCancellation() == cancellation)
+                .filter(r -> r.getCancellation() != null
+                        && r.getCancellation().getCancellationNo().equals(cancellation.getCancellationNo()))
                 .findFirst().orElse(null);
         if (refund == null) return "산출 대기";
 
         RefundPayment payment = RefundPaymentDAO.findAll().stream()
-                .filter(p -> p.getRefund() == refund)
+                .filter(p -> p.getRefund() != null
+                        && p.getRefund().getRefundNo().equals(refund.getRefundNo()))
                 .findFirst().orElse(null);
         if (payment == null) return "산출 완료";
         return payment.getStatus() == RefundPaymentStatus.COMPLETED ? "지급 완료" : "산출 완료";
@@ -93,7 +95,8 @@ public class RefundListRunner {
     private static RefundPayment findWaitingPayment(Cancellation cancellation) {
         return RefundPaymentDAO.findAll().stream()
                 .filter(p -> p.getRefund() != null
-                        && p.getRefund().getCancellation() == cancellation
+                        && p.getRefund().getCancellation() != null
+                        && p.getRefund().getCancellation().getCancellationNo().equals(cancellation.getCancellationNo())
                         && p.getStatus() == RefundPaymentStatus.WAITING)
                 .findFirst().orElse(null);
     }
