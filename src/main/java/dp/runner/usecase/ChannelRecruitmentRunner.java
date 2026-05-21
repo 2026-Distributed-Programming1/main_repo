@@ -98,70 +98,70 @@ public class ChannelRecruitmentRunner {
         ConsoleHelper.printInfo("입력 항목: 채널유형(필수) / 모집인원(필수) / 모집기간(필수) / 모집조건(선택)");
 
         // 5. 영업 관리자는 모집 정보를 입력하고 [저장] 버튼을 클릭한다. (A2, E1)
-        ConsoleHelper.printStage("영업관리자", "모집 정보를 입력합니다.");
+        LocalDate startDate;
+        LocalDate endDate;
+        while (true) {
+            ConsoleHelper.printStage("영업관리자", "모집 정보를 입력합니다.");
 
-        // 채널유형 선택 (필수)
-        int typeChoice = ConsoleHelper.readMenuChoice(
-                "  채널유형을 선택하세요. (필수)",
-                "설계사", "대리점");
-        recruitment.setChannelType(typeChoice == 1 ? ChannelType.DESIGNER : ChannelType.AGENCY);
+            // 채널유형 선택 (필수)
+            int typeChoice = ConsoleHelper.readMenuChoice(
+                    "  채널유형을 선택하세요. (필수)",
+                    "설계사", "대리점");
+            recruitment.setChannelType(typeChoice == 1 ? ChannelType.DESIGNER : ChannelType.AGENCY);
 
-        // 모집인원 입력 (필수)
-        int count = ConsoleHelper.readPositiveInt("  모집인원 (명): ");
-        recruitment.setRecruitCount(count);
+            // 모집인원 입력 (필수)
+            int count = ConsoleHelper.readPositiveInt("  모집인원 (명): ");
+            recruitment.setRecruitCount(count);
 
-        // 모집기간 입력 (필수) - 달력 팝업 대체
-        recruitment.openCalendar();
-        ConsoleHelper.printInfo("  [달력 팝업] 모집 기간을 입력합니다.");
-        LocalDate startDate = ConsoleHelper.readDate("  모집 기간 시작일");
-        LocalDate endDate = ConsoleHelper.readDate("  모집 기간 종료일");
-        recruitment.setLocalStartDate(startDate);
-        recruitment.setLocalEndDate(endDate);
+            // 모집기간 입력 (필수) - 달력 팝업 대체
+            recruitment.openCalendar();
+            ConsoleHelper.printInfo("  [달력 팝업] 모집 기간을 입력합니다.");
+            startDate = ConsoleHelper.readDate("  모집 기간 시작일");
+            endDate = ConsoleHelper.readDate("  모집 기간 종료일");
+            recruitment.setLocalStartDate(startDate);
+            recruitment.setLocalEndDate(endDate);
 
-        // 모집조건 입력 (선택)
-        String condition = ConsoleHelper.readLine("  모집조건 (경력, 자격증 등, 없으면 엔터): ");
-        if (!condition.isEmpty()) {
-            recruitment.setCondition(condition);
-        }
-
-        // [저장] 또는 [취소] 선택 (A2)
-        int saveAction = ConsoleHelper.readMenuChoice(
-                "[영업관리자] 처리를 선택하세요.",
-                "저장", "취소");
-
-        if (saveAction == 2) {
-            // A2) [취소] 버튼을 클릭한 경우
-            // 2. 시스템은 "작성 중인 내용이 저장되지 않습니다. 취소하시겠습니까?" 팝업을 출력한다.
-            recruitment.showCancelConfirm();
-            ConsoleHelper.printStage("시스템", "작성 중인 내용이 저장되지 않습니다. 취소하시겠습니까?");
-            boolean confirmCancel = ConsoleHelper.readYesNo("  확인");
-            if (confirmCancel) {
-                // 3. 영업 관리자는 [확인] 버튼을 클릭한다.
-                // 4. 시스템은 모집 등록 폼을 닫고 채널 모집 화면으로 돌아간다.
-                recruitment.cancel();
-                ConsoleHelper.printInfo("[A2] 모집 등록 폼을 닫고 채널 모집 화면으로 돌아갑니다.");
+            // 모집조건 입력 (선택)
+            String condition = ConsoleHelper.readLine("  모집조건 (경력, 자격증 등, 없으면 엔터): ");
+            if (!condition.isEmpty()) {
+                recruitment.setCondition(condition);
             }
-            ConsoleHelper.waitEnter();
-            return;
-        }
 
-        // E1) 필수 항목 누락 검증
-        ConsoleHelper.printStage("시스템", "필수 항목 누락 여부를 검증합니다.");
-        if (!recruitment.validateRequired()) {
-            // E1) 필수 항목이 누락된 경우
-            recruitment.highlightError();
-            recruitment.showRequiredError();
-            ConsoleHelper.printError("[E1] 필수 항목을 입력해주세요. (채널유형 / 모집인원 / 모집기간)");
-            ConsoleHelper.waitEnter();
-            return;
-        }
-        ConsoleHelper.printSuccess("필수 항목 검증 완료.");
+            // [저장] 또는 [취소] 선택 (A2)
+            int saveAction = ConsoleHelper.readMenuChoice(
+                    "[영업관리자] 처리를 선택하세요.",
+                    "저장", "취소");
 
-        // 모집기간 유효성 검증 (종료일이 시작일보다 앞인 경우)
-        if (endDate.isBefore(startDate)) {
-            ConsoleHelper.printError("[E1] 종료일은 시작일보다 이전일 수 없습니다. 다시 입력해주세요.");
-            ConsoleHelper.waitEnter();
-            return;
+            if (saveAction == 2) {
+                // A2) [취소] 버튼을 클릭한 경우
+                recruitment.showCancelConfirm();
+                ConsoleHelper.printStage("시스템", "작성 중인 내용이 저장되지 않습니다. 취소하시겠습니까?");
+                boolean confirmCancel = ConsoleHelper.readYesNo("  확인");
+                if (confirmCancel) {
+                    recruitment.cancel();
+                    ConsoleHelper.printInfo("[A2] 모집 등록 폼을 닫고 채널 모집 화면으로 돌아갑니다.");
+                }
+                ConsoleHelper.waitEnter();
+                return;
+            }
+
+            // E1) 필수 항목 누락 검증
+            ConsoleHelper.printStage("시스템", "필수 항목 누락 여부를 검증합니다.");
+            if (!recruitment.validateRequired()) {
+                recruitment.highlightError();
+                recruitment.showRequiredError();
+                ConsoleHelper.printError("[E1] 필수 항목을 입력해주세요. (채널유형 / 모집인원 / 모집기간)");
+                continue;
+            }
+
+            // 모집기간 유효성 검증
+            if (endDate.isBefore(startDate)) {
+                ConsoleHelper.printError("[E1] 종료일은 시작일보다 이전일 수 없습니다. 다시 입력해주세요.");
+                continue;
+            }
+
+            ConsoleHelper.printSuccess("필수 항목 검증 완료.");
+            break;
         }
 
         // 저장 처리

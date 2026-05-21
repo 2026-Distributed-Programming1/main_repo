@@ -204,7 +204,7 @@ public class SalesOrgEvaluationRunner {
                 // A3) [성과급 지급을 요청한다] 유스케이스로 이동
                 evaluation.navigateToBonus();
                 ConsoleHelper.printInfo("[A3] [성과급 지급을 요청한다] 유스케이스로 이동합니다.");
-                BonusRequestRunner.run();
+                BonusRequestRunner.run(evaluation);
                 // A3) [성과급 지급을 요청한다] 유스케이스로부터 돌아온다. → Basic Path 9번으로 이동
                 ConsoleHelper.printInfo("[A3] [성과급 지급을 요청한다]로부터 복귀합니다. 저장을 계속 진행합니다.");
             }
