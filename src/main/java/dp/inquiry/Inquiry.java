@@ -78,9 +78,17 @@ public class Inquiry {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
     public Integer getCurrentLength() { return currentLength; }
+    public String getAttachmentFileName() { return attachmentFileName; }
     public void setAttachmentFileName(String attachmentFileName) { this.attachmentFileName = attachmentFileName; }
+    public Long getAttachmentFileSize() { return attachmentFileSize; }
     public void setAttachmentFileSize(Long attachmentFileSize) { this.attachmentFileSize = attachmentFileSize; }
     public LocalDateTime getReceivedAt() { return receivedAt; }
+    public void setReceivedAt(LocalDateTime receivedAt) { this.receivedAt = receivedAt; }
     public InquiryStatus getStatus() { return status; }
+    public void setStatus(InquiryStatus status) { this.status = status; }
+    public String getAnswerContent() { return answerContent; }
+    public void setAnswerContent(String answerContent) { this.answerContent = answerContent; }
+    public LocalDateTime getAnsweredAt() { return answeredAt; }
+    public void setAnsweredAt(LocalDateTime answeredAt) { this.answeredAt = answeredAt; }
     public void setFaqCategory(FaqCategory faqCategory) { this.faqCategory = faqCategory; }
 }
