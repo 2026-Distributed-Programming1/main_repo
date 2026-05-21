@@ -215,7 +215,8 @@ CREATE TABLE IF NOT EXISTS insurance_applications (
     product_name    VARCHAR(100),
     monthly_premium BIGINT       DEFAULT 0,
     payment_method  VARCHAR(50),
-    applied_at      TIMESTAMP
+    applied_at      TIMESTAMP,
+    status          VARCHAR(20)  DEFAULT '신청'
 );
 
 -- 청약 (PolicyApplicationDAO)
@@ -226,7 +227,8 @@ CREATE TABLE IF NOT EXISTS policy_applications (
     product_name   VARCHAR(100),
     period         INT          DEFAULT 1,
     payment_method VARCHAR(50),
-    submitted_at   TIMESTAMP
+    submitted_at   TIMESTAMP,
+    status         VARCHAR(20)  DEFAULT '신청'
 );
 
 -- ============================================================

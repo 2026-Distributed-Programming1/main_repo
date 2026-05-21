@@ -14,22 +14,24 @@ public class InsuranceApplicationDAO {
         long premium = a.getProduct() != null ? a.getProduct().getMonthlyPremium() : 0L;
         DBA.executeUpdate(
             "INSERT INTO insurance_applications (application_no, customer_id, customer_name,"
-            + " product_name, monthly_premium, payment_method, applied_at)"
-            + " VALUES (?,?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE payment_method=VALUES(payment_method)",
+            + " product_name, monthly_premium, payment_method, applied_at, status)"
+            + " VALUES (?,?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE payment_method=VALUES(payment_method), status=VALUES(status)",
             a.getApplicationNumber(),
             customerId,
             customerName,
             productName,
             premium,
             a.getPaymentMethod(),
-            a.getAppliedAt());
+            a.getAppliedAt(),
+            a.getStatus() != null ? a.getStatus() : "신청");
     }
 
     public static List<InsuranceApplication> findAll() {
         return DBA.executeQuery(
             "SELECT application_no, customer_id, customer_name, product_name,"
-            + " monthly_premium, payment_method FROM insurance_applications",
+            + " monthly_premium, payment_method FROM insurance_applications"
+            + " WHERE status='신청'",
             rs -> InsuranceApplication.fromDb(
                 rs.getInt("application_no"),
                 rs.getString("customer_id"),

@@ -19,6 +19,7 @@ public class PolicyApplication {
     private String productName;
     private int period;
     private String paymentMethod;
+    private String status;
 
     public PolicyApplication(int applicationNumber, LocalDateTime submittedAt, Customer customer,
                              String customerName, String productName, int period, String paymentMethod) {
@@ -91,4 +92,6 @@ public class PolicyApplication {
     public String getProductName() { return productName; }
     public int getPeriod() { return period; }
     public String getPaymentMethod() { return paymentMethod; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

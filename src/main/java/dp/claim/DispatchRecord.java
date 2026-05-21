@@ -67,7 +67,7 @@ public class DispatchRecord {
 
     /** 필수 사진/항목 검증 (E1) */
     public boolean validateRequired() {
-        return photos != null && !photos.isEmpty() && notes != null;
+        return photos != null && !photos.isEmpty();
     }
 
     /** 기록 전송 - transmittedAt=now() */

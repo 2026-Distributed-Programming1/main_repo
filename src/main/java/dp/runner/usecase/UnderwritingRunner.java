@@ -184,6 +184,15 @@ public class UnderwritingRunner {
         underwriting.complete(resultStr, condition, rejectionReason);
         UnderwritingDAO.save(underwriting);
 
+        // 심사 결과를 원본 신청 건에 반영하고 DB 저장
+        if (application != null) {
+            application.setStatus(resultStr);
+            PolicyApplicationDAO.save(application);
+        } else if (insApplication != null) {
+            insApplication.setStatus(resultStr);
+            InsuranceApplicationDAO.save(insApplication);
+        }
+
         // 10. 심사 결과를 전달한다 유스케이스로 이동
         ConsoleHelper.printDoubleDivider();
         System.out.println("UC: 심사 결과를 전달한다");

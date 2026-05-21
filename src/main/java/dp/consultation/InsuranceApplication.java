@@ -19,6 +19,7 @@ public class InsuranceApplication {
     private LocalDateTime appliedAt;
     private String paymentMethod;
     private List<String> selectedSpecialTerms;
+    private String status;
 
     public InsuranceApplication(int applicationNumber, Customer customer, InsuranceProduct product,
                                 LocalDateTime appliedAt, String paymentMethod, List<String> selectedSpecialTerms) {
@@ -87,4 +88,6 @@ public class InsuranceApplication {
     public LocalDateTime getAppliedAt() { return appliedAt; }
     public String getPaymentMethod() { return paymentMethod; }
     public List<String> getSelectedSpecialTerms() { return selectedSpecialTerms; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
