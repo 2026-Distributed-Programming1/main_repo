@@ -140,7 +140,10 @@ CREATE TABLE IF NOT EXISTS contracts (
     status           VARCHAR(20)  DEFAULT 'NORMAL',
     is_expiring_soon BOOLEAN      DEFAULT FALSE,
     is_overdue       BOOLEAN      DEFAULT FALSE,
-    overdue_count    INT          DEFAULT 0
+    overdue_count    INT          DEFAULT 0,
+    total_pay_count  INT          DEFAULT 0,
+    paid_count       INT          DEFAULT 0,
+    last_payment_date DATE
 );
 
 -- 고객 정보 등록 이력 (판매채널이 등록한 원본 양식)
@@ -148,6 +151,7 @@ CREATE TABLE IF NOT EXISTS customer_registrations (
     id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
     customer_id     VARCHAR(20),            -- → customers.customer_id
     name            VARCHAR(100),
+    ssn             VARCHAR(20),
     ssn_masked      VARCHAR(20),
     phone           VARCHAR(20),
     insurance_type  VARCHAR(50),
@@ -170,12 +174,21 @@ CREATE TABLE IF NOT EXISTS payments (
 
 -- 사고 접수
 CREATE TABLE IF NOT EXISTS accident_reports (
-    accident_no   VARCHAR(20)  PRIMARY KEY,
-    customer_id   VARCHAR(20),              -- → customers.customer_id
-    customer_name VARCHAR(100),
-    accident_type VARCHAR(50),
-    reported_at   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-    status        VARCHAR(20)
+    accident_no      VARCHAR(20)  PRIMARY KEY,
+    customer_id      VARCHAR(20),              -- → customers.customer_id
+    customer_name    VARCHAR(100),
+    accident_type    VARCHAR(50),
+    vehicle_no       VARCHAR(50),
+    owner_name       VARCHAR(100),
+    phone_no         VARCHAR(20),
+    damage_type      VARCHAR(200),
+    location         VARCHAR(200),
+    needs_dispatch   BOOLEAN      DEFAULT FALSE,
+    casualty_count   INT          DEFAULT 0,
+    injury_severity  VARCHAR(50),
+    emergency_reported BOOLEAN    DEFAULT FALSE,
+    reported_at      TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    status           VARCHAR(20)
 );
 
 -- 보험 청구 접수
@@ -222,12 +235,19 @@ CREATE TABLE IF NOT EXISTS policy_applications (
 
 -- 교육 계획안
 CREATE TABLE IF NOT EXISTS education_plans (
-    plan_no         VARCHAR(20)  PRIMARY KEY,
-    trainer_name    VARCHAR(100),
-    title           VARCHAR(200),
-    target_audience VARCHAR(200),
-    scheduled_date  DATE,
-    status          VARCHAR(20)
+    plan_no           VARCHAR(20)  PRIMARY KEY,
+    trainer_name      VARCHAR(100),
+    title             VARCHAR(200),
+    target_audience   VARCHAR(200),
+    scheduled_date    DATE,
+    end_date          DATE,
+    target_count      INT          DEFAULT 0,
+    budget            BIGINT       DEFAULT 0,
+    education_goal    TEXT,
+    education_content TEXT,
+    textbook_list     TEXT,
+    reject_reason     TEXT,
+    status            VARCHAR(20)
 );
 
 -- ============================================================
@@ -242,7 +262,8 @@ CREATE TABLE IF NOT EXISTS consultation_requests (
     contact      VARCHAR(100),
     content      TEXT,
     status       VARCHAR(20),
-    requested_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    requested_at TIMESTAMP    NULL,
+    accepted_at  TIMESTAMP    NULL
 );
 
 -- 인터뷰 일정
@@ -252,15 +273,21 @@ CREATE TABLE IF NOT EXISTS interview_schedules (
     type          VARCHAR(20),
     scheduled_at  TIMESTAMP,
     location      VARCHAR(200),
-    status        VARCHAR(20)
+    preparation   TEXT,
+    status        VARCHAR(20),
+    registered_at TIMESTAMP    NULL,
+    modified_at   TIMESTAMP    NULL,
+    cancelled_at  TIMESTAMP    NULL
 );
 
 -- 인터뷰 기록
 CREATE TABLE IF NOT EXISTS interview_records (
-    record_no     VARCHAR(20)  PRIMARY KEY,
-    customer_name VARCHAR(100),
-    content       TEXT,
-    recorded_at   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    record_no         VARCHAR(20)  PRIMARY KEY,
+    customer_name     VARCHAR(100),
+    content           TEXT,
+    customer_reaction TEXT,
+    follow_up_action  TEXT,
+    recorded_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 설계서 (제안서)
@@ -309,23 +336,40 @@ CREATE TABLE IF NOT EXISTS channel_recruitments (
 
 -- 채널 심사
 CREATE TABLE IF NOT EXISTS channel_screenings (
-    screening_no   VARCHAR(20)  PRIMARY KEY,
-    candidate_name VARCHAR(100),
-    channel_type   VARCHAR(50),
-    qualification  VARCHAR(200),
-    status         VARCHAR(20),
-    reviewed_at    TIMESTAMP
+    screening_no     VARCHAR(20)  PRIMARY KEY,
+    candidate_name   VARCHAR(100),
+    channel_type     VARCHAR(50),
+    qualification    VARCHAR(200),
+    application_date DATE,
+    status           VARCHAR(20),
+    reviewed_at      TIMESTAMP
 );
 
 -- 활동 계획
 CREATE TABLE IF NOT EXISTS activity_plans (
-    plan_no                VARCHAR(20)  PRIMARY KEY,
-    author_name            VARCHAR(100),
-    activity_type          VARCHAR(50),
-    scheduled_date         DATE,
-    target                 VARCHAR(200),
-    proposed_insurance_type VARCHAR(50),
-    status                 VARCHAR(20)
+    plan_no                  VARCHAR(20)  PRIMARY KEY,
+    plan_name                VARCHAR(200),
+    author_name              VARCHAR(100),
+    start_date               DATE,
+    end_date                 DATE,
+    target_contract_count    INT          DEFAULT 0,
+    target_contract_amount   BIGINT       DEFAULT 0,
+    target_new_customer      INT          DEFAULT 0,
+    proposed_customer_id     VARCHAR(20),
+    proposed_insurance_type  VARCHAR(50),
+    proposal_reason          TEXT,
+    memo                     TEXT,
+    status                   VARCHAR(20)
+);
+
+CREATE TABLE IF NOT EXISTS activity_schedule_items (
+    id              BIGINT       AUTO_INCREMENT PRIMARY KEY,
+    plan_no         VARCHAR(20),
+    customer_id     VARCHAR(20),
+    activity_type   VARCHAR(50),
+    activity_datetime TIMESTAMP,
+    location        VARCHAR(200),
+    memo            TEXT
 );
 
 -- 성과급 요청
@@ -340,20 +384,28 @@ CREATE TABLE IF NOT EXISTS bonus_requests (
 
 -- 영업 활동 관리
 CREATE TABLE IF NOT EXISTS sales_activity_managements (
-    activity_no   VARCHAR(20)  PRIMARY KEY,
-    manager_name  VARCHAR(100),
-    channel_name  VARCHAR(100),
-    activity_type VARCHAR(50),
-    created_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    activity_no         VARCHAR(20)  PRIMARY KEY,
+    manager_name        VARCHAR(100),
+    channel_name        VARCHAR(100),
+    activity_type       VARCHAR(50),
+    visit_count         INT          DEFAULT 0,
+    contract_count      INT          DEFAULT 0,
+    achievement_rate    DOUBLE       DEFAULT 0,
+    improvement_content TEXT,
+    revised_target      INT          DEFAULT 0,
+    created_at          TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 영업 조직 평가
 CREATE TABLE IF NOT EXISTS sales_org_evaluations (
-    evaluation_no VARCHAR(20)  PRIMARY KEY,
-    org_name      VARCHAR(100),
-    grade         VARCHAR(20),
-    score         DOUBLE       DEFAULT 0,
-    evaluated_at  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    evaluation_no      VARCHAR(20)  PRIMARY KEY,
+    org_name           VARCHAR(100),
+    grade              VARCHAR(20),
+    score              DOUBLE       DEFAULT 0,
+    sales_result       BIGINT       DEFAULT 0,
+    contract_count     INT          DEFAULT 0,
+    evaluation_comment TEXT,
+    evaluated_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================================
@@ -361,12 +413,17 @@ CREATE TABLE IF NOT EXISTS sales_org_evaluations (
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS inquiries (
-    inquiry_no    VARCHAR(20)  PRIMARY KEY,
-    customer_name VARCHAR(100),
-    inquiry_type  VARCHAR(50),
-    content       TEXT,
-    status        VARCHAR(20),
-    created_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    inquiry_no            VARCHAR(20)  PRIMARY KEY,
+    customer_name         VARCHAR(100),
+    inquiry_type          VARCHAR(50),
+    title                 VARCHAR(50),
+    content               TEXT,
+    attachment_file_name  VARCHAR(200),
+    attachment_file_size  BIGINT,
+    answer_content        TEXT,
+    answered_at           TIMESTAMP    NULL,
+    status                VARCHAR(20),
+    created_at            TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================================
@@ -391,6 +448,7 @@ CREATE TABLE IF NOT EXISTS cancellations (
     customer_name   VARCHAR(100),
     monthly_premium BIGINT       DEFAULT 0,
     reason          VARCHAR(500),
+    detail_reason   TEXT,
     expected_refund BIGINT       DEFAULT 0,
     status          VARCHAR(20),
     cancelled_at    TIMESTAMP
@@ -446,12 +504,14 @@ CREATE TABLE IF NOT EXISTS damage_investigations (
 -- 교육 제반 준비
 -- (plan_no 는 앱 코드에서 현재 null 로 삽입됨 — 향후 연결 가능)
 CREATE TABLE IF NOT EXISTS education_preparations (
-    prep_no        VARCHAR(20)  PRIMARY KEY,
-    plan_no        VARCHAR(20),             -- → education_plans.plan_no
-    trainer_name   VARCHAR(100),
-    venue          VARCHAR(200),
-    material_ready BOOLEAN      DEFAULT FALSE,
-    status         VARCHAR(20)
+    prep_no         VARCHAR(20)  PRIMARY KEY,
+    plan_no         VARCHAR(20),            -- → education_plans.plan_no
+    trainer_name    VARCHAR(100),
+    venue           VARCHAR(200),
+    material_ready  BOOLEAN      DEFAULT FALSE,
+    textbook_status VARCHAR(200),
+    attendance_list TEXT,
+    status          VARCHAR(20)
 );
 
 -- ============================================================
@@ -494,10 +554,14 @@ CREATE TABLE IF NOT EXISTS claim_calculations (
 
 -- 출동 기록
 CREATE TABLE IF NOT EXISTS dispatch_records (
-    record_no   VARCHAR(20)  PRIMARY KEY,
-    dispatch_no VARCHAR(20),                -- → dispatches.dispatch_no
-    agent_name  VARCHAR(100),
-    status      VARCHAR(20)
+    record_no        VARCHAR(20)  PRIMARY KEY,
+    dispatch_no      VARCHAR(20),                -- → dispatches.dispatch_no
+    agent_name       VARCHAR(100),
+    police_required  BOOLEAN      DEFAULT FALSE,
+    towing_required  BOOLEAN      DEFAULT FALSE,
+    notes            TEXT,
+    transmitted_at   TIMESTAMP    NULL,
+    status           VARCHAR(20)
 );
 
 -- ============================================================
@@ -515,6 +579,14 @@ CREATE TABLE IF NOT EXISTS education_executions (
     status         VARCHAR(20)
 );
 
+-- 개별 출석 이력 (BUG-EDU-06)
+CREATE TABLE IF NOT EXISTS education_attendances (
+    id            BIGINT       AUTO_INCREMENT PRIMARY KEY,
+    execution_no  VARCHAR(20),              -- → education_executions.execution_no
+    attendee_name VARCHAR(100),
+    is_attended   BOOLEAN      DEFAULT FALSE
+);
+
 -- ============================================================
 -- Tier 5 : refund_calculations 참조
 -- ============================================================
@@ -525,7 +597,19 @@ CREATE TABLE IF NOT EXISTS refund_payments (
     refund_no       VARCHAR(20),            -- → refund_calculations.refund_no
     cancellation_no VARCHAR(20),
     final_amount    BIGINT       DEFAULT 0,
+    transferred_at  DATETIME     NULL,
+    notice_sent     BOOLEAN      DEFAULT FALSE,
+    otp_fail_count  INT          DEFAULT 0,
     status          VARCHAR(20)
+);
+
+-- 계약별 납입 항목 (BUG-FIN-02)
+CREATE TABLE IF NOT EXISTS payment_items (
+    id          BIGINT       AUTO_INCREMENT PRIMARY KEY,
+    payment_no  VARCHAR(20),                -- → payments.payment_no
+    contract_no VARCHAR(20),
+    count       INT          DEFAULT 0,
+    subtotal    BIGINT       DEFAULT 0
 );
 
 -- ============================================================
@@ -534,8 +618,14 @@ CREATE TABLE IF NOT EXISTS refund_payments (
 
 -- 보험금 지급
 CREATE TABLE IF NOT EXISTS claim_payments (
-    payment_no     VARCHAR(20)  PRIMARY KEY,
-    calculation_no VARCHAR(20),             -- → claim_calculations.calculation_no
-    final_amount   BIGINT       DEFAULT 0,
-    status         VARCHAR(20)
+    payment_no      VARCHAR(20)  PRIMARY KEY,
+    calculation_no  VARCHAR(20),             -- → claim_calculations.calculation_no
+    final_amount    BIGINT       DEFAULT 0,
+    paid_at         DATETIME     NULL,
+    scheduled_at    DATETIME     NULL,
+    payment_type    VARCHAR(20),
+    recipient_name  VARCHAR(100),
+    account_no      VARCHAR(50),
+    failure_reason  TEXT,
+    status          VARCHAR(20)
 );
