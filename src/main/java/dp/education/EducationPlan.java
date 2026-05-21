@@ -18,6 +18,10 @@ public class EducationPlan {
     private String channelType;
     private int targetCount;
     private long budget;
+    private String educationGoal;
+    private String educationContent;
+    private String textbookList;
+    private String rejectReason;
     private String status;
 
     public EducationPlan(int planNumber, String educationName, LocalDate startDate, LocalDate endDate,
@@ -41,14 +45,24 @@ public class EducationPlan {
     private EducationPlan(boolean fromDb) {}
 
     public static EducationPlan fromDb(int planNumber, String trainerName, String educationName,
-                                        String channelType, LocalDate startDate, String status) {
+                                        String channelType, LocalDate startDate, LocalDate endDate,
+                                        int targetCount, long budget,
+                                        String educationGoal, String educationContent,
+                                        String textbookList, String rejectReason, String status) {
         EducationPlan p = new EducationPlan(true);
-        p.planNumber    = planNumber;
-        p.trainerName   = trainerName;
-        p.educationName = educationName;
-        p.channelType   = channelType;
-        p.startDate     = startDate;
-        p.status        = status;
+        p.planNumber      = planNumber;
+        p.trainerName     = trainerName;
+        p.educationName   = educationName;
+        p.channelType     = channelType;
+        p.startDate       = startDate;
+        p.endDate         = endDate;
+        p.targetCount     = targetCount;
+        p.budget          = budget;
+        p.educationGoal   = educationGoal;
+        p.educationContent = educationContent;
+        p.textbookList    = textbookList;
+        p.rejectReason    = rejectReason;
+        p.status          = status;
         return p;
     }
 
@@ -62,11 +76,19 @@ public class EducationPlan {
         this.budget = budget;
     }
 
+    public void enterContentInfo(String educationGoal, String educationContent, String textbookList) {
+        this.educationGoal    = educationGoal;
+        this.educationContent = educationContent;
+        this.textbookList     = textbookList;
+    }
+
     public boolean validateRequiredFields() {
         return educationName != null && !educationName.isEmpty()
                 && startDate != null && endDate != null
                 && channelType != null && !channelType.isEmpty()
-                && targetCount > 0 && budget > 0;
+                && targetCount > 0 && budget > 0
+                && educationGoal != null && !educationGoal.isEmpty()
+                && educationContent != null && !educationContent.isEmpty();
     }
 
     public void requestApproval() {
@@ -82,6 +104,7 @@ public class EducationPlan {
     }
 
     public void reject(String reason) {
+        this.rejectReason = reason;
         this.status = "반려";
     }
 
@@ -94,5 +117,9 @@ public class EducationPlan {
     public String getChannelType() { return channelType; }
     public int getTargetCount() { return targetCount; }
     public long getBudget() { return budget; }
+    public String getEducationGoal() { return educationGoal; }
+    public String getEducationContent() { return educationContent; }
+    public String getTextbookList() { return textbookList; }
+    public String getRejectReason() { return rejectReason; }
     public String getStatus() { return status; }
 }

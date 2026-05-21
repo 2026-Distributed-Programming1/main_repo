@@ -77,7 +77,10 @@ public class EducationExecutionRunner {
         int count = execution.calculateAttendanceCount();
         ConsoleHelper.printStage("시스템", "출석 현황: " + count + " / " + list.size());
 
-        // 5. 영업교육 담당자는 [진행 완료] 버튼을 클릭한다. (A1)
+        // 5. 영업교육 담당자는 메모를 입력하고 [진행 완료] 버튼을 클릭한다. (A1)
+        String memo = ConsoleHelper.readLine("  교육 진행 메모 (없으면 엔터): ");
+        if (!memo.isEmpty()) execution.setMemo(memo);
+
         int action = ConsoleHelper.readMenuChoice(
                 "[영업교육담당자] 처리를 선택하세요.",
                 "진행 완료", "취소");
@@ -96,10 +99,6 @@ public class EducationExecutionRunner {
             ConsoleHelper.waitEnter();
             return;
         }
-
-        // 7. 영업교육 담당자는 [확인] 버튼을 클릭한다.
-        String memo = ConsoleHelper.readLine("  교육 진행 메모 (없으면 엔터): ");
-        if (!memo.isEmpty()) execution.setMemo(memo);
 
         execution.complete();
         EducationExecutionDAO.save(execution);

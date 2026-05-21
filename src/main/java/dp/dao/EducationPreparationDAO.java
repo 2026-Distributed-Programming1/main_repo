@@ -8,31 +8,49 @@ import java.util.List;
 public class EducationPreparationDAO {
 
     public static void save(EducationPreparation e) {
+        String attendanceStr = e.getAttendanceList().stream()
+                .map(dp.education.Attendance::getAttendeeName)
+                .collect(java.util.stream.Collectors.joining(","));
         DBA.executeUpdate(
-            "INSERT INTO education_preparations (prep_no, plan_no, trainer_name, venue,"
-            + " material_ready, status)"
-            + " VALUES (?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE venue=VALUES(venue), status=VALUES(status)",
+            "INSERT INTO education_preparations"
+            + " (prep_no, plan_no, trainer_name, venue, material_ready,"
+            + "  textbook_status, attendance_list, status)"
+            + " VALUES (?,?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE"
+            + "  venue=VALUES(venue), textbook_status=VALUES(textbook_status),"
+            + "  attendance_list=VALUES(attendance_list), status=VALUES(status)",
             String.valueOf(e.getSetupNumber()),
             e.getPlanNo(),
             e.getInstructorName(),
             e.getLocation(),
             e.getTextbookStatus() != null,
+            e.getTextbookStatus(),
+            attendanceStr,
             null);
     }
 
     public static List<EducationPreparation> findAll() {
         return DBA.executeQuery(
-            "SELECT prep_no, plan_no, trainer_name, venue FROM education_preparations",
+            "SELECT prep_no, plan_no, trainer_name, venue,"
+            + " textbook_status, attendance_list FROM education_preparations",
             rs -> {
+                String attendanceStr = rs.getString("attendance_list");
+                List<dp.education.Attendance> attendees = new ArrayList<>();
+                if (attendanceStr != null && !attendanceStr.isEmpty()) {
+                    for (String name : attendanceStr.split(",")) {
+                        if (!name.trim().isEmpty()) {
+                            attendees.add(new dp.education.Attendance(name.trim()));
+                        }
+                    }
+                }
                 EducationPreparation e = new EducationPreparation(
                     rs.getInt("prep_no"),
                     null,
                     rs.getString("venue"),
                     rs.getString("trainer_name"),
+                    rs.getString("textbook_status"),
                     null,
-                    null,
-                    new ArrayList<>());
+                    attendees);
                 e.setPlanNo(rs.getString("plan_no"));
                 return e;
             });
