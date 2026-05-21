@@ -101,9 +101,9 @@ public class ContractStatisticsRunner {
         YearMonth endMonth;
         while (true) {
             int startYear = ConsoleHelper.readPositiveInt("  시작 연도 (예: 2024): ");
-            int startMon = ConsoleHelper.readPositiveInt("  시작 월 (1~12): ");
+            int startMon = ConsoleHelper.readRangeInt("  시작 월 (1~12): ", 1, 12);
             int endYear = ConsoleHelper.readPositiveInt("  종료 연도 (예: 2024): ");
-            int endMon = ConsoleHelper.readPositiveInt("  종료 월 (1~12): ");
+            int endMon = ConsoleHelper.readRangeInt("  종료 월 (1~12): ", 1, 12);
             startMonth = YearMonth.of(startYear, startMon);
             endMonth = YearMonth.of(endYear, endMon);
             statistics.setFilterStartMonth(startMonth);
@@ -195,9 +195,9 @@ public class ContractStatisticsRunner {
         YearMonth endMonth;
         while (true) {
             int startYear = ConsoleHelper.readPositiveInt("  시작 연도 (예: 2024): ");
-            int startMon = ConsoleHelper.readPositiveInt("  시작 월 (1~12): ");
+            int startMon = ConsoleHelper.readRangeInt("  시작 월 (1~12): ", 1, 12);
             int endYear = ConsoleHelper.readPositiveInt("  종료 연도 (예: 2024): ");
-            int endMon = ConsoleHelper.readPositiveInt("  종료 월 (1~12): ");
+            int endMon = ConsoleHelper.readRangeInt("  종료 월 (1~12): ", 1, 12);
             startMonth = YearMonth.of(startYear, startMon);
             endMonth = YearMonth.of(endYear, endMon);
             statistics.setFilterStartMonth(startMonth);

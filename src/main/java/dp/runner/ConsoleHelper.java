@@ -71,6 +71,15 @@ public class ConsoleHelper {
         }
     }
 
+    /** 범위 내 정수 입력받기 */
+    public static int readRangeInt(String prompt, int min, int max) {
+        while (true) {
+            int v = readInt(prompt);
+            if (v >= min && v <= max) return v;
+            System.out.println("  ⚠️  " + min + "~" + max + " 사이의 값을 입력해주세요.");
+        }
+    }
+
     /** long 입력받기 */
     public static long readLong(String prompt) {
         while (true) {

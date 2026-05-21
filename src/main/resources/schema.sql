@@ -18,7 +18,7 @@
 CREATE DATABASE IF NOT EXISTS insurance_db
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
-USE insurance_db;
+    USE insurance_db;
 
 -- ============================================================
 -- Tier 1-A : 고객
