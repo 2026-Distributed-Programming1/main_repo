@@ -17,6 +17,8 @@ public class ConsultationRequest {
     private String contact;
     private String content;
     private String status;
+    private LocalDateTime receivedAt;
+    private LocalDateTime acceptedAt;
 
     public ConsultationRequest(int consultationNumber, String type, LocalDateTime scheduledAt,
                                String location, String contact, String content, String status) {
@@ -54,10 +56,12 @@ public class ConsultationRequest {
 
     public void submit() {
         this.status = "접수";
+        this.receivedAt = LocalDateTime.now();
     }
 
     public void accept() {
         this.status = "수락";
+        this.acceptedAt = LocalDateTime.now();
     }
 
     public int getConsultationNumber() { return consultationNumber; }
@@ -68,4 +72,7 @@ public class ConsultationRequest {
     public String getContent() { return content; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public LocalDateTime getReceivedAt() { return receivedAt; }
+    public void setReceivedAt(LocalDateTime receivedAt) { this.receivedAt = receivedAt; }
+    public LocalDateTime getAcceptedAt() { return acceptedAt; }
 }

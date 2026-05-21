@@ -2,6 +2,7 @@ package dp.runner.usecase;
 
 import dp.actor.Customer;
 import dp.consultation.InsuranceProduct;
+import dp.consultation.InterviewRecord;
 import dp.consultation.Proposal;
 import dp.dao.CustomerDAO;
 import dp.dao.InsuranceProductDAO;
@@ -32,7 +33,7 @@ import java.util.List;
  */
 public class ProposalRunner {
 
-    public static void run() {
+    public static void run(InterviewRecord record) {
         ConsoleHelper.printDoubleDivider();
         System.out.println("UC: 보험상품을 제안한다");
         ConsoleHelper.printDoubleDivider();
@@ -40,9 +41,14 @@ public class ProposalRunner {
         Customer customer = selectCustomer();
         if (customer == null) return;
 
-        // 2. 시스템은 보험상품 제안 화면을 출력한다.
+        // 2. 시스템은 보험상품 제안 화면을 출력한다. (고객 기본 정보 + 면담 내용 요약)
         ConsoleHelper.printStage("시스템", "보험상품 제안 화면을 출력합니다.");
         ConsoleHelper.printInfo("고객명: " + customer.getName() + " | 연락처: " + customer.getContact());
+        ConsoleHelper.printInfo("[면담 내용 요약] 고객명: " + record.getCustomerName()
+                + " | 면담일시: " + record.getInterviewedAt()
+                + " | 면담 내용: " + record.getContent()
+                + " | 고객 반응: " + record.getCustomerReaction()
+                + " | 후속 조치: " + (record.getFollowUpAction() != null ? record.getFollowUpAction() : "-"));
 
         List<InsuranceProduct> products = InsuranceProductDAO.findAll();
         if (products.isEmpty()) {
@@ -60,13 +66,11 @@ public class ProposalRunner {
                     + " | " + p.getCoverage());
         }
 
-        // 3. 판매채널은 제안할 상품을 선택한다. (A1, A2)
         int action = ConsoleHelper.readMenuChoice(
                 "[판매채널] 작업을 선택하세요.",
                 "상품 선택", "닫기 (A2)");
 
         if (action == 2) {
-            // A2) [닫기] 버튼을 클릭한 경우
             ConsoleHelper.printStage("시스템", "보험상품 제안 화면으로 복귀합니다.");
             ConsoleHelper.waitEnter();
             return;
@@ -80,7 +84,6 @@ public class ProposalRunner {
         proposal.setCustomerName(customer.getName());
         proposal.selectProduct(products.get(choice - 1));
 
-        // 4. 시스템은 선택한 보험상품의 상세 정보를 출력한다.
         ConsoleHelper.printStage("시스템", "선택한 보험상품 상세 정보를 출력합니다.");
         ConsoleHelper.printInfo("상품명: " + proposal.getInsuranceProduct().getProductName());
         ConsoleHelper.printInfo("보험유형: " + proposal.getInsuranceProduct().getType());
@@ -88,18 +91,16 @@ public class ProposalRunner {
         ConsoleHelper.printInfo("보장내용: " + proposal.getInsuranceProduct().getCoverage());
         ConsoleHelper.printInfo("특약사항: " + proposal.getInsuranceProduct().getSpecialTerms());
 
-        // 5. 판매채널은 [제안서 발송] 버튼을 클릭한다.
         boolean send = ConsoleHelper.readYesNo("[판매채널] 제안서를 발송하시겠습니까?");
         if (send) {
-            // 6. 시스템은 고객에게 보험상품 제안서를 발송한다.
             proposal.send();
             ProposalDAO.save(proposal);
             ConsoleHelper.printStage("시스템", "제안서 발송 완료 결과를 출력합니다.");
             ConsoleHelper.printInfo("제안번호: " + proposal.getProposalId()
+                    + " | 발송일시: " + proposal.getSentAt()
                     + " | 수신고객명: " + proposal.getCustomerName());
         }
 
-        // 7~8. [닫기] → 면담기록 관리 화면으로 복귀
         ConsoleHelper.printStage("시스템", "면담기록 관리 화면으로 돌아갑니다.");
         ConsoleHelper.waitEnter();
     }
