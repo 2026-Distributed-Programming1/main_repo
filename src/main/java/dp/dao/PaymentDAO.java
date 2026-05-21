@@ -1,7 +1,11 @@
 package dp.dao;
 
+import dp.actor.Customer;
 import dp.db.DBA;
+import dp.enums.PaymentStatus;
 import dp.payment.Payment;
+import dp.payment.PaymentItem;
+import java.util.List;
 
 public class PaymentDAO {
 
@@ -17,5 +21,32 @@ public class PaymentDAO {
             + " ON DUPLICATE KEY UPDATE status=VALUES(status)",
             p.getPaymentNo(), customerId, customerName,
             p.getDiscountedAmount(), method, p.getRequestedAt(), status);
+
+        for (PaymentItem item : p.getItems()) {
+            String contractNo = item.getContract() != null ? item.getContract().getContractNo() : null;
+            DBA.executeUpdate(
+                "INSERT INTO payment_items (payment_no, contract_no, count, subtotal)"
+                + " VALUES (?,?,?,?)",
+                p.getPaymentNo(), contractNo, item.getCount(), item.getSubtotal());
+        }
+    }
+
+    public static List<Payment> findAll() {
+        return DBA.executeQuery(
+            "SELECT payment_no, customer_id, customer_name, total_amount,"
+            + " payment_method, requested_at, status FROM payments",
+            rs -> {
+                String cid  = rs.getString("customer_id");
+                String cname = rs.getString("customer_name");
+                Customer custShell = new Customer(
+                    cid != null ? cid : "?", cname != null ? cname : "", null, null, null);
+                Payment pay = new Payment(custShell);
+                String st = rs.getString("status");
+                if (st != null) {
+                    try { pay.setStatus(PaymentStatus.valueOf(st)); }
+                    catch (IllegalArgumentException ignored) {}
+                }
+                return pay;
+            });
     }
 }

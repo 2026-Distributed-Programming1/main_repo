@@ -186,7 +186,17 @@ public class ClaimPaymentRunner {
     private static void showPayment(ClaimPayment payment) {
         ConsoleHelper.printDivider();
         System.out.println("  지급번호: " + payment.getPaymentNo());
-        System.out.println("  대상 산출: " + payment.getCalculation().getCalculationNo());
+        System.out.println("  산출번호: " + payment.getCalculation().getCalculationNo());
+        // 접수번호·사고일자: 산출 → 조사 → 청구 체인 탐색
+        dp.claim.ClaimCalculation calc = payment.getCalculation();
+        if (calc.getInvestigation() != null && calc.getInvestigation().getClaim() != null) {
+            System.out.println("  접수번호: " + calc.getInvestigation().getClaim().getClaimNo());
+        }
+        if (calc.getInvestigation() != null
+                && calc.getInvestigation().getClaim() != null
+                && calc.getInvestigation().getClaim().getContract() != null) {
+            System.out.println("  사고일자: " + calc.getInvestigation().getClaim().getContract().getContractDate());
+        }
         if (payment.getRecipient() != null) {
             System.out.println("  수령인: " + payment.getRecipient().getName()
                     + " (" + payment.getRecipient().getContact() + ")");

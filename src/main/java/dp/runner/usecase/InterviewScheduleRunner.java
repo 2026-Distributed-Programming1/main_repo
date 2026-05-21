@@ -103,6 +103,7 @@ public class InterviewScheduleRunner {
             // 5. 시스템은 등록 완료 결과를 출력한다.
             ConsoleHelper.printStage("시스템", "면담 등록 완료 결과를 출력합니다.");
             ConsoleHelper.printInfo("면담번호: " + schedule.getInterviewNumber()
+                    + " | 등록일시: " + schedule.getRegisteredAt()
                     + " | 고객명: " + schedule.getCustomerName()
                     + " | 면담일시: " + schedule.getScheduledAt());
 
@@ -119,9 +120,14 @@ public class InterviewScheduleRunner {
                 ConsoleHelper.waitEnter();
                 return;
             }
-            ConsoleHelper.printStage("시스템", "면담 정보를 편집 가능한 상태로 출력합니다.");
-            InterviewSchedule schedule = interviewSchedules.get(interviewSchedules.size() - 1);
+            String[] modifyOptions = interviewSchedules.stream()
+                    .map(s -> "[" + s.getInterviewNumber() + "] " + s.getCustomerName()
+                            + " | " + s.getScheduledAt())
+                    .toArray(String[]::new);
+            int modifyIdx = ConsoleHelper.readMenuChoice("수정할 면담 일정을 선택하세요.", modifyOptions);
+            InterviewSchedule schedule = interviewSchedules.get(modifyIdx - 1);
 
+            ConsoleHelper.printStage("시스템", "면담 정보를 편집 가능한 상태로 출력합니다.");
             LocalDateTime scheduledAt = ConsoleHelper.readDateTime("  변경할 면담일시");
             String location = ConsoleHelper.readNonEmpty("  변경할 장소: ");
             String preparation = ConsoleHelper.readLine("  준비사항 (없으면 엔터): ");
@@ -137,7 +143,8 @@ public class InterviewScheduleRunner {
 
             // 5. 시스템은 수정 완료 결과를 출력한다.
             ConsoleHelper.printStage("시스템", "수정 완료 결과를 출력합니다.");
-            ConsoleHelper.printInfo("면담번호: " + schedule.getInterviewNumber());
+            ConsoleHelper.printInfo("면담번호: " + schedule.getInterviewNumber()
+                    + " | 수정일시: " + schedule.getModifiedAt());
 
         } else if (action == 3) {
             // A5) [취소] 버튼을 클릭한 경우
@@ -146,15 +153,21 @@ public class InterviewScheduleRunner {
                 ConsoleHelper.waitEnter();
                 return;
             }
+            String[] cancelOptions = interviewSchedules.stream()
+                    .map(s -> "[" + s.getInterviewNumber() + "] " + s.getCustomerName()
+                            + " | " + s.getScheduledAt())
+                    .toArray(String[]::new);
+            int cancelIdx = ConsoleHelper.readMenuChoice("취소할 면담 일정을 선택하세요.", cancelOptions);
+            InterviewSchedule schedule = interviewSchedules.get(cancelIdx - 1);
+
             ConsoleHelper.printStage("시스템", "해당 면담을 취소하시겠습니까?");
             boolean confirm = ConsoleHelper.readYesNo("  확인");
             if (confirm) {
-                InterviewSchedule schedule = interviewSchedules.get(interviewSchedules.size() - 1);
                 schedule.cancel();
                 InterviewScheduleDAO.save(schedule);
                 ConsoleHelper.printStage("시스템", "취소 완료 결과를 출력합니다.");
                 ConsoleHelper.printInfo("면담번호: " + schedule.getInterviewNumber()
-                        + " | 상태: " + schedule.getStatus());
+                        + " | 취소일시: " + schedule.getCancelledAt());
             }
         }
 

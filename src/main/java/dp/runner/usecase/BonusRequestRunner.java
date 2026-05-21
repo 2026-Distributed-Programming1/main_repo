@@ -5,6 +5,7 @@ import dp.enums.EvaluationGrade;
 import dp.dao.BonusRequestDAO;
 import dp.runner.ConsoleHelper;
 import dp.sales.BonusRequest;
+import dp.sales.SalesOrgEvaluation;
 
 /**
  * UC: 성과급 지급을 요청한다 시나리오 진행자
@@ -30,6 +31,79 @@ import dp.sales.BonusRequest;
  *       → 영업 관리자는 [재시도] 버튼을 클릭한다.
  */
 public class BonusRequestRunner {
+
+    public static void run(SalesOrgEvaluation evaluation) {
+        ConsoleHelper.printDoubleDivider();
+        System.out.println("UC: 성과급 지급을 요청한다");
+        ConsoleHelper.printDoubleDivider();
+
+        ConsoleHelper.printInfo("[영업조직을 평가한다] A3) 평가 등급 S/A로 성과급 지급 요청 화면으로 이동합니다.");
+
+        BonusRequest bonusRequest = new BonusRequest();
+
+        // 2. 평가 정보 자동 표시
+        bonusRequest.loadRequestScreen();
+        ConsoleHelper.printStage("시스템", "성과급 지급 요청 화면을 출력합니다.");
+        String evalGradeStr = evaluation.getEvaluationGrade() != null ? evaluation.getEvaluationGrade().name() : "-";
+        ConsoleHelper.printInfo("[평가 정보] 평가번호: " + evaluation.getEvaluationNo()
+                + " | 채널명: " + evaluation.getChannelName()
+                + " | 평가등급: " + evalGradeStr);
+
+        bonusRequest.setChannelName(evaluation.getChannelName());
+        bonusRequest.setChannelType(evaluation.getChannelType() != null
+                ? evaluation.getChannelType() : ChannelType.DESIGNER);
+        bonusRequest.setEvaluationNo(evaluation.getEvaluationNo());
+        bonusRequest.setEvaluationGrade(evaluation.getEvaluationGrade() != null
+                ? evaluation.getEvaluationGrade() : EvaluationGrade.S);
+
+        ConsoleHelper.printStage("영업관리자", "성과급 지급 요청 추가 정보를 입력합니다.");
+        long baseSalary = ConsoleHelper.readLong("  기본급 (원): ");
+        bonusRequest.setBaseSalary(baseSalary);
+        String requestReason = ConsoleHelper.readNonEmpty("  요청사유: ");
+        bonusRequest.setRequestReason(requestReason);
+
+        Double bonusAmount = bonusRequest.calculateBonus();
+        ConsoleHelper.printStage("시스템", "성과급 금액을 자동 산출합니다.");
+        ConsoleHelper.printInfo("평가등급: " + evalGradeStr
+                + " | 지급비율: " + (int)(bonusRequest.getBonusRatio() * 100) + "%"
+                + " | 기본급: " + baseSalary + "원"
+                + " | 산출된 성과급: " + bonusAmount + "원");
+
+        int action = ConsoleHelper.readMenuChoice(
+                "[영업관리자] 처리를 선택하세요.",
+                "요청 제출", "취소");
+
+        if (action == 2) {
+            bonusRequest.cancel();
+            ConsoleHelper.printStage("시스템", "성과급 지급 화면을 닫습니다.");
+            ConsoleHelper.printInfo("[A1] [영업조직을 평가한다] 유스케이스로 복귀합니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
+        bonusRequest.showConfirmPopup();
+        ConsoleHelper.printStage("시스템", "성과급 지급을 요청하시겠습니까?");
+        boolean confirm = ConsoleHelper.readYesNo("  확인");
+        if (!confirm) {
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
+        bonusRequest.submit();
+        BonusRequestDAO.save(bonusRequest);
+
+        bonusRequest.showRequestResult();
+        ConsoleHelper.printStage("시스템", "요청 완료 결과를 출력합니다.");
+        String channelTypeStr = bonusRequest.getChannelType() == ChannelType.DESIGNER ? "설계사" : "대리점";
+        ConsoleHelper.printInfo("요청번호: " + bonusRequest.getRequestNo()
+                + " | 요청일시: " + bonusRequest.getRequestedAt()
+                + " | 대상채널: " + bonusRequest.getChannelName() + "(" + channelTypeStr + ")"
+                + " | 요청금액: " + bonusRequest.getBonusAmount() + "원");
+
+        ConsoleHelper.printStage("영업관리자", "[확인] 버튼을 클릭합니다.");
+        ConsoleHelper.readLine("  [확인] (엔터를 눌러 확인): ");
+        ConsoleHelper.waitEnter();
+    }
 
     public static void run() {
         ConsoleHelper.printDoubleDivider();

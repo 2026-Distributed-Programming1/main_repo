@@ -55,6 +55,11 @@ public class SalesOrgEvaluation {
     public void navigateToBonus() {}
 
     // Runner에서 실제 사용하는 getter/setter만 유지
+    public Long getSalesResult() { return salesResult; }
+    public Integer getContractCount() { return contractCount; }
+    public String getEvaluationComment() { return evaluationComment; }
+    public ChannelType getChannelType() { return channelType; }
+    public String getEvaluationNo() { return evaluationNo; }
     public void setFilterStartDate(LocalDate filterStartDate) { this.filterStartDate = filterStartDate; }
     public void setFilterEndDate(LocalDate filterEndDate) { this.filterEndDate = filterEndDate; }
     public void setChannelType(ChannelType channelType) { this.channelType = channelType; }
@@ -67,6 +72,5 @@ public class SalesOrgEvaluation {
     public EvaluationGrade getEvaluationGrade() { return evaluationGrade; }
     public void setEvaluationGrade(EvaluationGrade evaluationGrade) { this.evaluationGrade = evaluationGrade; }
     public void setEvaluationComment(String evaluationComment) { this.evaluationComment = evaluationComment; }
-    public String getEvaluationNo() { return evaluationNo; }
     public LocalDateTime getEvaluatedAt() { return evaluatedAt; }
 }

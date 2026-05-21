@@ -49,7 +49,9 @@ public class EducationPreparation {
 
     public boolean validateRequiredFields() {
         return location != null && !location.isEmpty()
-                && instructorName != null && !instructorName.isEmpty();
+                && instructorName != null && !instructorName.isEmpty()
+                && textbookStatus != null && !textbookStatus.isEmpty()
+                && attendanceList != null && !attendanceList.isEmpty();
     }
 
     public void save() {

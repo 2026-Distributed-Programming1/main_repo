@@ -105,8 +105,10 @@ public class Cancellation {
     public String getCancellationNo() { return cancellationNo; }
     public Contract getContract()     { return contract; }
     public String getReason()         { return reason; }
+    public String getDetailReason()   { return detailReason; }
     public long getExpectedRefund()   { return expectedRefund; }
     public LocalDateTime getCanceledAt() { return canceledAt; }
+    public void setCanceledAt(java.time.LocalDateTime canceledAt) { this.canceledAt = canceledAt; }
     public String getStatus()         { return status; }
     public boolean isNoticeAgreed()   { return noticeAgreed; }
     public boolean isAuthResult()     { return authResult; }

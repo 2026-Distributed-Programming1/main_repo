@@ -54,17 +54,18 @@ public class ChannelScreeningRunner {
         // 2. 시스템은 지원자 목록 화면을 출력한다.
         screening.loadApplicantList();
         ConsoleHelper.printStage("시스템", "지원자 목록 화면을 출력합니다.");
-        ConsoleHelper.printInfo("테이블 컬럼: 지원자명 / 채널유형 / 경력 / 심사상태");
+        ConsoleHelper.printInfo("테이블 컬럼: 지원자명 / 채널유형 / 지원일 / 경력 / 심사상태");
         List<ChannelScreening> screeningList = ChannelScreeningDAO.findAll();
         if (screeningList.isEmpty()) {
             ConsoleHelper.printInfo("  (저장된 지원자 데이터가 없습니다.)");
         } else {
-            ConsoleHelper.printInfo("  번호 | 지원자명 | 채널유형 | 경력 | 심사상태");
+            ConsoleHelper.printInfo("  번호 | 지원자명 | 채널유형 | 지원일 | 경력 | 심사상태");
             for (int i = 0; i < screeningList.size(); i++) {
                 ChannelScreening s = screeningList.get(i);
                 String ct = s.getChannelType() != null ? (s.getChannelType() == ChannelType.DESIGNER ? "설계사" : "대리점") : "-";
                 ConsoleHelper.printInfo("  " + (i + 1) + " | " + s.getApplicantName()
                         + " | " + ct
+                        + " | " + (s.getApplicationDate() != null ? s.getApplicationDate() : "-")
                         + " | " + (s.getCareer() != null ? s.getCareer() : "없음")
                         + " | " + s.getScreeningStatus());
             }

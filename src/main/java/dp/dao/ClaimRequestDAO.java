@@ -36,7 +36,7 @@ public class ClaimRequestDAO {
     public static List<ClaimRequest> findAll() {
         return DBA.executeQuery(
             "SELECT claim_no, customer_id, customer_name, contract_no, claim_type,"
-            + " diagnosis, claim_reasons, status FROM claim_requests",
+            + " diagnosis, claim_reasons, bank_name, account_no, account_holder, status FROM claim_requests",
             rs -> {
                 String cid  = rs.getString("customer_id");
                 String cname = rs.getString("customer_name");
@@ -66,6 +66,14 @@ public class ClaimRequestDAO {
                 String reasons = rs.getString("claim_reasons");
                 if (reasons != null && !reasons.isEmpty()) {
                     r.selectClaimReasons(Arrays.asList(reasons.split(",")));
+                }
+                String bank = rs.getString("bank_name");
+                String accNo = rs.getString("account_no");
+                String holder = rs.getString("account_holder");
+                if (bank != null) {
+                    dp.common.BankAccount bankAccount = new dp.common.BankAccount();
+                    bankAccount.enter(bank, accNo, holder);
+                    r.selectExistingAccount(bankAccount);
                 }
                 return r;
             });

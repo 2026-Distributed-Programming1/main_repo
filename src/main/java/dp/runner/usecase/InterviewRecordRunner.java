@@ -3,6 +3,7 @@ package dp.runner.usecase;
 import dp.consultation.InterviewRecord;
 import dp.dao.InterviewRecordDAO;
 import dp.runner.ConsoleHelper;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -68,13 +69,16 @@ public class InterviewRecordRunner {
             String customerName = ConsoleHelper.readNonEmpty("  고객명: ");
             record.setCustomerName(customerName);
 
+            LocalDateTime interviewedAt = ConsoleHelper.readDateTime("  면담일시");
+            record.setInterviewedAt(interviewedAt);
+
             String content = ConsoleHelper.readNonEmpty("  면담 내용: ");
             String reaction = ConsoleHelper.readNonEmpty("  고객 반응: ");
             String followUp = ConsoleHelper.readLine("  후속 조치 (없으면 엔터): ");
 
-            // E1) 필수 항목 검증
-            if (content.isEmpty()) {
-                ConsoleHelper.printError("[E1] 필수 항목을 입력해 주세요.");
+            // E1) 필수 항목 검증 (고객명, 면담일시, 면담 내용)
+            if (customerName.isEmpty() || interviewedAt == null || content.isEmpty()) {
+                ConsoleHelper.printError("[E1] 필수 항목을 입력해 주세요. (고객명/면담일시/면담 내용)");
                 ConsoleHelper.waitEnter();
                 return;
             }
@@ -85,14 +89,16 @@ public class InterviewRecordRunner {
             // 5. 시스템은 저장 완료 결과를 출력한다.
             ConsoleHelper.printStage("시스템", "면담 기록 저장 완료 결과를 출력합니다.");
             ConsoleHelper.printInfo("기록번호: " + record.getRecordNumber()
-                    + " | 고객명: " + record.getCustomerName());
+                    + " | 저장일시: " + record.getInterviewedAt()
+                    + " | 고객명: " + record.getCustomerName()
+                    + " | 면담일시: " + record.getInterviewedAt());
 
             // 6. 판매채널은 [보험상품 제안] 버튼을 클릭한다.
             boolean moveToProposal = ConsoleHelper.readYesNo(
                     "[판매채널] 보험상품 제안 화면으로 이동하시겠습니까?");
             if (moveToProposal) {
                 // 시스템은 보험상품을 제안한다 유스케이스로 이동한다.
-                ProposalRunner.run();
+                ProposalRunner.run(record);
             }
 
         } else {

@@ -2,12 +2,12 @@ package dp.runner.usecase;
 
 import dp.actor.Customer;
 import dp.dao.CustomerDAO;
+import dp.dao.InquiryDAO;
 import dp.enums.FaqCategory;
 import dp.enums.InquiryStatus;
 import dp.enums.InquiryType;
 import dp.inquiry.CustomerCenterPage;
 import dp.inquiry.Inquiry;
-import dp.dao.InquiryDAO;
 import dp.runner.ConsoleHelper;
 import java.util.List;
 
@@ -105,43 +105,34 @@ public class InquiryRunner {
         }
 
         if (tabChoice == 3) {
-            // A2) [문의 내역 조회] 탭을 클릭하는 경우
+            // A2) [문의 내역 조회] 탭을 클릭하는 경우 (BUG-INQ-02)
             page.switchTab();
             ConsoleHelper.printStage("고객", "[A2] [문의 내역 조회] 탭을 클릭합니다.");
-
-            List<Inquiry> historyList = InquiryDAO.findAll();
+            List<Inquiry> histories = InquiryDAO.findByCustomerName(customer.getName());
             ConsoleHelper.printStage("시스템", "문의 내역 목록을 출력합니다.");
-            if (historyList.isEmpty()) {
-                ConsoleHelper.printInfo("  (접수된 문의 내역이 없습니다.)");
+            if (histories.isEmpty()) {
+                ConsoleHelper.printInfo("문의 내역이 없습니다.");
             } else {
-                ConsoleHelper.printInfo("  번호 | 문의번호 | 문의유형 | 제목 | 접수일시 | 처리상태");
-                for (int i = 0; i < historyList.size(); i++) {
-                    Inquiry h = historyList.get(i);
-                    String type = h.getInquiryType() != null ? h.getInquiryType().name() : "-";
-                    String status = h.getStatus() == InquiryStatus.PENDING ? "답변대기"
-                            : h.getStatus() == InquiryStatus.ANSWERED ? "답변완료" : "-";
-                    ConsoleHelper.printInfo("  " + (i + 1)
-                            + " | " + h.getInquiryNo()
-                            + " | " + type
-                            + " | " + h.getTitle()
-                            + " | " + h.getReceivedAt()
-                            + " | " + status);
+                for (int i = 0; i < histories.size(); i++) {
+                    Inquiry h = histories.get(i);
+                    String hType = h.getInquiryType() != null ? h.getInquiryType().name() : "-";
+                    System.out.println("  [" + (i + 1) + "] " + h.getTitle()
+                            + " | 유형: " + hType
+                            + " | 접수일시: " + h.getReceivedAt()
+                            + " | 상태: " + (h.getStatus() == InquiryStatus.PENDING ? "답변 대기" : "답변 완료"));
                 }
-                ConsoleHelper.printStage("고객", "확인하고자 하는 문의 항목을 클릭합니다.");
-                int selected = ConsoleHelper.readMenuChoice("  문의를 선택하세요.",
-                        historyList.stream().map(Inquiry::getInquiryNo).toArray(String[]::new));
-                Inquiry detail = historyList.get(selected - 1);
-                detail.getDetail();
+                String[] histTitles = histories.stream()
+                        .map(h -> h.getTitle() != null ? h.getTitle() : "(제목 없음)")
+                        .toArray(String[]::new);
+                int histChoice = ConsoleHelper.readMenuChoice("[고객] 확인할 문의를 선택하세요.", histTitles);
+                Inquiry selected = histories.get(histChoice - 1);
                 ConsoleHelper.printStage("시스템", "문의 상세 페이지를 표시합니다.");
-                String typeStr = detail.getInquiryType() != null ? detail.getInquiryType().name() : "-";
-                String statusStr = detail.getStatus() == InquiryStatus.PENDING ? "답변대기"
-                        : detail.getStatus() == InquiryStatus.ANSWERED ? "답변완료" : "-";
-                ConsoleHelper.printInfo("문의번호: " + detail.getInquiryNo()
-                        + " | 문의유형: " + typeStr
-                        + " | 제목: " + detail.getTitle()
-                        + " | 내용: " + detail.getContent()
-                        + " | 접수일시: " + detail.getReceivedAt()
-                        + " | 처리상태: " + statusStr);
+                ConsoleHelper.printInfo("문의 번호: " + selected.getInquiryNo()
+                        + " | 제목: " + selected.getTitle()
+                        + " | 내용: " + selected.getContent()
+                        + " | 첨부: " + (selected.getAttachmentFileName() != null ? selected.getAttachmentFileName() : "없음")
+                        + " | 답변: " + (selected.getAnswerContent() != null ? selected.getAnswerContent() : "미답변")
+                        + " | 답변일시: " + (selected.getAnsweredAt() != null ? selected.getAnsweredAt() : "-"));
             }
             ConsoleHelper.waitEnter();
             return;
@@ -152,64 +143,62 @@ public class InquiryRunner {
         inquiry.setCustomerName(customer.getName());
         ConsoleHelper.printStage("고객", "[1:1 문의] 탭을 클릭합니다.");
 
-        // 3. 고객은 문의 유형 드롭다운에서 하나를 선택한다.
-        ConsoleHelper.printStage("고객", "문의 유형을 선택합니다.");
-        int typeChoice = ConsoleHelper.readMenuChoice(
-                "  문의 유형을 선택하세요. (필수)",
-                "보험료", "보험금", "계약변경", "해지", "기타");
-        switch (typeChoice) {
-            case 1: inquiry.setInquiryType(InquiryType.INSURANCE); break;
-            case 2: inquiry.setInquiryType(InquiryType.CLAIM); break;
-            case 3: inquiry.setInquiryType(InquiryType.CONTRACT_CHANGE); break;
-            case 4: inquiry.setInquiryType(InquiryType.CANCELLATION); break;
-            default: inquiry.setInquiryType(InquiryType.OTHER); break;
-        }
-
-        // 4. 고객은 제목 입력란에 문의 제목을 입력한다.
-        String title = ConsoleHelper.readNonEmpty("  문의 제목 (최대 50자): ");
-        inquiry.setTitle(title);
-        ConsoleHelper.printInfo("  현재 입력 글자 수: " + inquiry.getCurrentLength() + "/50");
-
-        // 5. 고객은 내용 입력란에 문의 내용을 입력한다. (A3)
-        String content = ConsoleHelper.readNonEmpty("  문의 내용 (최대 1000자): ");
-        inquiry.setContent(content);
-
-        // A3) 파일을 첨부하는 경우
-        boolean attachFile = ConsoleHelper.readYesNo("  [A3] 파일을 첨부하시겠습니까?");
-        if (attachFile) {
-            ConsoleHelper.printStage("시스템", "파일 탐색기를 엽니다.");
-            String fileName = ConsoleHelper.readNonEmpty("  첨부 파일명 (예: document.pdf): ");
-            long fileSize = ConsoleHelper.readLong("  첨부 파일 크기 (bytes): ");
-
-            inquiry.setAttachmentFileName(fileName);
-            inquiry.setAttachmentFileSize(fileSize);
-
-            // E2) 첨부 파일이 10MB 초과인 경우
-            if (!inquiry.validateFileSize()) {
-                inquiry.showFileSizeError();
-                ConsoleHelper.printError("[E2] 첨부 파일은 10MB 이하만 업로드 가능합니다.");
-                inquiry.removeFile();
-                inquiry.setAttachmentFileName(null);
-                inquiry.setAttachmentFileSize(null);
-                ConsoleHelper.printInfo("파일 첨부가 취소되었습니다. [파일 첨부] 버튼을 다시 클릭하여 다른 파일을 선택해주세요.");
-            } else {
-                inquiry.attachFile();
-                ConsoleHelper.printStage("시스템", "파일명: " + fileName
-                        + " | 크기: " + fileSize + " bytes");
+        // BUG-INQ-04 E1: 필수 항목 검증 실패 시 재입력 루프
+        boolean valid = false;
+        while (!valid) {
+            // 3. 고객은 문의 유형 드롭다운에서 하나를 선택한다.
+            ConsoleHelper.printStage("고객", "문의 유형을 선택합니다.");
+            int typeChoice = ConsoleHelper.readMenuChoice(
+                    "  문의 유형을 선택하세요. (필수)",
+                    "보험료", "보험금", "계약변경", "해지", "기타");
+            switch (typeChoice) {
+                case 1: inquiry.setInquiryType(InquiryType.INSURANCE); break;
+                case 2: inquiry.setInquiryType(InquiryType.CLAIM); break;
+                case 3: inquiry.setInquiryType(InquiryType.CONTRACT_CHANGE); break;
+                case 4: inquiry.setInquiryType(InquiryType.CANCELLATION); break;
+                default: inquiry.setInquiryType(InquiryType.OTHER); break;
             }
-        }
 
-        // 6. 고객은 [제출] 버튼을 클릭한다. (E1)
-        ConsoleHelper.printStage("고객", "[제출] 버튼을 클릭합니다.");
+            // 4. 고객은 제목 입력란에 문의 제목을 입력한다.
+            String title = ConsoleHelper.readNonEmpty("  문의 제목 (최대 50자): ");
+            inquiry.setTitle(title);
+            ConsoleHelper.printInfo("  현재 입력 글자 수: " + inquiry.getCurrentLength() + "/50");
 
-        // E1) 필수 항목 누락 검증
-        ConsoleHelper.printStage("시스템", "필수 항목 누락 여부를 검증합니다.");
-        if (!inquiry.validateRequired()) {
-            inquiry.highlightError();
-            ConsoleHelper.printError("[E1] 필수 입력 항목입니다. (문의 유형 / 제목 / 내용)");
-            ConsoleHelper.printInfo("누락된 항목을 입력한 후 [제출] 버튼을 다시 클릭해주세요.");
-            ConsoleHelper.waitEnter();
-            return;
+            // 5. 고객은 내용 입력란에 문의 내용을 입력한다. (A3)
+            String content = ConsoleHelper.readNonEmpty("  문의 내용 (최대 1000자): ");
+            inquiry.setContent(content);
+
+            // A3) 파일을 첨부하는 경우 (BUG-INQ-04 E2: 재첨부 루프)
+            while (ConsoleHelper.readYesNo("  [A3] 파일을 첨부하시겠습니까?")) {
+                ConsoleHelper.printStage("시스템", "파일 탐색기를 엽니다.");
+                String fileName = ConsoleHelper.readNonEmpty("  첨부 파일명 (예: document.pdf): ");
+                long fileSize = ConsoleHelper.readLong("  첨부 파일 크기 (bytes): ");
+                inquiry.setAttachmentFileName(fileName);
+                inquiry.setAttachmentFileSize(fileSize);
+                if (!inquiry.validateFileSize()) {
+                    inquiry.showFileSizeError();
+                    ConsoleHelper.printError("[E2] 첨부 파일은 10MB 이하만 업로드 가능합니다.");
+                    inquiry.removeFile();
+                    inquiry.setAttachmentFileName(null);
+                    inquiry.setAttachmentFileSize(null);
+                } else {
+                    inquiry.attachFile();
+                    ConsoleHelper.printStage("시스템", "파일명: " + fileName
+                            + " | 크기: " + fileSize + " bytes");
+                    break;
+                }
+            }
+
+            // 6. 고객은 [제출] 버튼을 클릭한다. (E1)
+            ConsoleHelper.printStage("고객", "[제출] 버튼을 클릭합니다.");
+            ConsoleHelper.printStage("시스템", "필수 항목 누락 여부를 검증합니다.");
+            if (!inquiry.validateRequired()) {
+                inquiry.highlightError();
+                ConsoleHelper.printError("[E1] 필수 입력 항목입니다. (문의 유형 / 제목 / 내용)");
+                ConsoleHelper.printInfo("누락된 항목을 입력한 후 [제출] 버튼을 다시 클릭해주세요.");
+                continue;
+            }
+            valid = true;
         }
 
         // 7. 시스템은 문의 정보를 저장하고 고유한 문의 번호를 부여한다.
@@ -235,27 +224,46 @@ public class InquiryRunner {
                 "[고객] 처리를 선택하세요.",
                 "문의 상세 조회", "답변 완료 문의 확인 (A4)");
 
-        // 12. 시스템은 문의 상세 페이지를 표시한다.
-        inquiry.getDetail();
-        ConsoleHelper.printStage("시스템", "문의 상세 페이지를 표시합니다.");
-        String inquiryTypeStr;
-        switch (inquiry.getInquiryType()) {
-            case INSURANCE: inquiryTypeStr = "보험료"; break;
-            case CLAIM: inquiryTypeStr = "보험금"; break;
-            case CONTRACT_CHANGE: inquiryTypeStr = "계약변경"; break;
-            case CANCELLATION: inquiryTypeStr = "해지"; break;
-            default: inquiryTypeStr = "기타"; break;
-        }
-        ConsoleHelper.printInfo("문의 번호: " + inquiry.getInquiryNo()
-                + " | 문의 유형: " + inquiryTypeStr
-                + " | 제목: " + inquiry.getTitle()
-                + " | 접수 일시: " + inquiry.getReceivedAt()
-                + " | 처리 상태: " + (inquiry.getStatus() == InquiryStatus.PENDING ? "답변 대기" : "답변 완료"));
-
         if (detailChoice == 2) {
-            // A4) 답변 완료된 문의를 확인하는 경우
+            // A4) 답변 완료된 문의를 확인하는 경우 (BUG-INQ-03)
             ConsoleHelper.printStage("고객", "[A4] 처리 상태가 '답변 완료'인 문의 항목을 클릭합니다.");
-            ConsoleHelper.printInfo("답변 완료된 문의 내용을 표시합니다.");
+            List<Inquiry> answered = InquiryDAO.findByCustomerNameAndStatus(
+                    customer.getName(), InquiryStatus.ANSWERED);
+            if (answered.isEmpty()) {
+                ConsoleHelper.printInfo("답변 완료된 문의가 없습니다.");
+            } else {
+                for (int i = 0; i < answered.size(); i++) {
+                    Inquiry a = answered.get(i);
+                    System.out.println("  [" + (i + 1) + "] " + a.getTitle()
+                            + " | 답변일시: " + a.getAnsweredAt());
+                }
+                String[] answeredTitles = answered.stream()
+                        .map(a -> a.getTitle() != null ? a.getTitle() : "(제목 없음)")
+                        .toArray(String[]::new);
+                int answeredChoice = ConsoleHelper.readMenuChoice("[고객] 확인할 문의를 선택하세요.", answeredTitles);
+                Inquiry selectedAnswered = answered.get(answeredChoice - 1);
+                ConsoleHelper.printStage("시스템", "문의 상세 페이지를 표시합니다.");
+                ConsoleHelper.printInfo("제목: " + selectedAnswered.getTitle()
+                        + " | 답변: " + (selectedAnswered.getAnswerContent() != null ? selectedAnswered.getAnswerContent() : "-")
+                        + " | 답변일시: " + (selectedAnswered.getAnsweredAt() != null ? selectedAnswered.getAnsweredAt() : "-"));
+            }
+        } else {
+            // 12. 시스템은 문의 상세 페이지를 표시한다.
+            inquiry.getDetail();
+            ConsoleHelper.printStage("시스템", "문의 상세 페이지를 표시합니다.");
+            String inquiryTypeStr;
+            switch (inquiry.getInquiryType()) {
+                case INSURANCE: inquiryTypeStr = "보험료"; break;
+                case CLAIM: inquiryTypeStr = "보험금"; break;
+                case CONTRACT_CHANGE: inquiryTypeStr = "계약변경"; break;
+                case CANCELLATION: inquiryTypeStr = "해지"; break;
+                default: inquiryTypeStr = "기타"; break;
+            }
+            ConsoleHelper.printInfo("문의 번호: " + inquiry.getInquiryNo()
+                    + " | 문의 유형: " + inquiryTypeStr
+                    + " | 제목: " + inquiry.getTitle()
+                    + " | 접수 일시: " + inquiry.getReceivedAt()
+                    + " | 처리 상태: " + (inquiry.getStatus() == InquiryStatus.PENDING ? "답변 대기" : "답변 완료"));
         }
 
         ConsoleHelper.waitEnter();

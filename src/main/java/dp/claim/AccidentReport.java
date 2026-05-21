@@ -29,6 +29,9 @@ public class AccidentReport {
     private boolean agreedTerms;                 // 위치기반 서비스 약관 동의
     private LocalDateTime reportedAt;            // 접수일시
     private AccidentReportStatus status;         // 상태
+    private int casualtyCount;                   // 부상자 수 (인명사고 A1)
+    private String injurySeverity;               // 부상 정도 (인명사고 A1)
+    private boolean emergencyReported;           // 119 신고 여부 (인명사고 A1)
 
     /** 생성자 - 접수번호 자동 부여, 접수일시 = now() */
     public AccidentReport(Customer customer) {
@@ -109,6 +112,12 @@ public class AccidentReport {
         this.status = AccidentReportStatus.CANCELED;
     }
 
+    public void enterCasualtyInfo(int casualtyCount, String injurySeverity, boolean emergencyReported) {
+        this.casualtyCount = casualtyCount;
+        this.injurySeverity = injurySeverity;
+        this.emergencyReported = emergencyReported;
+    }
+
     // Getter
     public String getReportNo() { return reportNo; }
     public Customer getCustomer() { return customer; }
@@ -122,4 +131,7 @@ public class AccidentReport {
     public boolean isAgreedTerms() { return agreedTerms; }
     public LocalDateTime getReportedAt() { return reportedAt; }
     public AccidentReportStatus getStatus() { return status; }
+    public int getCasualtyCount() { return casualtyCount; }
+    public String getInjurySeverity() { return injurySeverity; }
+    public boolean isEmergencyReported() { return emergencyReported; }
 }

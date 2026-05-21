@@ -110,6 +110,8 @@ public class RefundListRunner {
         System.out.println("  계약번호  : " + cancellation.getContract().getContractNo());
         System.out.println("  고객명    : " + cancellation.getContract().getCustomer().getName());
         System.out.println("  진행 상태 : " + refundStatus(cancellation));
+        System.out.println("  해지 사유 : " + (cancellation.getReason() != null ? cancellation.getReason() : "-"));
+        System.out.println("  해지 일시 : " + (cancellation.getCanceledAt() != null ? cancellation.getCanceledAt() : "-"));
 
         String cancNo = cancellation.getCancellationNo();
         RefundCalculation refund = RefundCalculationDAO.findAll().stream()

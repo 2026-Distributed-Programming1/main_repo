@@ -19,6 +19,9 @@ public class InterviewSchedule {
     private String location;
     private String preparation;
     private String status;
+    private LocalDateTime registeredAt;
+    private LocalDateTime modifiedAt;
+    private LocalDateTime cancelledAt;
     private List<InterviewRecord> interviewRecordList;
 
     public InterviewSchedule(int interviewNumber, String customerName, String type, LocalDateTime scheduledAt,
@@ -39,14 +42,20 @@ public class InterviewSchedule {
 
     public static InterviewSchedule fromDb(int interviewNumber, String customerName,
                                             String type, LocalDateTime scheduledAt,
-                                            String location, String status) {
+                                            String location, String preparation, String status,
+                                            LocalDateTime registeredAt, LocalDateTime modifiedAt,
+                                            LocalDateTime cancelledAt) {
         InterviewSchedule s = new InterviewSchedule(true);
         s.interviewNumber = interviewNumber;
         s.customerName    = customerName;
         s.type            = type;
         s.scheduledAt     = scheduledAt;
         s.location        = location;
+        s.preparation     = preparation;
         s.status          = status;
+        s.registeredAt    = registeredAt;
+        s.modifiedAt      = modifiedAt;
+        s.cancelledAt     = cancelledAt;
         return s;
     }
 
@@ -63,16 +72,19 @@ public class InterviewSchedule {
         this.location = location;
         this.preparation = preparation;
         this.status = "예정";
+        this.registeredAt = LocalDateTime.now();
     }
 
     public void modify(LocalDateTime scheduledAt, String location, String preparation) {
         this.scheduledAt = scheduledAt;
         this.location = location;
         this.preparation = preparation;
+        this.modifiedAt = LocalDateTime.now();
     }
 
     public void cancel() {
         this.status = "취소";
+        this.cancelledAt = LocalDateTime.now();
     }
 
     public void sendNotice() {
@@ -91,5 +103,8 @@ public class InterviewSchedule {
     public String getLocation() { return location; }
     public String getPreparation() { return preparation; }
     public String getStatus() { return status; }
+    public LocalDateTime getRegisteredAt() { return registeredAt; }
+    public LocalDateTime getModifiedAt() { return modifiedAt; }
+    public LocalDateTime getCancelledAt() { return cancelledAt; }
     public List<InterviewRecord> getInterviewRecordList() { return interviewRecordList; }
 }

@@ -69,6 +69,7 @@ public class ChannelScreening {
     public ChannelType getChannelType() { return channelType; }
     public void setChannelType(ChannelType channelType) { this.channelType = channelType; }
     public LocalDate getApplicationDate() { return applicationDate; }
+    public void setApplicationDate(LocalDate applicationDate) { this.applicationDate = applicationDate; }
     public String getCareer() { return career; }
     public void setCareer(String career) { this.career = career; }
     public List<String> getCertifications() { return certifications; }

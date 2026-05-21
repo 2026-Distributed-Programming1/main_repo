@@ -13,6 +13,7 @@ public class PolicyApplication {
 
     private int applicationNumber;
     private LocalDateTime submittedAt;
+    private LocalDateTime uploadedAt;
     private Customer customer;
     private String customerName;
     private String productName;
@@ -71,6 +72,7 @@ public class PolicyApplication {
     }
 
     public void attachSignature(String file) {
+        this.uploadedAt = LocalDateTime.now();
         System.out.println("  [시스템] 서명 파일이 첨부되었습니다: " + file);
     }
 
@@ -84,6 +86,7 @@ public class PolicyApplication {
 
     public int getApplicationNumber() { return applicationNumber; }
     public LocalDateTime getSubmittedAt() { return submittedAt; }
+    public LocalDateTime getUploadedAt() { return uploadedAt; }
     public String getCustomerName() { return customerName; }
     public String getProductName() { return productName; }
     public int getPeriod() { return period; }

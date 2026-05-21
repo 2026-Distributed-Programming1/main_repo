@@ -108,11 +108,15 @@ public class ActivityPlan {
     public void setTargetContractCount(Integer targetContractCount) { this.targetContractCount = targetContractCount; }
     public Long getTargetContractAmount() { return targetContractAmount; }
     public void setTargetContractAmount(Long targetContractAmount) { this.targetContractAmount = targetContractAmount; }
+    public Integer getTargetNewCustomer() { return targetNewCustomer; }
     public void setTargetNewCustomer(Integer targetNewCustomer) { this.targetNewCustomer = targetNewCustomer; }
     public void setProposedCustomerId(String proposedCustomerId) { this.proposedCustomerId = proposedCustomerId; }
     public String getProposedCustomerId() { return proposedCustomerId; }
     public InsuranceType getProposedInsuranceType() { return proposedInsuranceType; }
     public void setProposedInsuranceType(InsuranceType proposedInsuranceType) { this.proposedInsuranceType = proposedInsuranceType; }
+    public String getProposalReason() { return proposalReason; }
     public void setProposalReason(String proposalReason) { this.proposalReason = proposalReason; }
+    public String getMemo() { return memo; }
     public PlanStatus getStatus() { return status; }
+    public void setStatus(PlanStatus status) { this.status = status; }
 }

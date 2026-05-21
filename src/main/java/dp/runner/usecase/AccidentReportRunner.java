@@ -46,6 +46,20 @@ public class AccidentReportRunner {
         String damageType = ConsoleHelper.readNonEmpty("  피해 유형 상세: ");
         report.selectAccidentType(accidentType, damageType);
 
+        // A1) 인명사고인 경우 추가 입력
+        if (accidentType == AccidentType.PERSON) {
+            ConsoleHelper.printInfo("[A1] 인명사고이므로 추가 정보를 입력합니다.");
+            int casualtyCount = ConsoleHelper.readPositiveInt("  부상자 수: ");
+            int severityChoice = ConsoleHelper.readMenuChoice("  부상 정도를 선택하세요:",
+                    "경상", "중상", "사망");
+            String injurySeverity = severityChoice == 1 ? "경상" : severityChoice == 2 ? "중상" : "사망";
+            boolean emergency = ConsoleHelper.readYesNo("  119에 신고하셨습니까?");
+            report.enterCasualtyInfo(casualtyCount, injurySeverity, emergency);
+            ConsoleHelper.printInfo("[A1] 부상자 수: " + casualtyCount
+                    + " | 부상 정도: " + injurySeverity
+                    + " | 119 신고: " + (emergency ? "예" : "아니오"));
+        }
+
         // 4) 사고 위치 입력
         ConsoleHelper.printStage("고객", "사고 위치를 입력합니다. (실제 시스템에서는 GPS 자동 인식)");
         String location = ConsoleHelper.readNonEmpty("  사고 위치: ");
@@ -90,7 +104,13 @@ public class AccidentReportRunner {
             Dispatch dispatch = report.requestDispatch();
             if (dispatch != null) {
                 DispatchDAO.save(dispatch);
-                ConsoleHelper.printSuccess("현장출동 신청 완료: " + dispatch.getDispatchNo());
+                ConsoleHelper.printSuccess("현장출동 신청 완료");
+                ConsoleHelper.printInfo("출동번호: " + dispatch.getDispatchNo()
+                        + " | 신청시간: " + report.getReportedAt()
+                        + " | 사고위치: " + report.getLocation()
+                        + " | 사고상황: " + report.getDamageType()
+                        + " | 휴대폰: " + report.getPhoneNo()
+                        + " | 차량번호: " + report.getVehicleNo());
                 ConsoleHelper.printInfo("→ 현장출동 서비스 부서로 신청 내역이 전달되었습니다.");
             }
         } else {

@@ -148,4 +148,5 @@ public class Payment {
     public long getEarlyDiscount() { return earlyDiscount; }
     public LocalDateTime getRequestedAt() { return requestedAt; }
     public PaymentStatus getStatus() { return status; }
+    public void setStatus(PaymentStatus status) { this.status = status; }
 }

@@ -14,19 +14,30 @@ public class RefundPaymentDAO {
                 ? p.getRefund().getCancellation().getCancellationNo() : null;
         String status   = p.getStatus() != null ? p.getStatus().name() : null;
         DBA.executeUpdate(
-            "INSERT INTO refund_payments (payment_no, refund_no, cancellation_no, final_amount, status)"
-            + " VALUES (?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE status=VALUES(status)",
-            p.getPaymentNo(), refundNo, cancNo, p.getFinalAmount(), status);
+            "INSERT INTO refund_payments (payment_no, refund_no, cancellation_no, final_amount,"
+            + " transferred_at, notice_sent, otp_fail_count, status)"
+            + " VALUES (?,?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE status=VALUES(status), transferred_at=VALUES(transferred_at),"
+            + " notice_sent=VALUES(notice_sent)",
+            p.getPaymentNo(), refundNo, cancNo, p.getFinalAmount(),
+            p.getTransferredAt(), p.isNoticeSent(), p.getOtpFailCount(), status);
     }
 
     public static List<RefundPayment> findAll() {
         return DBA.executeQuery(
             "SELECT payment_no, refund_no, cancellation_no, final_amount, status FROM refund_payments",
             rs -> {
-                String rno = rs.getString("refund_no");
+                String rno   = rs.getString("refund_no");
+                String cancNo = rs.getString("cancellation_no");
+                // Cancellation 체인 복원: cancellation_no로 DB 조회
+                dp.contract.Cancellation cancellation = null;
+                if (cancNo != null) {
+                    cancellation = CancellationDAO.findAll().stream()
+                            .filter(c -> cancNo.equals(c.getCancellationNo()))
+                            .findFirst().orElse(null);
+                }
                 RefundCalculation refundShell = new RefundCalculation(
-                    rno != null ? rno : "?", null, 0, null, 0, 0, 0, 0, 0, null);
+                    rno != null ? rno : "?", cancellation, 0, null, 0, 0, 0, 0, 0, null);
                 String st = rs.getString("status");
                 RefundPaymentStatus status = RefundPaymentStatus.WAITING;
                 if (st != null) {

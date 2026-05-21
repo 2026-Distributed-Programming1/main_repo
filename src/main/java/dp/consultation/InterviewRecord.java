@@ -34,11 +34,16 @@ public class InterviewRecord {
 
     private InterviewRecord(boolean fromDb) {}
 
-    public static InterviewRecord fromDb(int recordNumber, String customerName, String content) {
+    public static InterviewRecord fromDb(int recordNumber, String customerName, String content,
+                                         LocalDateTime interviewedAt, String customerReaction,
+                                         String followUpAction) {
         InterviewRecord r = new InterviewRecord(true);
-        r.recordNumber  = recordNumber;
-        r.customerName  = customerName;
-        r.content       = content;
+        r.recordNumber    = recordNumber;
+        r.customerName    = customerName;
+        r.content         = content;
+        r.interviewedAt   = interviewedAt;
+        r.customerReaction = customerReaction;
+        r.followUpAction  = followUpAction;
         return r;
     }
 
@@ -46,7 +51,6 @@ public class InterviewRecord {
         this.content = content;
         this.customerReaction = customerReaction;
         this.followUpAction = followUpAction;
-        this.interviewedAt = LocalDateTime.now();
     }
 
     public void modify(String content, String customerReaction, String followUpAction) {
@@ -68,6 +72,7 @@ public class InterviewRecord {
     public String getCustomerName() { return customerName; }
     public void setCustomerName(String customerName) { this.customerName = customerName; }
     public LocalDateTime getInterviewedAt() { return interviewedAt; }
+    public void setInterviewedAt(LocalDateTime interviewedAt) { this.interviewedAt = interviewedAt; }
     public String getContent() { return content; }
     public String getCustomerReaction() { return customerReaction; }
     public String getFollowUpAction() { return followUpAction; }

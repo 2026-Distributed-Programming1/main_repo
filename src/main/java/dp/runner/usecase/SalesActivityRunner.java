@@ -116,17 +116,13 @@ public class SalesActivityRunner {
         // 목표달성률 낮은 순 정렬 및 70% 미만 강조 출력
         activity.sortByAchievementRate();
         ConsoleHelper.printStage("시스템", "목표달성률 낮은 순으로 정렬합니다.");
-        if (achievementRate < 70.0) {
-            activity.highlightLowAchievement();
-            ConsoleHelper.printInfo("⚠️  [강조] " + channelName
-                    + " | 목표달성률: " + achievementRate + "% (70% 미만)");
-        } else {
-            ConsoleHelper.printInfo(channelName
-                    + " | 방문: " + visitCount + "건"
-                    + " | 계약: " + contractCount + "건"
-                    + " | 전환율: " + String.format("%.1f", activity.getConversionRate()) + "%"
-                    + " | 목표달성률: " + achievementRate + "%");
-        }
+        String prefix = achievementRate < 70.0 ? "⚠️  [강조] " : "";
+        if (achievementRate < 70.0) activity.highlightLowAchievement();
+        ConsoleHelper.printInfo(prefix + channelName
+                + " | 방문: " + visitCount + "건"
+                + " | 계약: " + contractCount + "건"
+                + " | 전환율: " + String.format("%.1f", activity.getConversionRate()) + "%"
+                + " | 목표달성률: " + achievementRate + "%");
 
         // 5. 영업 관리자는 테이블에서 관리할 채널 항목을 클릭한다.
         ConsoleHelper.printStage("영업관리자", "관리할 채널 항목을 클릭합니다.");

@@ -94,16 +94,25 @@ public class ContractInfoRunner {
 
         // 계약 목록 출력
         ConsoleHelper.printStage("시스템", "계약 목록 테이블을 출력합니다.");
-        ConsoleHelper.printInfo("  번호 | 계약번호 | 고객명 | 보험종류 | 기간 | 상태");
+        ConsoleHelper.printInfo("  번호 | 계약번호 | 고객명 | 보험종류 | 기간 | 보험료 | 납입현황 | 상태");
         for (int i = 0; i < contractList.size(); i++) {
             Contract c = contractList.get(i);
             String customerName = c.getCustomer() != null ? c.getCustomer().getName() : "-";
-            String status = c.getStatus() == ContractStatus.NORMAL ? "정상"
-                    : c.getStatus() == ContractStatus.EXPIRED ? "만기" : "해지";
+            String status;
+            switch (c.getStatus() != null ? c.getStatus() : ContractStatus.NORMAL) {
+                case EXPIRED:   status = "만기"; break;
+                case CANCELLED: status = "해지"; break;
+                case LAPSED:    status = "실효"; break;
+                default:        status = "정상"; break;
+            }
+            String payStatus = (c.getPaidCount() != null ? c.getPaidCount() : 0)
+                    + "/" + (c.getTotalPayCount() != null ? c.getTotalPayCount() : 0);
             ConsoleHelper.printInfo("  " + (i + 1) + " | " + c.getContractNo()
                     + " | " + customerName
                     + " | " + c.getInsuranceType()
                     + " | " + c.getStartDate() + " ~ " + c.getEndDate()
+                    + " | " + c.getMonthlyPremium() + "원"
+                    + " | " + payStatus
                     + " | " + status);
         }
 
@@ -122,12 +131,25 @@ public class ContractInfoRunner {
         contract.getDetail();
         ConsoleHelper.printStage("시스템", "계약 상세정보 패널을 출력합니다.");
         String customerName = contract.getCustomer() != null ? contract.getCustomer().getName() : "-";
+        String customerContact = contract.getCustomer() != null ? contract.getCustomer().getContact() : "-";
+        String detailStatus;
+        switch (contract.getStatus() != null ? contract.getStatus() : ContractStatus.NORMAL) {
+            case EXPIRED:   detailStatus = "만기"; break;
+            case CANCELLED: detailStatus = "해지"; break;
+            case LAPSED:    detailStatus = "실효"; break;
+            default:        detailStatus = "정상"; break;
+        }
+        String payInfo = (contract.getPaidCount() != null ? contract.getPaidCount() : 0)
+                + "/" + (contract.getTotalPayCount() != null ? contract.getTotalPayCount() : 0)
+                + " | 최근납입일: " + (contract.getLastPaymentDate() != null ? contract.getLastPaymentDate() : "-");
         ConsoleHelper.printInfo("계약번호: " + contract.getContractNo()
                 + " | 고객명: " + customerName
+                + " | 연락처: " + customerContact
                 + " | 보험종류: " + contract.getInsuranceType()
                 + " | 기간: " + contract.getStartDate() + " ~ " + contract.getEndDate()
                 + " | 월보험료: " + contract.getMonthlyPremium() + "원"
-                + " | 상태: " + (contract.getStatus() == ContractStatus.NORMAL ? "정상" : "만기")
+                + " | 상태: " + detailStatus
+                + " | 납입현황: " + payInfo
                 + " | 연체: " + (contract.getIsOverdue() ? contract.getOverdueCount() + "회" : "없음"));
 
         // A3) 만료일 기준 30일 이내인 경우
@@ -159,7 +181,7 @@ public class ContractInfoRunner {
             // A4) [계약 통계] → [계약 통계 정보를 관리한다] 유스케이스로 이동
             contract.navigateToStats();
             ConsoleHelper.printInfo("[A4] [계약 통계 정보를 관리한다] 유스케이스 1번으로 이동합니다.");
-            ContractStatisticsRunner.run();
+            ContractStatisticsRunner.run(contract);
         }
 
         ConsoleHelper.waitEnter();

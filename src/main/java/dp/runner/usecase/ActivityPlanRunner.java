@@ -14,6 +14,7 @@ import java.util.List;
 import dp.sales.ScheduleItem;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * UC: 활동 계획을 작성한다
@@ -153,9 +154,10 @@ public class ActivityPlanRunner {
                 case 2: actType = ActivityType.CONSULTATION; break;
                 default: actType = ActivityType.CALL; break;
             }
+            LocalDateTime activityDateTime = ConsoleHelper.readDateTime("    활동 일시");
             String scheduleLocation = ConsoleHelper.readLine("    장소 (없으면 엔터): ");
             String scheduleMemo = ConsoleHelper.readLine("    메모 (없으면 엔터): ");
-            ScheduleItem item = new ScheduleItem(scheduleCustomerId, actType, scheduleLocation, scheduleMemo);
+            ScheduleItem item = new ScheduleItem(scheduleCustomerId, actType, activityDateTime, scheduleLocation, scheduleMemo);
             plan.addSchedule(item);
             ConsoleHelper.printSuccess("일정이 추가되었습니다.");
             addSchedule = ConsoleHelper.readYesNo("  일정을 추가로 등록하시겠습니까?");

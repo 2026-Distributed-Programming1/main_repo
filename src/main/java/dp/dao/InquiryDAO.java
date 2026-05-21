@@ -13,44 +13,67 @@ public class InquiryDAO {
         String status = i.getStatus() != null ? i.getStatus().name() : null;
         DBA.executeUpdate(
             "INSERT INTO inquiries (inquiry_no, customer_name, inquiry_type, title, content,"
-            + " status, created_at)"
-            + " VALUES (?,?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE status=VALUES(status)",
+            + " attachment_file_name, attachment_file_size, status, created_at)"
+            + " VALUES (?,?,?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE status=VALUES(status), answer_content=VALUES(answer_content)",
             i.getInquiryNo(),
             i.getCustomerName(),
             inquiryType,
             i.getTitle(),
             i.getContent(),
+            i.getAttachmentFileName(),
+            i.getAttachmentFileSize(),
             status,
             i.getReceivedAt());
     }
 
     public static List<Inquiry> findAll() {
+        return findByCustomerName(null);
+    }
+
+    public static List<Inquiry> findByCustomerName(String customerName) {
+        String sql = "SELECT inquiry_no, customer_name, inquiry_type, title, content,"
+            + " attachment_file_name, attachment_file_size,"
+            + " answer_content, answered_at, status, created_at FROM inquiries";
+        if (customerName != null) sql += " WHERE customer_name=?";
+        final String finalSql = sql;
+        return customerName != null
+            ? DBA.executeQuery(finalSql, rs -> mapRow(rs), customerName)
+            : DBA.executeQuery(finalSql, rs -> mapRow(rs));
+    }
+
+    public static List<Inquiry> findByCustomerNameAndStatus(String customerName, InquiryStatus inquiryStatus) {
         return DBA.executeQuery(
-            "SELECT inquiry_no, inquiry_type, title, content, status, created_at FROM inquiries ORDER BY created_at DESC",
-            rs -> {
-                String type = rs.getString("inquiry_type");
-                InquiryType inquiryType = null;
-                if (type != null) {
-                    try { inquiryType = InquiryType.valueOf(type); }
-                    catch (IllegalArgumentException ignored) {}
-                }
-                String statusStr = rs.getString("status");
-                InquiryStatus status = null;
-                if (statusStr != null) {
-                    try { status = InquiryStatus.valueOf(statusStr); }
-                    catch (IllegalArgumentException ignored) {}
-                }
-                java.time.LocalDateTime receivedAt = null;
-                java.sql.Timestamp ts = rs.getTimestamp("created_at");
-                if (ts != null) receivedAt = ts.toLocalDateTime();
-                return new Inquiry(
-                        rs.getString("inquiry_no"),
-                        inquiryType,
-                        rs.getString("title"),
-                        rs.getString("content"),
-                        receivedAt,
-                        status);
-            });
+            "SELECT inquiry_no, customer_name, inquiry_type, title, content,"
+            + " attachment_file_name, attachment_file_size,"
+            + " answer_content, answered_at, status, created_at"
+            + " FROM inquiries WHERE customer_name=? AND status=?",
+            rs -> mapRow(rs), customerName, inquiryStatus.name());
+    }
+
+    private static Inquiry mapRow(java.sql.ResultSet rs) throws java.sql.SQLException {
+        Inquiry i = new Inquiry();
+        i.setCustomerName(rs.getString("customer_name"));
+        String it = rs.getString("inquiry_type");
+        if (it != null) {
+            try { i.setInquiryType(InquiryType.valueOf(it)); }
+            catch (IllegalArgumentException ignored) {}
+        }
+        i.setTitle(rs.getString("title"));
+        i.setContent(rs.getString("content"));
+        i.setAttachmentFileName(rs.getString("attachment_file_name"));
+        long fileSize = rs.getLong("attachment_file_size");
+        if (!rs.wasNull()) i.setAttachmentFileSize(fileSize);
+        i.setAnswerContent(rs.getString("answer_content"));
+        java.sql.Timestamp aat = rs.getTimestamp("answered_at");
+        if (aat != null) i.setAnsweredAt(aat.toLocalDateTime());
+        String st = rs.getString("status");
+        if (st != null) {
+            try { i.setStatus(InquiryStatus.valueOf(st)); }
+            catch (IllegalArgumentException ignored) {}
+        }
+        java.sql.Timestamp cat = rs.getTimestamp("created_at");
+        if (cat != null) i.setReceivedAt(cat.toLocalDateTime());
+        return i;
     }
 }

@@ -82,6 +82,7 @@ public class ConsultationRequestRunner {
         // 6. 시스템은 상담 신청 접수 결과를 출력한다.
         ConsoleHelper.printStage("시스템", "상담 신청 접수 결과를 출력합니다.");
         ConsoleHelper.printInfo("접수번호: " + request.getConsultationNumber()
+                + " | 접수일시: " + request.getReceivedAt()
                 + " | 상담유형: " + request.getType()
                 + " | 상태: " + request.getStatus());
 
@@ -100,10 +101,13 @@ public class ConsultationRequestRunner {
 
         // 9. 판매채널은 [상담 수락] 버튼을 클릭한다.
         designer.acceptConsultation(request);
+        ConsultationRequestDAO.save(request);
 
         // 10. 시스템은 상담 수락 완료 결과를 고객에게 출력한다.
         ConsoleHelper.printStage("시스템", "상담 수락 완료 결과를 고객에게 출력합니다.");
         ConsoleHelper.printInfo("담당자명: " + designer.getName()
+                + " | 수락일시: " + request.getAcceptedAt()
+                + " | 예정 상담일시: " + request.getScheduledAt()
                 + " | 상태: " + request.getStatus());
 
         ConsoleHelper.waitEnter();

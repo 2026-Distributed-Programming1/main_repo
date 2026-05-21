@@ -16,20 +16,23 @@ public class ChannelScreeningDAO {
         String status = s.getScreeningStatus() != null ? s.getScreeningStatus().name() : null;
         DBA.executeUpdate(
             "INSERT INTO channel_screenings (screening_no, candidate_name, channel_type,"
-            + " qualification, status, reviewed_at)"
-            + " VALUES (?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE status=VALUES(status)",
+            + " qualification, application_date, status, reviewed_at)"
+            + " VALUES (?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE status=VALUES(status),"
+            + " application_date=VALUES(application_date)",
             screeningNo,
             s.getApplicantName(),
             channelType,
             s.getCareer(),
+            s.getApplicationDate(),
             status,
             s.getApprovedAt());
     }
 
     public static List<ChannelScreening> findAll() {
         return DBA.executeQuery(
-            "SELECT screening_no, candidate_name, channel_type, qualification, status FROM channel_screenings",
+            "SELECT screening_no, candidate_name, channel_type, qualification,"
+            + " application_date, status FROM channel_screenings",
             rs -> {
                 ChannelScreening s = new ChannelScreening();
                 s.setApplicantName(rs.getString("candidate_name"));
@@ -39,6 +42,8 @@ public class ChannelScreeningDAO {
                     catch (IllegalArgumentException ignored) {}
                 }
                 s.setCareer(rs.getString("qualification"));
+                java.sql.Date ad = rs.getDate("application_date");
+                if (ad != null) s.setApplicationDate(ad.toLocalDate());
                 String st = rs.getString("status");
                 if (st != null) {
                     try { s.setScreeningStatus(ScreeningStatus.valueOf(st)); }

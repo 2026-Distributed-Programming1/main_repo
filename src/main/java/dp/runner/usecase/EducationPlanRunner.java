@@ -63,7 +63,7 @@ public class EducationPlanRunner {
         EducationPlan plan = trainer.createEducationPlan();
         plan.setTrainerName(trainer.getName());
 
-        // 3. 영업교육 담당자는 교육 기본 정보를 입력한다.
+        // 3. 영업교육 담당자는 교육 기본 정보 및 교육 내용을 입력한다.
         ConsoleHelper.printStage("영업교육담당자", "교육 기본 정보를 입력합니다.");
         String educationName = ConsoleHelper.readNonEmpty("  교육명: ");
         String channelType = ConsoleHelper.readNonEmpty("  채널유형 (설계사/대리점/TM): ");
@@ -72,6 +72,12 @@ public class EducationPlanRunner {
         LocalDate startDate = ConsoleHelper.readDate("  시작일");
         LocalDate endDate = ConsoleHelper.readDate("  종료일");
         plan.enterPlanInfo(educationName, startDate, endDate, channelType, targetCount, budget);
+
+        ConsoleHelper.printStage("영업교육담당자", "교육 내용을 입력합니다.");
+        String educationGoal    = ConsoleHelper.readNonEmpty("  교육 목표: ");
+        String educationContent = ConsoleHelper.readNonEmpty("  교육 내용: ");
+        String textbookList     = ConsoleHelper.readLine("  교재 목록 (없으면 엔터): ");
+        plan.enterContentInfo(educationGoal, educationContent, textbookList);
 
         // 4. 시스템은 필수 항목 누락 여부를 실시간으로 검증한다. (E1)
         ConsoleHelper.printStage("시스템", "필수항목을 검증합니다.");

@@ -135,7 +135,10 @@ public class InsuranceCancellationRunner {
         contract.setStatus(ContractStatus.CANCELLED);
         CancellationDAO.save(cancellation);
         ContractDAO.save(contract);
-        ConsoleHelper.printSuccess("[시스템] 보험 해약이 완료되었습니다. 환급금은 추후 별도 안내 드리겠습니다.");
+        ConsoleHelper.printSuccess("보험 해약이 완료되었습니다.");
+        ConsoleHelper.printInfo("해지번호: " + cancellation.getCancellationNo()
+                + " | 해지일시: " + cancellation.getCanceledAt());
+        ConsoleHelper.printInfo("환급금은 추후 별도 안내 드리겠습니다.");
         ConsoleHelper.waitEnter();
 
         return true;
