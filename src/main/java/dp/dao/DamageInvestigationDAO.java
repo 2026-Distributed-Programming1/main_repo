@@ -39,7 +39,7 @@ public class DamageInvestigationDAO {
         return DBA.executeQuery(
             "SELECT investigation_no, claim_no, claim_customer, customer_id, handler_name,"
             + " our_fault_ratio, counter_ratio, recognized_damage, opinion,"
-            + " result, status FROM damage_investigations",
+            + " result, reject_reason, investigated_at, status FROM damage_investigations",
             rs -> {
                 String cn    = rs.getString("claim_no");
                 String cname = rs.getString("claim_customer");
@@ -54,7 +54,7 @@ public class DamageInvestigationDAO {
                     try { status = InvestigationStatus.valueOf(st); }
                     catch (IllegalArgumentException ignored) {}
                 }
-                return new DamageInvestigation(
+                DamageInvestigation inv = new DamageInvestigation(
                     rs.getString("investigation_no"),
                     claimShell,
                     rs.getString("handler_name"),
@@ -62,6 +62,11 @@ public class DamageInvestigationDAO {
                     rs.getDouble("counter_ratio"),
                     rs.getLong("recognized_damage"),
                     status);
+                String rr = rs.getString("reject_reason");
+                if (rr != null) inv.setRejectReason(rr);
+                java.sql.Timestamp iat = rs.getTimestamp("investigated_at");
+                if (iat != null) inv.setInvestigatedAt(iat.toLocalDateTime());
+                return inv;
             });
     }
 }

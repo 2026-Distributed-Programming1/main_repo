@@ -75,8 +75,16 @@ public class ClaimRequestRunner {
             claim.changeRecipientContact(newContact);
         }
 
-        // 7) 피보험자 선택 (시연 단순화: 청구 고객 본인)
-        claim.selectInsured(customer);
+        // 7) 피보험자 선택
+        boolean sameAsCustomer = ConsoleHelper.readYesNo("[고객] 피보험자가 본인입니까?");
+        if (sameAsCustomer) {
+            claim.selectInsured(customer);
+        } else {
+            String insuredName = ConsoleHelper.readNonEmpty("  피보험자 이름: ");
+            String relationship = ConsoleHelper.readNonEmpty("  관계 (예: 배우자, 자녀): ");
+            ConsoleHelper.printInfo("피보험자: " + insuredName + " (" + relationship + ")");
+            claim.selectInsured(customer); // 시스템에 피보험자 별도 등록 구조가 없으므로 연결 유지
+        }
 
         // 8) 청구 유형 선택 (A2 분기점)
         int typeChoice = ConsoleHelper.readMenuChoice("[고객] 청구 유형을 선택하세요:",

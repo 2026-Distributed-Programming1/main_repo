@@ -47,27 +47,43 @@ public class DispatchRecordRunner {
             dispatch.setEstimatedArrival(estimated);
         }
 
-        // 3) A3/A4 분기 선택
+        // 3) A1/A2/A3/A4 분기 선택
         while (true) {
             int choice = ConsoleHelper.readMenuChoice(
                     "[현장출동 직원] 다음 작업을 선택하세요:",
                     "현장 출발 → 도착 → 기록 작성 (정상 흐름)",
-                    "사고 위치 갱신 (A3)",
-                    "출동 취소 (A4)");
+                    "고객 위치 업데이트 확인 (A1)",
+                    "현장 도착 전 고객 연락 (A2)",
+                    "사고 상황 종료 → 출동 취소 (A3)",
+                    "정확한 위치 정보 갱신 (A4)");
             if (choice == 1) {
-                if (writeRecord(dispatch)) return;
-                else return;
+                writeRecord(dispatch);
+                return;
             } else if (choice == 2) {
-                String newLoc = ConsoleHelper.readNonEmpty("  새 사고 위치: ");
-                dispatch.updateLocation(newLoc);
-                ConsoleHelper.printSuccess("[A3] 사고 위치가 갱신되었습니다: " + newLoc);
-                // A3 후 정상 흐름 진행
+                // A1) 고객 위치 업데이트 알림 확인
+                ConsoleHelper.printInfo("[A1] 고객으로부터 위치 업데이트 알림을 수신합니다.");
+                String updatedLoc = ConsoleHelper.readNonEmpty("  고객이 전달한 현재 위치: ");
+                dispatch.updateLocation(updatedLoc);
+                ConsoleHelper.printSuccess("[A1] 위치 정보가 갱신되었습니다: " + updatedLoc);
             } else if (choice == 3) {
+                // A2) 현장 도착 전 고객 연락
+                ConsoleHelper.printInfo("[A2] 현장 도착 전 고객과 연락합니다.");
+                int contactMethod = ConsoleHelper.readMenuChoice("  연락 방법:", "전화", "문자");
+                String memo = ConsoleHelper.readLine("  연락 메모 (없으면 엔터): ");
+                ConsoleHelper.printSuccess("[A2] 연락 완료. 방법: " + (contactMethod == 1 ? "전화" : "문자")
+                        + (memo.isEmpty() ? "" : " | 메모: " + memo));
+            } else if (choice == 4) {
+                // A3) 사고 상황 종료로 출동 취소
                 String reason = ConsoleHelper.readNonEmpty("  취소 사유: ");
                 dispatch.cancel(reason);
-                ConsoleHelper.printInfo("[A4] 출동이 취소되었습니다. (사유: " + reason + ")");
+                ConsoleHelper.printInfo("[A3] 사고 상황 종료로 출동이 취소되었습니다. (사유: " + reason + ")");
                 ConsoleHelper.waitEnter();
                 return;
+            } else if (choice == 5) {
+                // A4) 정확한 위치 정보 갱신
+                String newLoc = ConsoleHelper.readNonEmpty("  정확한 사고 위치: ");
+                dispatch.updateLocation(newLoc);
+                ConsoleHelper.printSuccess("[A4] 위치 정보가 정확하게 갱신되었습니다: " + newLoc);
             }
         }
     }

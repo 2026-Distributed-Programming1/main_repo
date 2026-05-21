@@ -88,4 +88,5 @@ public class DispatchRecord {
     public String getNotes() { return notes; }
     public LocalDateTime getTransmittedAt() { return transmittedAt; }
     public DispatchRecordStatus getStatus() { return status; }
+    public void setStatus(DispatchRecordStatus status) { this.status = status; }
 }

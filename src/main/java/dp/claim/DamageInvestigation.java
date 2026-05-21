@@ -136,8 +136,10 @@ public class DamageInvestigation {
     public String getOpinion() { return opinion; }
     public InvestigationResult getResult() { return result; }
     public String getRejectReason() { return rejectReason; }
+    public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
     public SupplementRequest getSupplementRequest() { return supplementRequest; }
     public AdditionalInvestigation getAdditionalInvestigation() { return additionalInvestigation; }
     public LocalDateTime getInvestigatedAt() { return investigatedAt; }
+    public void setInvestigatedAt(java.time.LocalDateTime investigatedAt) { this.investigatedAt = investigatedAt; }
     public InvestigationStatus getStatus() { return status; }
 }
