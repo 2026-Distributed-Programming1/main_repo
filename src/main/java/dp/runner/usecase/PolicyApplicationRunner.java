@@ -109,10 +109,17 @@ public class PolicyApplicationRunner {
                 "서면 서명 파일 첨부", "전자서명 요청 (A1)");
 
         if (signChoice == 1) {
+            // E1) 업로드 성공/실패 시뮬레이션
+            boolean uploadSuccess = ConsoleHelper.readYesNo("[시스템] 파일 업로드가 성공하였습니까? (E1 실패 시뮬레이션)");
+            if (!uploadSuccess) {
+                ConsoleHelper.printError("[E1] 파일 업로드에 실패하였습니다. 다시 시도해 주세요.");
+                ConsoleHelper.waitEnter();
+                return;
+            }
             application.attachSignature("signature.png");
             // 8. 시스템은 파일 업로드 완료 결과를 출력한다.
             ConsoleHelper.printStage("시스템", "파일 업로드 완료 결과를 출력합니다.");
-            ConsoleHelper.printInfo("파일명: signature.png");
+            ConsoleHelper.printInfo("파일명: signature.png | 업로드 일시: " + application.getUploadedAt());
         } else {
             // A1) 전자서명 요청
             application.requestElectronicSignature();

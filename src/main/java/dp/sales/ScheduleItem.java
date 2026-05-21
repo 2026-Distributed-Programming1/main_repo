@@ -15,18 +15,24 @@ public class ScheduleItem {
     private String location;               // 활동 장소 선택
     private String memo;                   // 메모 선택
 
-    public ScheduleItem(String customerId, ActivityType activityType, String location, String memo) {
+    public ScheduleItem(String customerId, ActivityType activityType, LocalDateTime activityDateTime,
+                        String location, String memo) {
         this.customerId = customerId;
         this.activityType = activityType;
-        this.activityDateTime = LocalDateTime.now();
+        this.activityDateTime = activityDateTime != null ? activityDateTime : LocalDateTime.now();
         this.location = location;
         this.memo = memo;
     }
 
     public void delete() {}
-    //getter,setter
+    public String getCustomerId() { return customerId; }
     public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public ActivityType getActivityType() { return activityType; }
     public void setActivityType(ActivityType activityType) { this.activityType = activityType; }
+    public LocalDateTime getActivityDateTime() { return activityDateTime; }
+    public void setActivityDateTime(LocalDateTime activityDateTime) { this.activityDateTime = activityDateTime; }
+    public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+    public String getMemo() { return memo; }
     public void setMemo(String memo) { this.memo = memo; }
 }

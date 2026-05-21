@@ -118,7 +118,6 @@ public class CustomerRegistrationRunner {
         // A2) 특약 정보 추가
         boolean addClause = ConsoleHelper.readYesNo("  [A2] 특약 정보를 추가하시겠습니까?");
         while (addClause) {
-            registration.addSpecialClause();
             String clause = ConsoleHelper.readNonEmpty("  특약 내용: ");
             registration.addSpecialClause(clause);
             addClause = ConsoleHelper.readYesNo("  특약을 추가로 등록하시겠습니까?");
@@ -128,38 +127,41 @@ public class CustomerRegistrationRunner {
         ConsoleHelper.printStage("판매채널", "[저장] 버튼을 클릭합니다.");
 
         // 7. 시스템은 필수 항목 누락 및 형식 오류 여부를 검증한다. (E1)
-        ConsoleHelper.printStage("시스템", "필수 항목 및 형식 오류 여부를 검증합니다.");
-        if (!registration.validateRequired()) {
-            // E1) 필수 항목 누락
-            registration.highlightError();
-            ConsoleHelper.printError("[E1] 필수 항목을 입력해주세요. (이름/주민등록번호/연락처/보험종류/계약일/만료일/월보험료)");
-            ConsoleHelper.printInfo("입력된 나머지 항목의 값은 유지됩니다. [저장] 버튼을 다시 클릭해주세요.");
-            ConsoleHelper.waitEnter();
-            return;
-        }
-        if (!registration.validateFormat()) {
-            // E1) 형식 오류
-            registration.highlightError();
-            ConsoleHelper.printError("[E1] 형식 오류가 발견되었습니다. (주민등록번호: 13자리 숫자 / 연락처: 10~11자리 숫자)");
-            ConsoleHelper.printInfo("입력된 나머지 항목의 값은 유지됩니다. [저장] 버튼을 다시 클릭해주세요.");
-            ConsoleHelper.waitEnter();
-            return;
-        }
-        ConsoleHelper.printSuccess("필수 항목 및 형식 검증 완료.");
+        while (true) {
+            ConsoleHelper.printStage("시스템", "필수 항목 및 형식 오류 여부를 검증합니다.");
+            if (!registration.validateRequired()) {
+                // E1) 필수 항목 누락
+                registration.highlightError();
+                ConsoleHelper.printError("[E1] 필수 항목을 입력해주세요. (이름/주민등록번호/연락처/보험종류/계약일/만료일/월보험료)");
+                ConsoleHelper.printInfo("입력된 나머지 항목의 값은 유지됩니다. [저장] 버튼을 다시 클릭해주세요.");
+                ConsoleHelper.waitEnter();
+                continue;
+            }
+            if (!registration.validateFormat()) {
+                // E1) 형식 오류
+                registration.highlightError();
+                ConsoleHelper.printError("[E1] 형식 오류가 발견되었습니다. (주민등록번호: 13자리 숫자 / 연락처: 10~11자리 숫자)");
+                ConsoleHelper.printInfo("입력된 나머지 항목의 값은 유지됩니다. [저장] 버튼을 다시 클릭해주세요.");
+                ConsoleHelper.waitEnter();
+                continue;
+            }
+            ConsoleHelper.printSuccess("필수 항목 및 형식 검증 완료.");
 
-        // 8. 시스템은 중복 데이터 여부를 검증한다. (E2)
-        ConsoleHelper.printStage("시스템", "중복 데이터 여부를 검증합니다.");
-        boolean isDuplicate = CustomerRegistrationDAO.findAll().stream()
-                .anyMatch(r -> r.getSsn().equals(registration.getSsn()));
-        if (isDuplicate) {
-            // E2) 중복 데이터 감지
-            registration.showDuplicateError();
-            ConsoleHelper.printError("[E2] 이미 등록된 고객/계약번호입니다.");
-            ConsoleHelper.printInfo("중복 항목을 수정한 후 [저장] 버튼을 클릭해주세요.");
-            ConsoleHelper.waitEnter();
-            return;
+            // 8. 시스템은 중복 데이터 여부를 검증한다. (E2)
+            ConsoleHelper.printStage("시스템", "중복 데이터 여부를 검증합니다.");
+            boolean isDuplicate = CustomerRegistrationDAO.findAll().stream()
+                    .anyMatch(r -> r.getSsn() != null && r.getSsn().equals(registration.getSsn()));
+            if (isDuplicate) {
+                // E2) 중복 데이터 감지 → Basic Path 7번으로 복귀
+                registration.showDuplicateError();
+                ConsoleHelper.printError("[E2] 이미 등록된 고객/계약번호입니다.");
+                ConsoleHelper.printInfo("중복 항목을 수정한 후 [저장] 버튼을 클릭해주세요.");
+                ConsoleHelper.waitEnter();
+                continue;
+            }
+            ConsoleHelper.printSuccess("중복 검증 완료.");
+            break;
         }
-        ConsoleHelper.printSuccess("중복 검증 완료.");
 
         // 9. 시스템은 고객번호와 계약번호를 자동으로 부여한다.
         registration.assignIds();

@@ -121,6 +121,8 @@ public class Contract {
             this.status = ContractStatus.EXPIRED;
         } else if ("해지".equals(newStatus)) {
             this.status = ContractStatus.CANCELLED;
+        } else if ("실효".equals(newStatus)) {
+            this.status = ContractStatus.LAPSED;
         }
     }
 
@@ -171,6 +173,7 @@ public class Contract {
     public Integer getPaidCount() { return paidCount; }
     public void    setPaidCount(Integer paidCount) { this.paidCount = paidCount; }
 
+    public LocalDate getLastPaymentDate() { return lastPaymentDate; }
     public void setLastPaymentDate(LocalDate lastPaymentDate) { this.lastPaymentDate = lastPaymentDate; }
 
     public Boolean getIsOverdue() { return isOverdue; }
