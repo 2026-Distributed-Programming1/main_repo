@@ -73,6 +73,7 @@ public class ClaimRequestDAO {
                 if (bank != null) {
                     dp.common.BankAccount bankAccount = new dp.common.BankAccount();
                     bankAccount.enter(bank, accNo, holder);
+                    bankAccount.verify();
                     r.selectExistingAccount(bankAccount);
                 }
                 return r;
