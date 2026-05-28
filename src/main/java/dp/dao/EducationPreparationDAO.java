@@ -14,25 +14,28 @@ public class EducationPreparationDAO {
         DBA.executeUpdate(
             "INSERT INTO education_preparations"
             + " (prep_no, plan_no, trainer_name, venue, material_ready,"
-            + "  textbook_status, attendance_list, status)"
-            + " VALUES (?,?,?,?,?,?,?,?)"
+            + "  textbook_status, attendance_list, status, registered_at)"
+            + " VALUES (?,?,?,?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE"
-            + "  venue=VALUES(venue), textbook_status=VALUES(textbook_status),"
-            + "  attendance_list=VALUES(attendance_list), status=VALUES(status)",
+            + "  venue=VALUES(venue), material_ready=VALUES(material_ready),"
+            + "  textbook_status=VALUES(textbook_status),"
+            + "  attendance_list=VALUES(attendance_list), status=VALUES(status),"
+            + "  registered_at=VALUES(registered_at)",
             String.valueOf(e.getSetupNumber()),
             e.getPlanNo(),
             e.getInstructorName(),
             e.getLocation(),
-            e.getTextbookStatus() != null,
+            e.isMaterialReady(),
             e.getTextbookStatus(),
             attendanceStr,
-            null);
+            e.getStatus(),
+            e.getRegisteredAt());
     }
 
     public static List<EducationPreparation> findAll() {
         return DBA.executeQuery(
             "SELECT prep_no, plan_no, trainer_name, venue,"
-            + " textbook_status, attendance_list FROM education_preparations",
+            + " material_ready, textbook_status, attendance_list, status, registered_at FROM education_preparations",
             rs -> {
                 String attendanceStr = rs.getString("attendance_list");
                 List<dp.education.Attendance> attendees = new ArrayList<>();
@@ -52,6 +55,10 @@ public class EducationPreparationDAO {
                     null,
                     attendees);
                 e.setPlanNo(rs.getString("plan_no"));
+                e.setMaterialReady(rs.getBoolean("material_ready"));
+                e.setStatus(rs.getString("status"));
+                e.setRegisteredAt(rs.getTimestamp("registered_at") != null
+                    ? rs.getTimestamp("registered_at").toLocalDateTime() : null);
                 return e;
             });
     }

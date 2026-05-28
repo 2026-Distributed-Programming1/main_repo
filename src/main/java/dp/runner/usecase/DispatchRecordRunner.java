@@ -45,6 +45,7 @@ public class DispatchRecordRunner {
             // 도착 예정 시간 입력
             LocalDateTime estimated = ConsoleHelper.readDateTime("  도착 예정 시간을 입력하세요");
             dispatch.setEstimatedArrival(estimated);
+            DispatchDAO.save(dispatch);
         }
 
         // 3) A1/A2/A3/A4 분기 선택
@@ -64,6 +65,7 @@ public class DispatchRecordRunner {
                 ConsoleHelper.printInfo("[A1] 고객으로부터 위치 업데이트 알림을 수신합니다.");
                 String updatedLoc = ConsoleHelper.readNonEmpty("  고객이 전달한 현재 위치: ");
                 dispatch.updateLocation(updatedLoc);
+                DispatchDAO.save(dispatch);
                 ConsoleHelper.printSuccess("[A1] 위치 정보가 갱신되었습니다: " + updatedLoc);
             } else if (choice == 3) {
                 // A2) 현장 도착 전 고객 연락
@@ -76,6 +78,7 @@ public class DispatchRecordRunner {
                 // A3) 사고 상황 종료로 출동 취소
                 String reason = ConsoleHelper.readNonEmpty("  취소 사유: ");
                 dispatch.cancel(reason);
+                DispatchDAO.save(dispatch);
                 ConsoleHelper.printInfo("[A3] 사고 상황 종료로 출동이 취소되었습니다. (사유: " + reason + ")");
                 ConsoleHelper.waitEnter();
                 return;
@@ -83,6 +86,7 @@ public class DispatchRecordRunner {
                 // A4) 정확한 위치 정보 갱신
                 String newLoc = ConsoleHelper.readNonEmpty("  정확한 사고 위치: ");
                 dispatch.updateLocation(newLoc);
+                DispatchDAO.save(dispatch);
                 ConsoleHelper.printSuccess("[A4] 위치 정보가 정확하게 갱신되었습니다: " + newLoc);
             }
         }

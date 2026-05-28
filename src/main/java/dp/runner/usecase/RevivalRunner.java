@@ -67,6 +67,7 @@ public class RevivalRunner {
         // 3. 고객은 부활 신청 정보를 입력한다.
         ConsoleHelper.printStage("고객", "부활 신청 정보를 입력합니다.");
         String contact = ConsoleHelper.readNonEmpty("  연락처: ");
+        revival.setContact(contact);
 
         // 4. 시스템은 미납보험료 및 이자 산출 결과를 출력한다.
         revival.setUnpaidAmount(150000L);
@@ -76,9 +77,14 @@ public class RevivalRunner {
 
         // 5. 고객은 납입 방법을 선택하고 [납입] 버튼을 클릭한다.
         String paymentMethod = ConsoleHelper.readNonEmpty("  납입방법 (카드/계좌이체): ");
-        revival.pay(paymentMethod);
+        boolean paySuccess = revival.pay(paymentMethod);
 
-        // 6. 시스템은 납입 처리 결과를 출력한다.
+        // 6. 시스템은 납입 처리 결과를 출력한다. (E2)
+        if (!paySuccess) {
+            ConsoleHelper.printError("[E2] 납입 처리에 실패했습니다. 다시 시도해 주세요.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
         ConsoleHelper.printStage("시스템", "납입 처리 결과를 출력합니다.");
         ConsoleHelper.printInfo("납입금액: " + (unpaid + 5000) + "원 | 영수증번호: RCP-001");
 

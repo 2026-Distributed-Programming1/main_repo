@@ -154,6 +154,7 @@ CREATE TABLE IF NOT EXISTS customer_registrations (
     ssn             VARCHAR(20),
     ssn_masked      VARCHAR(20),
     phone           VARCHAR(20),
+    address         VARCHAR(255),
     insurance_type  VARCHAR(50),
     contract_date   DATE,
     expiry_date     DATE,
@@ -249,6 +250,7 @@ CREATE TABLE IF NOT EXISTS education_plans (
     education_content TEXT,
     textbook_list     TEXT,
     reject_reason     TEXT,
+    approved_at       TIMESTAMP    NULL,
     status            VARCHAR(20)
 );
 
@@ -264,6 +266,7 @@ CREATE TABLE IF NOT EXISTS consultation_requests (
     contact      VARCHAR(100),
     content      TEXT,
     status       VARCHAR(20),
+    scheduled_at TIMESTAMP    NULL,
     requested_at TIMESTAMP    NULL,
     accepted_at  TIMESTAMP    NULL
 );
@@ -272,6 +275,7 @@ CREATE TABLE IF NOT EXISTS consultation_requests (
 CREATE TABLE IF NOT EXISTS interview_schedules (
     schedule_no   VARCHAR(20)  PRIMARY KEY,
     customer_name VARCHAR(100),
+    designer_name VARCHAR(100),
     type          VARCHAR(20),
     scheduled_at  TIMESTAMP,
     location      VARCHAR(200),
@@ -289,6 +293,7 @@ CREATE TABLE IF NOT EXISTS interview_records (
     content           TEXT,
     customer_reaction TEXT,
     follow_up_action  TEXT,
+    interviewed_at    TIMESTAMP    NULL,
     recorded_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -307,16 +312,21 @@ CREATE TABLE IF NOT EXISTS underwritings (
     app_type        VARCHAR(20),
     app_no          VARCHAR(20),
     customer_name   VARCHAR(100),
+    risk_grade      VARCHAR(50),
+    review_opinion  TEXT,
     result          VARCHAR(20),
     reviewed_at     TIMESTAMP
 );
 
 -- 부활
 CREATE TABLE IF NOT EXISTS revivals (
-    revival_no    VARCHAR(20)  PRIMARY KEY,
-    contract_no   VARCHAR(20),              -- → contracts.contract_no
-    customer_name VARCHAR(100),
-    revived_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    revival_no     VARCHAR(20)  PRIMARY KEY,
+    contract_no    VARCHAR(20),              -- → contracts.contract_no
+    customer_name  VARCHAR(100),
+    contact        VARCHAR(100),
+    unpaid_amount  BIGINT       DEFAULT 0,
+    payment_method VARCHAR(50),
+    revived_at     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================================
@@ -342,7 +352,9 @@ CREATE TABLE IF NOT EXISTS channel_screenings (
     candidate_name   VARCHAR(100),
     channel_type     VARCHAR(50),
     qualification    VARCHAR(200),
+    certifications   TEXT,
     application_date DATE,
+    rejection_reason TEXT,
     status           VARCHAR(20),
     reviewed_at      TIMESTAMP
 );
@@ -376,12 +388,15 @@ CREATE TABLE IF NOT EXISTS activity_schedule_items (
 
 -- 성과급 요청
 CREATE TABLE IF NOT EXISTS bonus_requests (
-    request_no VARCHAR(20)  PRIMARY KEY,
-    requester  VARCHAR(100),
-    amount     BIGINT       DEFAULT 0,
-    reason     TEXT,
-    status     VARCHAR(20),
-    created_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    request_no       VARCHAR(20)  PRIMARY KEY,
+    requester        VARCHAR(100),
+    evaluation_no    VARCHAR(20),
+    channel_type     VARCHAR(50),
+    evaluation_grade VARCHAR(20),
+    amount           BIGINT       DEFAULT 0,
+    reason           TEXT,
+    status           VARCHAR(20),
+    created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 영업 활동 관리
@@ -390,6 +405,8 @@ CREATE TABLE IF NOT EXISTS sales_activity_managements (
     manager_name        VARCHAR(100),
     channel_name        VARCHAR(100),
     activity_type       VARCHAR(50),
+    start_date          DATE,
+    end_date            DATE,
     visit_count         INT          DEFAULT 0,
     contract_count      INT          DEFAULT 0,
     achievement_rate    DOUBLE       DEFAULT 0,
@@ -402,6 +419,7 @@ CREATE TABLE IF NOT EXISTS sales_activity_managements (
 CREATE TABLE IF NOT EXISTS sales_org_evaluations (
     evaluation_no      VARCHAR(20)  PRIMARY KEY,
     org_name           VARCHAR(100),
+    channel_type       VARCHAR(50),
     grade              VARCHAR(20),
     score              DOUBLE       DEFAULT 0,
     sales_result       BIGINT       DEFAULT 0,
@@ -429,18 +447,42 @@ CREATE TABLE IF NOT EXISTS inquiries (
 );
 
 -- ============================================================
+-- Tier 2 : 만기 계약 안내 (contracts 참조)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS expiring_contract_notices (
+    notice_no         VARCHAR(50)  PRIMARY KEY,
+    contract_no       VARCHAR(20),            -- → contracts.contract_no
+    contractor_name   VARCHAR(100),
+    expiry_date       DATE,
+    phone             VARCHAR(20),
+    email             VARCHAR(100),
+    is_renewable      BOOLEAN      DEFAULT FALSE,
+    expected_premium  BIGINT       DEFAULT 0,
+    notice_date       TIMESTAMP    NULL,
+    notice_memo       TEXT,
+    customer_response VARCHAR(50),
+    renewal_premium   BIGINT       DEFAULT 0,
+    premium_diff      BIGINT       DEFAULT 0
+);
+
+-- ============================================================
 -- Tier 3 : contracts 참조
 -- ============================================================
 
 -- 납부 기록
 CREATE TABLE IF NOT EXISTS payment_records (
-    record_no     VARCHAR(20)  PRIMARY KEY,
-    contract_no   VARCHAR(20),              -- → contracts.contract_no
-    customer_name VARCHAR(100),
-    amount        BIGINT       DEFAULT 0,
-    method        VARCHAR(50),
-    payment_date  DATE,
-    status        VARCHAR(20)
+    record_no       VARCHAR(20)  PRIMARY KEY,
+    contract_no     VARCHAR(20),            -- → contracts.contract_no
+    customer_name   VARCHAR(100),
+    amount          BIGINT       DEFAULT 0,
+    method          VARCHAR(50),
+    payment_date    DATE,
+    status          VARCHAR(20),
+    confirmed_at    TIMESTAMP    NULL,
+    rejected_at     TIMESTAMP    NULL,
+    reject_category VARCHAR(50),
+    reject_reason   VARCHAR(500)
 );
 
 -- 해지
@@ -513,7 +555,8 @@ CREATE TABLE IF NOT EXISTS education_preparations (
     material_ready  BOOLEAN      DEFAULT FALSE,
     textbook_status VARCHAR(200),
     attendance_list TEXT,
-    status          VARCHAR(20)
+    status          VARCHAR(20),
+    registered_at   TIMESTAMP    NULL
 );
 
 -- ============================================================
@@ -578,6 +621,7 @@ CREATE TABLE IF NOT EXISTS education_executions (
     trainer_name   VARCHAR(100),
     executed_at    TIMESTAMP,
     attendee_count INT          DEFAULT 0,
+    memo           TEXT,
     status         VARCHAR(20)
 );
 

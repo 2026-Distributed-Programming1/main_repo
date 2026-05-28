@@ -3,6 +3,9 @@ package dp.dao;
 import dp.db.DBA;
 import dp.education.Attendance;
 import dp.education.EducationExecution;
+import dp.education.EducationPreparation;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EducationExecutionDAO {
 
@@ -10,15 +13,17 @@ public class EducationExecutionDAO {
         String execNo = String.valueOf(e.getCompletionNumber());
         DBA.executeUpdate(
             "INSERT INTO education_executions (execution_no, prep_no, trainer_name,"
-            + " executed_at, attendee_count, status)"
-            + " VALUES (?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE attendee_count=VALUES(attendee_count)",
+            + " executed_at, attendee_count, memo, status)"
+            + " VALUES (?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE attendee_count=VALUES(attendee_count),"
+            + " memo=VALUES(memo), status=VALUES(status), executed_at=VALUES(executed_at)",
             execNo,
             e.getPreparation() != null ? String.valueOf(e.getPreparation().getSetupNumber()) : null,
             e.getPreparation() != null ? e.getPreparation().getInstructorName() : null,
             e.getCompletedAt(),
             e.getAttendanceCount(),
-            null);
+            e.getMemo(),
+            e.getStatus());
 
         if (e.getPreparation() != null) {
             for (Attendance a : e.getPreparation().getAttendanceList()) {
@@ -31,5 +36,32 @@ public class EducationExecutionDAO {
                     a.isAttended());
             }
         }
+    }
+
+    public static List<EducationExecution> findAll() {
+        return DBA.executeQuery(
+            "SELECT execution_no, prep_no, trainer_name, executed_at,"
+            + " attendee_count, memo, status FROM education_executions",
+            rs -> {
+                int execNo = 0;
+                try { execNo = Integer.parseInt(rs.getString("execution_no")); }
+                catch (NumberFormatException ignored) {}
+
+                int prepNo = 0;
+                try { prepNo = Integer.parseInt(rs.getString("prep_no")); }
+                catch (NumberFormatException ignored) {}
+
+                java.sql.Timestamp ts = rs.getTimestamp("executed_at");
+                java.time.LocalDateTime completedAt = ts != null ? ts.toLocalDateTime() : null;
+
+                int attendeeCount = rs.getInt("attendee_count");
+                EducationPreparation prepShell = new EducationPreparation(
+                        prepNo, null, null, rs.getString("trainer_name"), null, null, new ArrayList<>());
+
+                EducationExecution exec = new EducationExecution(
+                        execNo, completedAt, attendeeCount, attendeeCount, rs.getString("memo"), prepShell);
+                exec.setStatus(rs.getString("status"));
+                return exec;
+            });
     }
 }

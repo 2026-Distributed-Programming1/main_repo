@@ -27,7 +27,9 @@ public class DamageInvestigationDAO {
             + " recognized_damage, opinion, result, reject_reason, investigated_at, status)"
             + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE status=VALUES(status), result=VALUES(result),"
-            + " recognized_damage=VALUES(recognized_damage), investigated_at=VALUES(investigated_at)",
+            + " recognized_damage=VALUES(recognized_damage), investigated_at=VALUES(investigated_at),"
+            + " opinion=VALUES(opinion), reject_reason=VALUES(reject_reason),"
+            + " our_fault_ratio=VALUES(our_fault_ratio), counter_ratio=VALUES(counter_ratio)",
             inv.getInvestigationNo(), claimNo, claimCus,
             customerId, handlerId, handlerName,
             inv.getOurFaultRatio(), inv.getCounterFaultRatio(),
@@ -62,6 +64,13 @@ public class DamageInvestigationDAO {
                     rs.getDouble("counter_ratio"),
                     rs.getLong("recognized_damage"),
                     status);
+                String op = rs.getString("opinion");
+                if (op != null) inv.enterOpinion(op);
+                String res = rs.getString("result");
+                if (res != null) {
+                    try { inv.selectResult(dp.enums.InvestigationResult.valueOf(res)); }
+                    catch (IllegalArgumentException ignored) {}
+                }
                 String rr = rs.getString("reject_reason");
                 if (rr != null) inv.setRejectReason(rr);
                 java.sql.Timestamp iat = rs.getTimestamp("investigated_at");

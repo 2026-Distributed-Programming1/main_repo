@@ -14,6 +14,11 @@ public class RecipientInfo {
     private String residentNo;    // 수령인 주민등록번호
     private String contact;       // 수령인 휴대전화번호
 
+    /** DB 복원용 생성자 - 이름만 있는 경우 */
+    public RecipientInfo(String name) {
+        this.name = name;
+    }
+
     /** 생성자 - 본인인증 결과로 자동 입력 */
     public RecipientInfo(Customer customer) {
         if (customer != null) {

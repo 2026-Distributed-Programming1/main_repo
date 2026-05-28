@@ -16,6 +16,7 @@ public class Revival {
     private LocalDateTime appliedAt;
     private long unpaidAmount;
     private String paymentMethod;
+    private String contact;
 
     public Revival(int revivalNumber, LocalDateTime appliedAt, long unpaidAmount, String paymentMethod) {
         this.revivalNumber = revivalNumber;
@@ -39,9 +40,10 @@ public class Revival {
         return unpaidAmount;
     }
 
-    public void pay(String paymentMethod) {
+    public boolean pay(String paymentMethod) {
         this.paymentMethod = paymentMethod;
         System.out.println("  [시스템] 미납보험료가 납입되었습니다.");
+        return true;
     }
 
     public boolean authenticate() {
@@ -60,4 +62,6 @@ public class Revival {
     public long getUnpaidAmount() { return unpaidAmount; }
     public void setUnpaidAmount(long unpaidAmount) { this.unpaidAmount = unpaidAmount; }
     public String getPaymentMethod() { return paymentMethod; }
+    public String getContact() { return contact; }
+    public void setContact(String contact) { this.contact = contact; }
 }

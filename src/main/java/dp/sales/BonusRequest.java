@@ -47,6 +47,7 @@ public class BonusRequest {
     public void returnToEvaluation() {}
 
     // Runner에서 실제 사용하는 getter/setter만 유지
+    public String getEvaluationNo() { return evaluationNo; }
     public void setEvaluationNo(String evaluationNo) { this.evaluationNo = evaluationNo; }
     public String getChannelName() { return channelName; }
     public void setChannelName(String channelName) { this.channelName = channelName; }

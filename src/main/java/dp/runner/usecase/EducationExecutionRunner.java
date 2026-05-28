@@ -5,6 +5,7 @@ import dp.education.Attendance;
 import dp.education.EducationExecution;
 import dp.education.EducationPreparation;
 import dp.dao.EducationExecutionDAO;
+import dp.dao.EducationPlanDAO;
 import dp.dao.EducationPreparationDAO;
 import dp.dao.EducationTrainerDAO;
 import dp.runner.ConsoleHelper;
@@ -46,7 +47,13 @@ public class EducationExecutionRunner {
             return;
         }
 
-        EducationPreparation preparation = educationPreparations.get(educationPreparations.size() - 1);
+        String[] prepOptions = educationPreparations.stream()
+                .map(p -> "#" + p.getSetupNumber() + " - " + p.getLocation()
+                        + " / 강사: " + p.getInstructorName())
+                .toArray(String[]::new);
+        int prepChoice = ConsoleHelper.readMenuChoice(
+                "[영업교육담당자] 진행할 교육 제반을 선택하세요:", prepOptions);
+        EducationPreparation preparation = educationPreparations.get(prepChoice - 1);
         List<EducationTrainer> trainerList = EducationTrainerDAO.findAll();
         if (trainerList.isEmpty()) {
             ConsoleHelper.printError("등록된 영업교육 담당자가 없습니다.");
@@ -107,8 +114,14 @@ public class EducationExecutionRunner {
         execution.sendCompletionNotice();
 
         // 10. 시스템은 교육 진행 완료 결과를 출력한다.
+        String educationName = EducationPlanDAO.findAll().stream()
+                .filter(p -> String.valueOf(p.getPlanNumber()).equals(preparation.getPlanNo()))
+                .map(dp.education.EducationPlan::getEducationName)
+                .findFirst().orElse("-");
         ConsoleHelper.printStage("시스템", "교육 진행 완료 결과를 출력합니다.");
         ConsoleHelper.printInfo("완료번호: " + execution.getCompletionNumber()
+                + " | 완료일시: " + execution.getCompletedAt()
+                + " | 교육명: " + educationName
                 + " | 출석인원: " + execution.getAttendanceCount()
                 + " / " + execution.getTotalCount());
 

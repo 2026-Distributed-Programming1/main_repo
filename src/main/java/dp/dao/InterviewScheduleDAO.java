@@ -2,29 +2,29 @@ package dp.dao;
 
 import dp.consultation.InterviewSchedule;
 import dp.db.DBA;
-import java.util.ArrayList;
 import java.util.List;
 
 public class InterviewScheduleDAO {
 
     public static void save(InterviewSchedule s) {
         DBA.executeUpdate(
-            "INSERT INTO interview_schedules (schedule_no, customer_name, type, scheduled_at,"
+            "INSERT INTO interview_schedules (schedule_no, customer_name, designer_name, type, scheduled_at,"
             + " location, preparation, status, registered_at, modified_at, cancelled_at)"
-            + " VALUES (?,?,?,?,?,?,?,?,?,?)"
+            + " VALUES (?,?,?,?,?,?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE status=VALUES(status), type=VALUES(type),"
+            + " designer_name=VALUES(designer_name),"
             + " scheduled_at=VALUES(scheduled_at), location=VALUES(location),"
             + " preparation=VALUES(preparation), modified_at=VALUES(modified_at),"
             + " cancelled_at=VALUES(cancelled_at)",
             String.valueOf(s.getInterviewNumber()),
-            s.getCustomerName(), s.getType(), s.getScheduledAt(), s.getLocation(),
+            s.getCustomerName(), s.getDesignerName(), s.getType(), s.getScheduledAt(), s.getLocation(),
             s.getPreparation(), s.getStatus(),
             s.getRegisteredAt(), s.getModifiedAt(), s.getCancelledAt());
     }
 
     public static List<InterviewSchedule> findAll() {
         return DBA.executeQuery(
-            "SELECT schedule_no, customer_name, type, scheduled_at, location, preparation,"
+            "SELECT schedule_no, customer_name, designer_name, type, scheduled_at, location, preparation,"
             + " status, registered_at, modified_at, cancelled_at"
             + " FROM interview_schedules",
             rs -> {
@@ -42,7 +42,7 @@ public class InterviewScheduleDAO {
                 java.time.LocalDateTime modifiedAt = modTs != null ? modTs.toLocalDateTime() : null;
                 java.sql.Timestamp canTs = rs.getTimestamp("cancelled_at");
                 java.time.LocalDateTime cancelledAt = canTs != null ? canTs.toLocalDateTime() : null;
-                return InterviewSchedule.fromDb(
+                InterviewSchedule s = InterviewSchedule.fromDb(
                         interviewNumber,
                         rs.getString("customer_name"),
                         rs.getString("type"),
@@ -51,6 +51,8 @@ public class InterviewScheduleDAO {
                         rs.getString("preparation"),
                         rs.getString("status"),
                         registeredAt, modifiedAt, cancelledAt);
+                s.setDesignerName(rs.getString("designer_name"));
+                return s;
             });
     }
 }

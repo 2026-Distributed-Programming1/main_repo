@@ -14,13 +14,17 @@ public class PaymentRecordDAO {
         String customerName = r.getContract() != null && r.getContract().getCustomer() != null
                 ? r.getContract().getCustomer().getName() : null;
         String status       = r.getStatus() != null ? r.getStatus().name() : null;
+        String rejectCategory = r.getRejectCategory() != null ? r.getRejectCategory().name() : null;
         DBA.executeUpdate(
             "INSERT INTO payment_records (record_no, contract_no, customer_name, amount,"
-            + " method, payment_date, status)"
-            + " VALUES (?,?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE status=VALUES(status)",
+            + " method, payment_date, status, confirmed_at, rejected_at, reject_category, reject_reason)"
+            + " VALUES (?,?,?,?,?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE status=VALUES(status),"
+            + " confirmed_at=VALUES(confirmed_at), rejected_at=VALUES(rejected_at),"
+            + " reject_category=VALUES(reject_category), reject_reason=VALUES(reject_reason)",
             r.getRecordNo(), contractNo, customerName,
-            r.getAmount(), r.getMethod(), r.getPaymentDate(), status);
+            r.getAmount(), r.getMethod(), r.getPaymentDate(), status,
+            r.getConfirmedAt(), r.getRejectedAt(), rejectCategory, r.getRejectReason());
     }
 
     public static List<PaymentRecord> findAll() {

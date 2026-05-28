@@ -3,6 +3,7 @@ package dp.sales;
 import dp.enums.ActivityType;
 import dp.enums.InsuranceType;
 import dp.enums.PlanStatus;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -120,7 +121,7 @@ public class ActivityPlanTest {
     @Test
     public void addSchedule_일정이_추가된다() {
         ActivityPlan plan = new ActivityPlan();
-        ScheduleItem item = new ScheduleItem("CU-001", ActivityType.VISIT, "서울 강남", "첫 방문");
+        ScheduleItem item = new ScheduleItem("CU-001", ActivityType.VISIT, LocalDateTime.now(), "첫 방문", null);
         plan.addSchedule(item);
         assertEquals(1, plan.getSchedules().size());
     }

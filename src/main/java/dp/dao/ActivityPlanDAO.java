@@ -59,6 +59,7 @@ public class ActivityPlanDAO {
             + " FROM activity_plans",
             rs -> {
                 ActivityPlan p = new ActivityPlan();
+                p.setPlanId(rs.getString("plan_no"));
                 p.setPlanName(rs.getString("plan_name"));
                 p.setAuthor(rs.getString("author_name"));
                 java.sql.Date sd = rs.getDate("start_date");

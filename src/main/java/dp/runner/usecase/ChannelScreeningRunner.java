@@ -54,12 +54,12 @@ public class ChannelScreeningRunner {
         // 2. 시스템은 지원자 목록 화면을 출력한다.
         screening.loadApplicantList();
         ConsoleHelper.printStage("시스템", "지원자 목록 화면을 출력합니다.");
-        ConsoleHelper.printInfo("테이블 컬럼: 지원자명 / 채널유형 / 지원일 / 경력 / 심사상태");
+        ConsoleHelper.printInfo("테이블 컬럼: 지원자명 / 채널유형 / 지원일 / 경력 / 자격증 / 심사상태");
         List<ChannelScreening> screeningList = ChannelScreeningDAO.findAll();
         if (screeningList.isEmpty()) {
             ConsoleHelper.printInfo("  (저장된 지원자 데이터가 없습니다.)");
         } else {
-            ConsoleHelper.printInfo("  번호 | 지원자명 | 채널유형 | 지원일 | 경력 | 심사상태");
+            ConsoleHelper.printInfo("  번호 | 지원자명 | 채널유형 | 지원일 | 경력 | 자격증 | 심사상태");
             for (int i = 0; i < screeningList.size(); i++) {
                 ChannelScreening s = screeningList.get(i);
                 String ct = s.getChannelType() != null ? (s.getChannelType() == ChannelType.DESIGNER ? "설계사" : "대리점") : "-";
@@ -67,6 +67,7 @@ public class ChannelScreeningRunner {
                         + " | " + ct
                         + " | " + (s.getApplicationDate() != null ? s.getApplicationDate() : "-")
                         + " | " + (s.getCareer() != null ? s.getCareer() : "없음")
+                        + " | " + (s.getCertifications().isEmpty() ? "없음" : String.join(", ", s.getCertifications()))
                         + " | " + s.getScreeningStatus());
             }
         }
@@ -78,14 +79,27 @@ public class ChannelScreeningRunner {
         screening.setFilterStartDate(filterStart);
         screening.setFilterEndDate(filterEnd);
 
-        // 4. 시스템은 조회 조건에 맞는 지원자 목록을 출력한다. (A3)
+        int typeFilter = ConsoleHelper.readMenuChoice("  채널 유형 필터:", "전체", "설계사", "대리점");
+        int statusFilter = ConsoleHelper.readMenuChoice("  심사 상태 필터:", "전체", "대기", "승인", "거절");
         screening.search();
-        ConsoleHelper.printStage("시스템", "조회 조건에 맞는 지원자 목록을 출력합니다.");
 
-        boolean hasData = ConsoleHelper.readYesNo("  조회된 지원자가 있습니까?");
-        if (!hasData) {
+        // 조회 조건으로 목록 필터링
+        List<ChannelScreening> filtered = screeningList.stream()
+                .filter(s -> s.getApplicationDate() == null
+                        || (!s.getApplicationDate().isBefore(filterStart) && !s.getApplicationDate().isAfter(filterEnd)))
+                .filter(s -> typeFilter == 1 || s.getChannelType() != null
+                        && ((typeFilter == 2 && s.getChannelType() == ChannelType.DESIGNER)
+                            || (typeFilter == 3 && s.getChannelType() != ChannelType.DESIGNER)))
+                .filter(s -> statusFilter == 1 || s.getScreeningStatus() != null
+                        && ((statusFilter == 2 && s.getScreeningStatus() == dp.enums.ScreeningStatus.PENDING)
+                            || (statusFilter == 3 && s.getScreeningStatus() == dp.enums.ScreeningStatus.APPROVED)
+                            || (statusFilter == 4 && s.getScreeningStatus() == dp.enums.ScreeningStatus.REJECTED)))
+                .collect(java.util.stream.Collectors.toList());
+
+        // 4. 시스템은 조회 조건에 맞는 지원자 목록을 출력한다. (A3)
+        ConsoleHelper.printStage("시스템", "조회 조건에 맞는 지원자 목록을 출력합니다.");
+        if (filtered.isEmpty()) {
             // A3) 조회 조건에 해당하는 지원자가 없는 경우
-            screening.showNoResultMessage();
             ConsoleHelper.printStage("시스템", "조회 가능한 지원자가 없습니다.");
             ConsoleHelper.waitEnter();
             return;

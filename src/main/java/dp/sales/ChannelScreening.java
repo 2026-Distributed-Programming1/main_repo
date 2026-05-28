@@ -74,9 +74,13 @@ public class ChannelScreening {
     public void setCareer(String career) { this.career = career; }
     public List<String> getCertifications() { return certifications; }
     public void addCertification(String cert) { this.certifications.add(cert); }
+    public void setCertifications(List<String> certifications) {
+        this.certifications = certifications != null ? certifications : new ArrayList<>();
+    }
     public ScreeningStatus getScreeningStatus() { return screeningStatus; }
     public void setScreeningStatus(ScreeningStatus screeningStatus) { this.screeningStatus = screeningStatus; }
     public String getApprovalNo() { return approvalNo; }
+    public void setApprovalNo(String approvalNo) { this.approvalNo = approvalNo; }
     public LocalDateTime getApprovedAt() { return approvedAt; }
     public String getRejectionReason() { return rejectionReason; }
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }

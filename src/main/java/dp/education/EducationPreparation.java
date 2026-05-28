@@ -18,8 +18,10 @@ public class EducationPreparation {
     private String location;
     private String instructorName;
     private String textbookStatus;
+    private boolean materialReady;
     private String additionalNotice;
     private List<Attendance> attendanceList;
+    private String status;
 
 
     public EducationPreparation(int setupNumber, LocalDateTime registeredAt, String location,
@@ -56,6 +58,8 @@ public class EducationPreparation {
 
     public void save() {
         this.registeredAt = LocalDateTime.now();
+        this.materialReady = this.textbookStatus != null && !this.textbookStatus.isEmpty();
+        this.status = "등록완료";
     }
 
     public void addAttendee(String attendeeName) {
@@ -66,10 +70,15 @@ public class EducationPreparation {
     public String getPlanNo() { return planNo; }
     public void setPlanNo(String planNo) { this.planNo = planNo; }
     public LocalDateTime getRegisteredAt() { return registeredAt; }
+    public void setRegisteredAt(LocalDateTime registeredAt) { this.registeredAt = registeredAt; }
     public String getLocation() { return location; }
     public String getInstructorName() { return instructorName; }
     public String getTextbookStatus() { return textbookStatus; }
     public void setTextbookStatus(String textbookStatus) { this.textbookStatus = textbookStatus; }
+    public boolean isMaterialReady() { return materialReady; }
+    public void setMaterialReady(boolean materialReady) { this.materialReady = materialReady; }
     public String getAdditionalNotice() { return additionalNotice; }
     public List<Attendance> getAttendanceList() { return attendanceList; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

@@ -1,6 +1,7 @@
 package dp.education;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 교육계획안 (EducationPlan)
@@ -22,6 +23,7 @@ public class EducationPlan {
     private String educationContent;
     private String textbookList;
     private String rejectReason;
+    private LocalDateTime approvedAt;
     private String status;
 
     public EducationPlan(int planNumber, String educationName, LocalDate startDate, LocalDate endDate,
@@ -100,6 +102,7 @@ public class EducationPlan {
     }
 
     public void approve() {
+        this.approvedAt = LocalDateTime.now();
         this.status = "승인";
     }
 
@@ -121,5 +124,7 @@ public class EducationPlan {
     public String getEducationContent() { return educationContent; }
     public String getTextbookList() { return textbookList; }
     public String getRejectReason() { return rejectReason; }
+    public LocalDateTime getApprovedAt() { return approvedAt; }
+    public void setApprovedAt(LocalDateTime approvedAt) { this.approvedAt = approvedAt; }
     public String getStatus() { return status; }
 }

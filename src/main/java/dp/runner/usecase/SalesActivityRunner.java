@@ -69,10 +69,15 @@ public class SalesActivityRunner {
         if (activityList.isEmpty()) {
             ConsoleHelper.printInfo("  (저장된 영업활동 데이터가 없습니다.)");
         } else {
-            ConsoleHelper.printInfo("  번호 | 채널명 | 등록일시");
+            ConsoleHelper.printInfo("  번호 | 채널명 | 방문건수 | 계약건수 | 전환율 | 목표달성률");
             for (int i = 0; i < activityList.size(); i++) {
                 SalesActivityManagement a = activityList.get(i);
-                ConsoleHelper.printInfo("  " + (i + 1) + " | " + a.getChannelName() + " | " + a.getRegisteredAt());
+                ConsoleHelper.printInfo("  " + (i + 1)
+                        + " | " + a.getChannelName()
+                        + " | " + (a.getVisitCount() != null ? a.getVisitCount() : "-")
+                        + " | " + (a.getContractCount() != null ? a.getContractCount() : "-")
+                        + " | " + (a.getConversionRate() != null ? String.format("%.1f%%", a.getConversionRate()) : "-")
+                        + " | " + (a.getAchievementRate() != null ? String.format("%.1f%%", a.getAchievementRate()) : "-"));
             }
         }
 

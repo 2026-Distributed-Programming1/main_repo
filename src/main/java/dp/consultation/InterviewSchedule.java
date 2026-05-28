@@ -14,6 +14,7 @@ public class InterviewSchedule {
 
     private int interviewNumber;
     private String customerName;
+    private String designerName;
     private String type;
     private LocalDateTime scheduledAt;
     private String location;
@@ -97,6 +98,8 @@ public class InterviewSchedule {
 
     public int getInterviewNumber() { return interviewNumber; }
     public String getCustomerName() { return customerName; }
+    public String getDesignerName() { return designerName; }
+    public void setDesignerName(String designerName) { this.designerName = designerName; }
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
     public LocalDateTime getScheduledAt() { return scheduledAt; }

@@ -171,4 +171,18 @@ public class ClaimPayment {
     public boolean isTransferFailed() { return transferFailed; }
     public String getFailureReason() { return failureReason; }
     public ClaimPaymentStatus getStatus() { return status; }
+
+    // DB 복원용 setter
+    public void setRecipientFromName(String name) {
+        if (name != null) this.recipient = new RecipientInfo(name);
+    }
+    public void setAccountFromNo(String accountNo) {
+        if (accountNo != null) {
+            this.account = new BankAccount();
+            this.account.enter(null, accountNo, null);
+        }
+    }
+    public void setPaidAt(LocalDateTime paidAt) { this.paidAt = paidAt; }
+    public void setScheduledAt(LocalDateTime scheduledAt) { this.scheduledAt = scheduledAt; }
+    public void setPaymentType(PaymentType paymentType) { this.paymentType = paymentType; }
 }
