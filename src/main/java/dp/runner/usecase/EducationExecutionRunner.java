@@ -5,6 +5,7 @@ import dp.education.Attendance;
 import dp.education.EducationExecution;
 import dp.education.EducationPreparation;
 import dp.dao.EducationExecutionDAO;
+import dp.db.DBA;
 import dp.dao.EducationPlanDAO;
 import dp.dao.EducationPreparationDAO;
 import dp.dao.EducationTrainerDAO;
@@ -108,7 +109,16 @@ public class EducationExecutionRunner {
         }
 
         execution.complete();
-        EducationExecutionDAO.save(execution);
+        DBA.beginTransaction();
+        try {
+            EducationExecutionDAO.save(execution);
+            DBA.commit();
+        } catch (Exception e) {
+            DBA.rollback();
+            ConsoleHelper.printError("교육 진행 저장 중 오류가 발생했습니다. 변경사항이 취소되었습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
 
         // 8. 시스템은 판매채널에게 수료 알림을 자동 발송한다.
         execution.sendCompletionNotice();

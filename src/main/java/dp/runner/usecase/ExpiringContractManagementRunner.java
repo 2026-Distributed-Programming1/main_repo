@@ -4,6 +4,7 @@ import dp.contract.Contract;
 import dp.contract.ExpiringContractManagement;
 import dp.dao.ContractDAO;
 import dp.dao.ExpiringContractManagementDAO;
+import dp.db.DBA;
 import dp.enums.CustomerResponse;
 import dp.runner.ConsoleHelper;
 
@@ -219,9 +220,18 @@ public class ExpiringContractManagementRunner {
             ConsoleHelper.printStage("계약관리담당자", "[갱신 확정] 버튼을 클릭합니다.");
             mgmt.confirmRenewal();
             mgmt.saveRenewalContract();
-            ExpiringContractManagementDAO.save(mgmt);
-            selectedContract.setMonthlyPremium(mgmt.getRenewalPremium());
-            ContractDAO.save(selectedContract);
+            DBA.beginTransaction();
+            try {
+                ExpiringContractManagementDAO.save(mgmt);
+                selectedContract.setMonthlyPremium(mgmt.getRenewalPremium());
+                ContractDAO.save(selectedContract);
+                DBA.commit();
+            } catch (Exception e) {
+                DBA.rollback();
+                ConsoleHelper.printError("갱신 처리 중 오류가 발생했습니다. 변경사항이 취소되었습니다.");
+                ConsoleHelper.waitEnter();
+                return;
+            }
 
             // A1-6~7) 완료 팝업 + [처리 이력] 반영
             ConsoleHelper.printStage("시스템", "[" + mgmt.getContractorName() + "]님의 계약 ["

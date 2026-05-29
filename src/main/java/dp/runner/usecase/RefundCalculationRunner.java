@@ -9,6 +9,7 @@ import dp.dao.CancellationDAO;
 import dp.dao.ContractDAO;
 import dp.dao.RefundCalculationDAO;
 import dp.dao.RefundPaymentDAO;
+import dp.db.DBA;
 import dp.runner.ConsoleHelper;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -117,12 +118,23 @@ public class RefundCalculationRunner {
             return;
         }
         RefundPayment payment = refund.confirm();
-        RefundCalculationDAO.save(refund);
+        DBA.beginTransaction();
+        try {
+            RefundCalculationDAO.save(refund);
+            if (payment != null) {
+                RefundPaymentDAO.save(payment);
+            }
+            DBA.commit();
+        } catch (Exception e) {
+            DBA.rollback();
+            ConsoleHelper.printError("[E2] 확정 저장에 실패했습니다. 변경사항이 취소되었습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
         if (payment != null) {
-            RefundPaymentDAO.save(payment);
             ConsoleHelper.printSuccess("환급금 지급 이관 완료: " + payment.getPaymentNo());
         } else {
-            ConsoleHelper.printError("[E2] 확정 저장에 실패했습니다.");
+            ConsoleHelper.printError("[E2] RefundPayment 생성에 실패했습니다.");
         }
         ConsoleHelper.waitEnter();
     }

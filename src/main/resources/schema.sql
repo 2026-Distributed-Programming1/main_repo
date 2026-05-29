@@ -677,3 +677,43 @@ CREATE TABLE IF NOT EXISTS claim_payments (
     failure_reason  TEXT,
     status          VARCHAR(20)
 );
+
+-- ============================================================
+-- FK 제약 (모두 NULLABLE — NULL 삽입 허용, 비-NULL 값만 참조 무결성 검사)
+-- 적용 순서: Tier 2 → 3 → 4 → 5 (부모 테이블이 먼저 생성된 순서)
+-- ※ customer_registrations.customer_id 제외
+--    (판매채널이 고객 DB 등록 전에 registration 먼저 저장하는 흐름 존재)
+-- ============================================================
+
+-- Tier 2: customers 참조
+ALTER TABLE contracts              ADD CONSTRAINT fk_contracts_customer              FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE payments               ADD CONSTRAINT fk_payments_customer               FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE accident_reports       ADD CONSTRAINT fk_accident_reports_customer       FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE claim_requests         ADD CONSTRAINT fk_claim_requests_customer         FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE insurance_applications ADD CONSTRAINT fk_insurance_applications_customer FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE policy_applications    ADD CONSTRAINT fk_policy_applications_customer    FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+
+-- Tier 2/3: contracts 참조
+ALTER TABLE claim_requests             ADD CONSTRAINT fk_claim_requests_contract           FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+ALTER TABLE revivals                   ADD CONSTRAINT fk_revivals_contract                 FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+ALTER TABLE payment_records            ADD CONSTRAINT fk_payment_records_contract           FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+ALTER TABLE cancellations              ADD CONSTRAINT fk_cancellations_contract             FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+ALTER TABLE expiring_contract_notices  ADD CONSTRAINT fk_expiring_contract_notices_contract FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+
+-- Tier 3: 중간 엔터티 참조
+ALTER TABLE dispatches             ADD CONSTRAINT fk_dispatches_accident            FOREIGN KEY (accident_no)      REFERENCES accident_reports(accident_no);
+ALTER TABLE damage_investigations  ADD CONSTRAINT fk_damage_investigations_claim    FOREIGN KEY (claim_no)         REFERENCES claim_requests(claim_no);
+ALTER TABLE education_preparations ADD CONSTRAINT fk_education_preparations_plan    FOREIGN KEY (plan_no)          REFERENCES education_plans(plan_no);
+
+-- Tier 4: 처리 레코드 참조
+ALTER TABLE dispatch_records       ADD CONSTRAINT fk_dispatch_records_dispatch      FOREIGN KEY (dispatch_no)      REFERENCES dispatches(dispatch_no);
+ALTER TABLE claim_calculations     ADD CONSTRAINT fk_claim_calculations_investigation FOREIGN KEY (investigation_no) REFERENCES damage_investigations(investigation_no);
+ALTER TABLE education_executions   ADD CONSTRAINT fk_education_executions_prep      FOREIGN KEY (prep_no)          REFERENCES education_preparations(prep_no);
+ALTER TABLE education_attendances  ADD CONSTRAINT fk_education_attendances_execution FOREIGN KEY (execution_no)    REFERENCES education_executions(execution_no);
+ALTER TABLE refund_calculations    ADD CONSTRAINT fk_refund_calculations_cancellation FOREIGN KEY (cancellation_no) REFERENCES cancellations(cancellation_no);
+ALTER TABLE activity_schedule_items ADD CONSTRAINT fk_activity_schedule_items_plan  FOREIGN KEY (plan_no)          REFERENCES activity_plans(plan_no);
+
+-- Tier 5: 최종 처리 참조
+ALTER TABLE claim_payments  ADD CONSTRAINT fk_claim_payments_calculation  FOREIGN KEY (calculation_no) REFERENCES claim_calculations(calculation_no);
+ALTER TABLE refund_payments ADD CONSTRAINT fk_refund_payments_refund      FOREIGN KEY (refund_no)      REFERENCES refund_calculations(refund_no);
+ALTER TABLE payment_items   ADD CONSTRAINT fk_payment_items_payment       FOREIGN KEY (payment_no)     REFERENCES payments(payment_no);

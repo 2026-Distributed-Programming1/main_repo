@@ -181,6 +181,11 @@ JVM 재시작 시 도메인 클래스의 `private static int sequence`가 0으�
 |---|---|---|---|
 | 2026-05-28 | `interview_records` | `interviewed_at TIMESTAMP NULL` 컬럼 추가 | BUG-REC-04 |
 | 2026-05-28 | `expiring_contract_notices` | 테이블 신규 생성 (schema.sql에 누락돼 있었음) | BUG-NEW-CTR-01 |
+| 2026-05-29 | `payment_records` | `confirmed_at`, `rejected_at`, `reject_category`, `reject_reason` 컬럼 추가 | BUG-R2-PAY-01 |
+| 2026-05-29 | `education_preparations` | `registered_at TIMESTAMP NULL` 컬럼 추가 | BUG-EXTRA-EDU-04 |
+| 2026-05-29 | `overdue_notice_settings` | `saved_at TIMESTAMP NULL` 컬럼 추가 | BUG-R8-ONS-01 |
+| 2026-05-29 | `policy_applications` | `uploaded_at TIMESTAMP NULL` 컬럼 추가 | BUG-R8-PA-01 |
+| 2026-05-29 | 전체 (23개 테이블) | FOREIGN KEY 제약 추가 (NULLABLE, RESTRICT) | StructureDesign.md |
 
 > **주의**: 스키마 변경 후엔 반드시 `docker compose down -v && docker compose up -d` 실행
 
