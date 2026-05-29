@@ -168,6 +168,7 @@ public class ChannelRecruitmentRunner {
         recruitment.save();
 
         // 6. 시스템은 "모집 공고가 등록되었습니다."라는 팝업 메시지를 출력한다.
+        ChannelRecruitmentDAO.save(recruitment);
         recruitment.showSaveSuccess();
         ConsoleHelper.printStage("시스템", "모집 공고가 등록되었습니다.");
 
@@ -176,7 +177,6 @@ public class ChannelRecruitmentRunner {
         ConsoleHelper.readLine("  [확인] (엔터를 눌러 확인): ");
 
         // 8. 시스템은 등록 완료 결과를 출력하고 [영업 활동을 관리한다]로 복귀한다.
-        ChannelRecruitmentDAO.save(recruitment);
         recruitment.showSaveResult();
         ConsoleHelper.printStage("시스템", "등록 완료 결과를 출력합니다.");
         String channelTypeStr = recruitment.getChannelType() == ChannelType.DESIGNER ? "설계사" : "대리점";

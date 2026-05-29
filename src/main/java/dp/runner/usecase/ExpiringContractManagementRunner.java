@@ -3,6 +3,8 @@ package dp.runner.usecase;
 import dp.contract.Contract;
 import dp.contract.ExpiringContractManagement;
 import dp.dao.ContractDAO;
+import dp.dao.ExpiringContractManagementDAO;
+import dp.db.DBA;
 import dp.enums.CustomerResponse;
 import dp.runner.ConsoleHelper;
 
@@ -171,6 +173,7 @@ public class ExpiringContractManagementRunner {
 
         // 10. 시스템은 안내 기록을 저장하고 [처리 이력] 탭에 반영한다.
         mgmt.saveNoticeRecord();
+        ExpiringContractManagementDAO.save(mgmt);
         mgmt.updateHistoryTab();
         ConsoleHelper.printStage("시스템", "안내 기록을 저장하고 [처리 이력] 탭에 반영합니다.");
         ConsoleHelper.printInfo("안내 일시: " + mgmt.getNoticeDate());
@@ -217,8 +220,18 @@ public class ExpiringContractManagementRunner {
             ConsoleHelper.printStage("계약관리담당자", "[갱신 확정] 버튼을 클릭합니다.");
             mgmt.confirmRenewal();
             mgmt.saveRenewalContract();
-            selectedContract.setMonthlyPremium(mgmt.getRenewalPremium());
-            ContractDAO.save(selectedContract);
+            DBA.beginTransaction();
+            try {
+                ExpiringContractManagementDAO.save(mgmt);
+                selectedContract.setMonthlyPremium(mgmt.getRenewalPremium());
+                ContractDAO.save(selectedContract);
+                DBA.commit();
+            } catch (Exception e) {
+                DBA.rollback();
+                ConsoleHelper.printError("갱신 처리 중 오류가 발생했습니다. 변경사항이 취소되었습니다.");
+                ConsoleHelper.waitEnter();
+                return;
+            }
 
             // A1-6~7) 완료 팝업 + [처리 이력] 반영
             ConsoleHelper.printStage("시스템", "[" + mgmt.getContractorName() + "]님의 계약 ["
@@ -248,7 +261,9 @@ public class ExpiringContractManagementRunner {
             // A2-3) 해지 처리 유스케이스로 전환
             mgmt.switchToTermination();
             mgmt.updateHistoryTab();
+            ExpiringContractManagementDAO.save(mgmt);
             ConsoleHelper.printStage("시스템", "[A2] 해지 처리 유스케이스로 전환합니다.");
+            InsuranceCancellationRunner.run(selectedContract);
 
         } else {
             // A3) 고객이 추후 결정을 원하는 경우
@@ -257,6 +272,7 @@ public class ExpiringContractManagementRunner {
             mgmt.updateHistoryTab();
             ConsoleHelper.printStage("시스템", "[처리 이력] 탭에 추후 결정 상태로 기록됩니다.");
             mgmt.sendPendingAlert();
+            ExpiringContractManagementDAO.save(mgmt);
             ConsoleHelper.printStage("시스템", "[A3] 만료일 7일 전, D-7 알림이 자동 발송됩니다: 계약 ["
                     + mgmt.getContractNo() + "], 만료까지 D-7");
         }

@@ -149,4 +149,10 @@ public class Payment {
     public LocalDateTime getRequestedAt() { return requestedAt; }
     public PaymentStatus getStatus() { return status; }
     public void setStatus(PaymentStatus status) { this.status = status; }
+
+    // DB 복원용 setter
+    public void setPaymentNo(String paymentNo) { this.paymentNo = paymentNo; }
+    public void setPaymentMethod(PaymentMethod paymentMethod) { this.paymentMethod = paymentMethod; }
+    public void setRequestedAt(LocalDateTime requestedAt) { this.requestedAt = requestedAt; }
+    public void setDiscountedAmount(long discountedAmount) { this.discountedAmount = discountedAmount; }
 }

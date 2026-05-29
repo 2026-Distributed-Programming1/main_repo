@@ -13,9 +13,10 @@ public class InquiryDAO {
         String status = i.getStatus() != null ? i.getStatus().name() : null;
         DBA.executeUpdate(
             "INSERT INTO inquiries (inquiry_no, customer_name, inquiry_type, title, content,"
-            + " attachment_file_name, attachment_file_size, status, created_at)"
-            + " VALUES (?,?,?,?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE status=VALUES(status), answer_content=VALUES(answer_content)",
+            + " attachment_file_name, attachment_file_size, answer_content, answered_at, status, created_at)"
+            + " VALUES (?,?,?,?,?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE status=VALUES(status),"
+            + " answer_content=VALUES(answer_content), answered_at=VALUES(answered_at)",
             i.getInquiryNo(),
             i.getCustomerName(),
             inquiryType,
@@ -23,6 +24,8 @@ public class InquiryDAO {
             i.getContent(),
             i.getAttachmentFileName(),
             i.getAttachmentFileSize(),
+            i.getAnswerContent(),
+            i.getAnsweredAt(),
             status,
             i.getReceivedAt());
     }
@@ -53,6 +56,7 @@ public class InquiryDAO {
 
     private static Inquiry mapRow(java.sql.ResultSet rs) throws java.sql.SQLException {
         Inquiry i = new Inquiry();
+        i.setInquiryNo(rs.getString("inquiry_no"));
         i.setCustomerName(rs.getString("customer_name"));
         String it = rs.getString("inquiry_type");
         if (it != null) {

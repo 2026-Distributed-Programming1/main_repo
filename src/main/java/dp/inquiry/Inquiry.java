@@ -78,6 +78,7 @@ public class Inquiry {
 
     // Runner에서 실제 사용하는 getter/setter만 유지
     public String getInquiryNo() { return inquiryNo; }
+    public void setInquiryNo(String inquiryNo) { this.inquiryNo = inquiryNo; }
     public String getCustomerName() { return customerName; }
     public void setCustomerName(String customerName) { this.customerName = customerName; }
     public InquiryType getInquiryType() { return inquiryType; }

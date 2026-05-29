@@ -223,7 +223,8 @@ public class UnderwritingRunner {
         if (confirm) {
             result.confirm();
             ConsoleHelper.printStage("시스템", "확인 완료 처리 결과를 출력합니다.");
-            ConsoleHelper.printInfo("확인일시: " + result.getConfirmedAt());
+            ConsoleHelper.printInfo("확인일시: " + result.getConfirmedAt()
+                    + " | 처리번호: " + result.getProcessingNo());
         }
 
         // 8. 시스템은 인수 심사를 한다 유스케이스 11번으로 이동한다.

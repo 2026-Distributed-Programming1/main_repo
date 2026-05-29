@@ -59,9 +59,11 @@ public class DamageInvestigationRunner {
                     break;
                 case 2:
                     requestSupplement(investigation);
+                    DamageInvestigationDAO.save(investigation);
                     break;
                 case 3:
                     requestAdditional(investigation);
+                    DamageInvestigationDAO.save(investigation);
                     break;
                 case 4:
                     closeAsRejected(investigation);

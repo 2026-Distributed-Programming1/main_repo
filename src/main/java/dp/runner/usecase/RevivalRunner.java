@@ -2,6 +2,8 @@ package dp.runner.usecase;
 
 import dp.actor.Customer;
 import dp.consultation.Revival;
+import dp.contract.Contract;
+import dp.dao.ContractDAO;
 import dp.dao.CustomerDAO;
 import dp.dao.RevivalDAO;
 import dp.runner.ConsoleHelper;
@@ -43,6 +45,19 @@ public class RevivalRunner {
         Revival revival = new Revival();
         revival.setCustomer(customer);
 
+        // 1-1. 고객 계약 목록 조회 후 선택
+        List<Contract> contracts = ContractDAO.findByCustomerId(customer.getCustomerId());
+        if (contracts.isEmpty()) {
+            ConsoleHelper.printError("해당 고객의 계약이 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        String[] contractOptions = contracts.stream()
+                .map(c -> c.getContractNo() + " - " + c.getPolicyNo())
+                .toArray(String[]::new);
+        int contractChoice = ConsoleHelper.readMenuChoice("[시스템] 부활 신청할 계약을 선택하세요:", contractOptions);
+        revival.setContractNo(contracts.get(contractChoice - 1).getContractNo());
+
         // 2. 시스템은 부활 신청 화면을 출력한다.
         ConsoleHelper.printStage("시스템", "부활 신청 화면을 출력합니다.");
         ConsoleHelper.printInfo("실효사유 / 실효일자 / 미납보험료 / 부활가능여부");
@@ -67,6 +82,7 @@ public class RevivalRunner {
         // 3. 고객은 부활 신청 정보를 입력한다.
         ConsoleHelper.printStage("고객", "부활 신청 정보를 입력합니다.");
         String contact = ConsoleHelper.readNonEmpty("  연락처: ");
+        revival.setContact(contact);
 
         // 4. 시스템은 미납보험료 및 이자 산출 결과를 출력한다.
         revival.setUnpaidAmount(150000L);
@@ -76,9 +92,14 @@ public class RevivalRunner {
 
         // 5. 고객은 납입 방법을 선택하고 [납입] 버튼을 클릭한다.
         String paymentMethod = ConsoleHelper.readNonEmpty("  납입방법 (카드/계좌이체): ");
-        revival.pay(paymentMethod);
+        boolean paySuccess = revival.pay(paymentMethod);
 
-        // 6. 시스템은 납입 처리 결과를 출력한다.
+        // 6. 시스템은 납입 처리 결과를 출력한다. (E2)
+        if (!paySuccess) {
+            ConsoleHelper.printError("[E2] 납입 처리에 실패했습니다. 다시 시도해 주세요.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
         ConsoleHelper.printStage("시스템", "납입 처리 결과를 출력합니다.");
         ConsoleHelper.printInfo("납입금액: " + (unpaid + 5000) + "원 | 영수증번호: RCP-001");
 

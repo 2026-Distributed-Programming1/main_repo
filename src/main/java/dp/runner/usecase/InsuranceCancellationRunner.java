@@ -5,6 +5,7 @@ import dp.contract.Contract;
 import dp.enums.ContractStatus;
 import dp.dao.CancellationDAO;
 import dp.dao.ContractDAO;
+import dp.db.DBA;
 import dp.runner.ConsoleHelper;
 
 /**
@@ -133,8 +134,17 @@ public class InsuranceCancellationRunner {
         // Step 8: 해약 완료
         cancellation.submit();
         contract.setStatus(ContractStatus.CANCELLED);
-        CancellationDAO.save(cancellation);
-        ContractDAO.save(contract);
+        DBA.beginTransaction();
+        try {
+            CancellationDAO.save(cancellation);
+            ContractDAO.save(contract);
+            DBA.commit();
+        } catch (Exception e) {
+            DBA.rollback();
+            ConsoleHelper.printError("해지 처리 중 오류가 발생했습니다. 변경사항이 취소되었습니다.");
+            ConsoleHelper.waitEnter();
+            return false;
+        }
         ConsoleHelper.printSuccess("보험 해약이 완료되었습니다.");
         ConsoleHelper.printInfo("해지번호: " + cancellation.getCancellationNo()
                 + " | 해지일시: " + cancellation.getCanceledAt());

@@ -41,6 +41,15 @@ public class PaymentDAO {
                 Customer custShell = new Customer(
                     cid != null ? cid : "?", cname != null ? cname : "", null, null, null);
                 Payment pay = new Payment(custShell);
+                pay.setPaymentNo(rs.getString("payment_no"));
+                String method = rs.getString("payment_method");
+                if (method != null) {
+                    try { pay.setPaymentMethod(dp.enums.PaymentMethod.valueOf(method)); }
+                    catch (IllegalArgumentException ignored) {}
+                }
+                java.sql.Timestamp rat = rs.getTimestamp("requested_at");
+                if (rat != null) pay.setRequestedAt(rat.toLocalDateTime());
+                pay.setDiscountedAmount(rs.getLong("total_amount"));
                 String st = rs.getString("status");
                 if (st != null) {
                     try { pay.setStatus(PaymentStatus.valueOf(st)); }

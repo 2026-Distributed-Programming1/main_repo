@@ -119,8 +119,9 @@ public class EducationPreparationRunner {
         // 10. 시스템은 등록 완료 결과를 출력한다.
         ConsoleHelper.printStage("시스템", "등록이 완료되었습니다.");
         ConsoleHelper.printInfo("등록번호: " + preparation.getSetupNumber()
-                + " | 교육장소: " + preparation.getLocation()
-                + " | 강사명: " + preparation.getInstructorName());
+                + " | 등록일시: " + preparation.getRegisteredAt()
+                + " | 교육명: " + selectedPlan.getEducationName()
+                + " | 교육장소: " + preparation.getLocation());
 
         // A2) 교육 진행이 필요한 경우
         boolean moveToExecution = ConsoleHelper.readYesNo("[영업교육담당자] 교육을 바로 진행하시겠습니까? (A2)");

@@ -74,4 +74,5 @@ public class Customer extends User {
     public LocalDate getBirthDate() { return birthDate; }
     public List<BankAccount> getRegisteredAccounts() { return registeredAccounts; }
     public LocalDateTime getRegisteredAt() { return registeredAt; }
+    public void setRegisteredAt(java.time.LocalDateTime registeredAt) { this.registeredAt = registeredAt; }
 }

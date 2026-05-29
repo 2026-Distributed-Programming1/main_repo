@@ -10,7 +10,8 @@ public class FinanceManagerDAO {
         DBA.executeUpdate(
             "INSERT INTO finance_managers (employee_id, name, department, position)"
             + " VALUES (?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE name=VALUES(name)",
+            + " ON DUPLICATE KEY UPDATE name=VALUES(name),"
+            + " department=VALUES(department), position=VALUES(position)",
             m.getEmployeeId(), m.getName(), m.getDepartment(), m.getPosition());
     }
 

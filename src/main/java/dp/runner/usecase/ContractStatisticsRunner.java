@@ -60,10 +60,10 @@ public class ContractStatisticsRunner {
 
             // 필터 조건 설정
             ConsoleHelper.printStage("계약관리담당자", "필터 조건을 설정하고 [조회] 버튼을 클릭합니다.");
-            statistics.setGlobalInsuranceType();
             String insuranceTypeFilter = ConsoleHelper.readLine("  보험 종류 필터 (없으면 엔터): ");
-            statistics.setGlobalContractStatus();
+            statistics.setGlobalInsuranceType(insuranceTypeFilter);
             String statusFilter = ConsoleHelper.readLine("  계약 상태 필터 (없으면 엔터): ");
+            statistics.setGlobalContractStatus(statusFilter);
             statistics.setGlobalDateRange();
             statistics.applyGlobalStats();
 
@@ -159,10 +159,8 @@ public class ContractStatisticsRunner {
             statistics.loadGlobalStats();
             ConsoleHelper.printStage("계약관리담당자", "[A1] [전체 계약 통계] 버튼을 클릭합니다.");
             ConsoleHelper.printStage("계약관리담당자", "필터 조건을 설정하고 [조회] 버튼을 클릭합니다.");
-            statistics.setGlobalInsuranceType();
-            ConsoleHelper.readLine("  보험 종류 필터 (없으면 엔터): ");
-            statistics.setGlobalContractStatus();
-            ConsoleHelper.readLine("  계약 상태 필터 (없으면 엔터): ");
+            statistics.setGlobalInsuranceType(ConsoleHelper.readLine("  보험 종류 필터 (없으면 엔터): "));
+            statistics.setGlobalContractStatus(ConsoleHelper.readLine("  계약 상태 필터 (없으면 엔터): "));
             statistics.setGlobalDateRange();
             statistics.applyGlobalStats();
 
@@ -179,6 +177,7 @@ public class ContractStatisticsRunner {
             statistics.selectContract();
             ConsoleHelper.printStage("계약관리담당자", "계약 목록에서 특정 계약 행을 클릭합니다.");
             ConsoleHelper.printInfo("[A1] Basic Path 2번으로 돌아갑니다.");
+            return;
         }
 
         // 계약번호 및 계약자명 자동 표시 (ContractInfoRunner에서 넘어온 컨텍스트 활용)
