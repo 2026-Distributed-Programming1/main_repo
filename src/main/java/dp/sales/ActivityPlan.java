@@ -94,6 +94,7 @@ public class ActivityPlan {
 
     // Runner에서 실제 사용하는 getter/setter만 유지
     public String getPlanId() { return planId; }
+    public void setPlanId(String planId) { this.planId = planId; }
     public String getPlanName() { return planName; }
     public void setPlanName(String planName) { this.planName = planName; }
     public String getAuthor() { return author; }

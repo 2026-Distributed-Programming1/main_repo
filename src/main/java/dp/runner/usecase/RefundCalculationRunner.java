@@ -9,6 +9,7 @@ import dp.dao.CancellationDAO;
 import dp.dao.ContractDAO;
 import dp.dao.RefundCalculationDAO;
 import dp.dao.RefundPaymentDAO;
+import dp.db.DBA;
 import dp.runner.ConsoleHelper;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,14 +39,14 @@ public class RefundCalculationRunner {
 
         // 2) RefundCalculation 생성 (생성 시 자동 산출)
         RefundCalculation refund = new RefundCalculation(cancellation);
-        RefundCalculationDAO.save(refund);
 
-        // E1: 필수 데이터 누락 검증
+        // E1: 필수 데이터 누락 검증 (검증 통과 후 저장)
         if (refund.getStatus() == RefundStatus.CALCULATION_PENDING) {
             ConsoleHelper.printError("[E1] 환급금 산출에 필요한 데이터가 누락되었습니다.");
             ConsoleHelper.waitEnter();
             return;
         }
+        RefundCalculationDAO.save(refund);
 
         // 3) 산출 결과 검토 및 처리 루프
         while (true) {
@@ -79,13 +80,13 @@ public class RefundCalculationRunner {
         ConsoleHelper.printDoubleDivider();
 
         RefundCalculation refund = new RefundCalculation(cancellation);
-        RefundCalculationDAO.save(refund);
 
         if (refund.getStatus() == RefundStatus.CALCULATION_PENDING) {
             ConsoleHelper.printError("[E1] 환급금 산출에 필요한 데이터가 누락되었습니다.");
             ConsoleHelper.waitEnter();
             return;
         }
+        RefundCalculationDAO.save(refund);
 
         while (true) {
             showRefund(refund);
@@ -117,12 +118,23 @@ public class RefundCalculationRunner {
             return;
         }
         RefundPayment payment = refund.confirm();
-        RefundCalculationDAO.save(refund);
+        DBA.beginTransaction();
+        try {
+            RefundCalculationDAO.save(refund);
+            if (payment != null) {
+                RefundPaymentDAO.save(payment);
+            }
+            DBA.commit();
+        } catch (Exception e) {
+            DBA.rollback();
+            ConsoleHelper.printError("[E2] 확정 저장에 실패했습니다. 변경사항이 취소되었습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
         if (payment != null) {
-            RefundPaymentDAO.save(payment);
             ConsoleHelper.printSuccess("환급금 지급 이관 완료: " + payment.getPaymentNo());
         } else {
-            ConsoleHelper.printError("[E2] 확정 저장에 실패했습니다.");
+            ConsoleHelper.printError("[E2] RefundPayment 생성에 실패했습니다.");
         }
         ConsoleHelper.waitEnter();
     }
@@ -183,7 +195,8 @@ public class RefundCalculationRunner {
             return null;
         }
         String[] options = contracts.stream()
-                .map(c -> c.getContractNo() + " - " + c.getCustomer().getName()
+                .map(c -> c.getContractNo() + " - "
+                        + (c.getCustomer() != null ? c.getCustomer().getName() : "미상")
                         + " (월 " + c.getMonthlyPremium() + "원)")
                 .toArray(String[]::new);
         int choice = ConsoleHelper.readMenuChoice("[시연용] 해지할 계약을 선택하세요:", options);

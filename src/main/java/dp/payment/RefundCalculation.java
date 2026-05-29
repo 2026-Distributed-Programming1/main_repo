@@ -156,7 +156,7 @@ public class RefundCalculation {
     public RefundPayment confirm() {
         try {
             this.confirmedAt = LocalDateTime.now();
-            this.status = RefundStatus.PAID;
+            this.status = RefundStatus.CALCULATED;
             System.out.println("[RefundCalculation] 환급금 확정 및 지급 이관: " + refundNo);
             return new RefundPayment(this);
         } catch (Exception e) {

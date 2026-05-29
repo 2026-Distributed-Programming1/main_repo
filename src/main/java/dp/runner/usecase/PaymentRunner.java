@@ -11,6 +11,7 @@ import dp.dao.ContractDAO;
 import dp.dao.CustomerDAO;
 import dp.dao.PaymentDAO;
 import dp.dao.PaymentRecordDAO;
+import dp.db.DBA;
 import dp.runner.ConsoleHelper;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,7 +86,25 @@ public class PaymentRunner {
 
         // 7) 신청
         payment.submit();
-        PaymentDAO.save(payment);
+        java.util.List<PaymentRecord> savedRecords = new java.util.ArrayList<>();
+        DBA.beginTransaction();
+        try {
+            PaymentDAO.save(payment);
+            for (PaymentItem item : payment.getItems()) {
+                PaymentRecord record = new PaymentRecord(
+                        item.getContract(),
+                        item.getSubtotal(),
+                        method.name());
+                PaymentRecordDAO.save(record);
+                savedRecords.add(record);
+            }
+            DBA.commit();
+        } catch (Exception e) {
+            DBA.rollback();
+            ConsoleHelper.printError("납입 저장 중 오류가 발생했습니다. 변경사항이 취소되었습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
         ConsoleHelper.printSuccess("납입 완료");
         ConsoleHelper.printInfo("납입번호: " + payment.getPaymentNo()
                 + " | 납입일시: " + payment.getRequestedAt()
@@ -94,15 +113,10 @@ public class PaymentRunner {
 
         // 8) 결제가 발생했으므로 PaymentRecord(납부 내역)를 생성하여 시스템에 등록
         ConsoleHelper.printStage("시스템", "결제가 발생하여 납부 내역을 시스템에 등록합니다.");
-        for (PaymentItem item : payment.getItems()) {
-            PaymentRecord record = new PaymentRecord(
-                    item.getContract(),
-                    item.getSubtotal(),
-                    method.name());
-            PaymentRecordDAO.save(record);
+        for (PaymentRecord record : savedRecords) {
             ConsoleHelper.printInfo("  납부 내역 생성: " + record.getRecordNo()
-                    + " (계약 " + item.getContract().getContractNo()
-                    + ", 금액 " + item.getSubtotal() + "원)");
+                    + " (계약 " + record.getContract().getContractNo()
+                    + ", 금액 " + record.getAmount() + "원)");
         }
 
         ConsoleHelper.waitEnter();
@@ -157,23 +171,37 @@ public class PaymentRunner {
         }
 
         payment.submit();
-        PaymentDAO.save(payment);
+        java.util.List<PaymentRecord> savedRecords = new java.util.ArrayList<>();
+        DBA.beginTransaction();
+        try {
+            PaymentDAO.save(payment);
+            for (PaymentItem item : payment.getItems()) {
+                PaymentRecord record = new PaymentRecord(
+                        item.getContract(),
+                        item.getSubtotal(),
+                        method.name());
+                PaymentRecordDAO.save(record);
+                savedRecords.add(record);
+            }
+            DBA.commit();
+        } catch (Exception e) {
+            DBA.rollback();
+            ConsoleHelper.printError("납입 저장 중 오류가 발생했습니다. 변경사항이 취소되었습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
         ConsoleHelper.printSuccess("납입 완료");
         ConsoleHelper.printInfo("납입번호: " + payment.getPaymentNo()
                 + " | 납입일시: " + payment.getRequestedAt()
                 + " | 최종결제액: " + payment.getDiscountedAmount() + "원"
                 + " | 납입방법: " + payment.getPaymentMethod());
 
+        // 8) 결제가 발생했으므로 PaymentRecord(납부 내역)를 생성하여 시스템에 등록
         ConsoleHelper.printStage("시스템", "결제가 발생하여 납부 내역을 시스템에 등록합니다.");
-        for (PaymentItem item : payment.getItems()) {
-            PaymentRecord record = new PaymentRecord(
-                    item.getContract(),
-                    item.getSubtotal(),
-                    method.name());
-            PaymentRecordDAO.save(record);
+        for (PaymentRecord record : savedRecords) {
             ConsoleHelper.printInfo("  납부 내역 생성: " + record.getRecordNo()
-                    + " (계약 " + item.getContract().getContractNo()
-                    + ", 금액 " + item.getSubtotal() + "원)");
+                    + " (계약 " + record.getContract().getContractNo()
+                    + ", 금액 " + record.getAmount() + "원)");
         }
 
         ConsoleHelper.waitEnter();

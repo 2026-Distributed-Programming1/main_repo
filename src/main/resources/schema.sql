@@ -120,7 +120,8 @@ CREATE TABLE IF NOT EXISTS overdue_notice_settings (
     id                  INT      PRIMARY KEY DEFAULT 1,
     max_overdue_count   INT      DEFAULT 3,
     notice_method       VARCHAR(50),
-    auto_cancel_enabled BOOLEAN  DEFAULT FALSE
+    auto_cancel_enabled BOOLEAN  DEFAULT FALSE,
+    saved_at            TIMESTAMP NULL
 );
 
 -- ============================================================
@@ -154,6 +155,7 @@ CREATE TABLE IF NOT EXISTS customer_registrations (
     ssn             VARCHAR(20),
     ssn_masked      VARCHAR(20),
     phone           VARCHAR(20),
+    address         VARCHAR(255),
     insurance_type  VARCHAR(50),
     contract_date   DATE,
     expiry_date     DATE,
@@ -228,6 +230,7 @@ CREATE TABLE IF NOT EXISTS policy_applications (
     period         INT          DEFAULT 1,
     payment_method VARCHAR(50),
     submitted_at   TIMESTAMP,
+    uploaded_at    TIMESTAMP    NULL,
     status         VARCHAR(20)  DEFAULT '신청'
 );
 
@@ -249,6 +252,7 @@ CREATE TABLE IF NOT EXISTS education_plans (
     education_content TEXT,
     textbook_list     TEXT,
     reject_reason     TEXT,
+    approved_at       TIMESTAMP    NULL,
     status            VARCHAR(20)
 );
 
@@ -264,6 +268,7 @@ CREATE TABLE IF NOT EXISTS consultation_requests (
     contact      VARCHAR(100),
     content      TEXT,
     status       VARCHAR(20),
+    scheduled_at TIMESTAMP    NULL,
     requested_at TIMESTAMP    NULL,
     accepted_at  TIMESTAMP    NULL
 );
@@ -272,6 +277,7 @@ CREATE TABLE IF NOT EXISTS consultation_requests (
 CREATE TABLE IF NOT EXISTS interview_schedules (
     schedule_no   VARCHAR(20)  PRIMARY KEY,
     customer_name VARCHAR(100),
+    designer_name VARCHAR(100),
     type          VARCHAR(20),
     scheduled_at  TIMESTAMP,
     location      VARCHAR(200),
@@ -289,6 +295,7 @@ CREATE TABLE IF NOT EXISTS interview_records (
     content           TEXT,
     customer_reaction TEXT,
     follow_up_action  TEXT,
+    interviewed_at    TIMESTAMP    NULL,
     recorded_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -307,16 +314,21 @@ CREATE TABLE IF NOT EXISTS underwritings (
     app_type        VARCHAR(20),
     app_no          VARCHAR(20),
     customer_name   VARCHAR(100),
+    risk_grade      VARCHAR(50),
+    review_opinion  TEXT,
     result          VARCHAR(20),
     reviewed_at     TIMESTAMP
 );
 
 -- 부활
 CREATE TABLE IF NOT EXISTS revivals (
-    revival_no    VARCHAR(20)  PRIMARY KEY,
-    contract_no   VARCHAR(20),              -- → contracts.contract_no
-    customer_name VARCHAR(100),
-    revived_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    revival_no     VARCHAR(20)  PRIMARY KEY,
+    contract_no    VARCHAR(20),              -- → contracts.contract_no
+    customer_name  VARCHAR(100),
+    contact        VARCHAR(100),
+    unpaid_amount  BIGINT       DEFAULT 0,
+    payment_method VARCHAR(50),
+    revived_at     TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================================
@@ -342,7 +354,9 @@ CREATE TABLE IF NOT EXISTS channel_screenings (
     candidate_name   VARCHAR(100),
     channel_type     VARCHAR(50),
     qualification    VARCHAR(200),
+    certifications   TEXT,
     application_date DATE,
+    rejection_reason TEXT,
     status           VARCHAR(20),
     reviewed_at      TIMESTAMP
 );
@@ -376,12 +390,15 @@ CREATE TABLE IF NOT EXISTS activity_schedule_items (
 
 -- 성과급 요청
 CREATE TABLE IF NOT EXISTS bonus_requests (
-    request_no VARCHAR(20)  PRIMARY KEY,
-    requester  VARCHAR(100),
-    amount     BIGINT       DEFAULT 0,
-    reason     TEXT,
-    status     VARCHAR(20),
-    created_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
+    request_no       VARCHAR(20)  PRIMARY KEY,
+    requester        VARCHAR(100),
+    evaluation_no    VARCHAR(20),
+    channel_type     VARCHAR(50),
+    evaluation_grade VARCHAR(20),
+    amount           BIGINT       DEFAULT 0,
+    reason           TEXT,
+    status           VARCHAR(20),
+    created_at       TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 영업 활동 관리
@@ -390,6 +407,8 @@ CREATE TABLE IF NOT EXISTS sales_activity_managements (
     manager_name        VARCHAR(100),
     channel_name        VARCHAR(100),
     activity_type       VARCHAR(50),
+    start_date          DATE,
+    end_date            DATE,
     visit_count         INT          DEFAULT 0,
     contract_count      INT          DEFAULT 0,
     achievement_rate    DOUBLE       DEFAULT 0,
@@ -402,6 +421,7 @@ CREATE TABLE IF NOT EXISTS sales_activity_managements (
 CREATE TABLE IF NOT EXISTS sales_org_evaluations (
     evaluation_no      VARCHAR(20)  PRIMARY KEY,
     org_name           VARCHAR(100),
+    channel_type       VARCHAR(50),
     grade              VARCHAR(20),
     score              DOUBLE       DEFAULT 0,
     sales_result       BIGINT       DEFAULT 0,
@@ -429,18 +449,42 @@ CREATE TABLE IF NOT EXISTS inquiries (
 );
 
 -- ============================================================
+-- Tier 2 : 만기 계약 안내 (contracts 참조)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS expiring_contract_notices (
+    notice_no         VARCHAR(50)  PRIMARY KEY,
+    contract_no       VARCHAR(20),            -- → contracts.contract_no
+    contractor_name   VARCHAR(100),
+    expiry_date       DATE,
+    phone             VARCHAR(20),
+    email             VARCHAR(100),
+    is_renewable      BOOLEAN      DEFAULT FALSE,
+    expected_premium  BIGINT       DEFAULT 0,
+    notice_date       TIMESTAMP    NULL,
+    notice_memo       TEXT,
+    customer_response VARCHAR(50),
+    renewal_premium   BIGINT       DEFAULT 0,
+    premium_diff      BIGINT       DEFAULT 0
+);
+
+-- ============================================================
 -- Tier 3 : contracts 참조
 -- ============================================================
 
 -- 납부 기록
 CREATE TABLE IF NOT EXISTS payment_records (
-    record_no     VARCHAR(20)  PRIMARY KEY,
-    contract_no   VARCHAR(20),              -- → contracts.contract_no
-    customer_name VARCHAR(100),
-    amount        BIGINT       DEFAULT 0,
-    method        VARCHAR(50),
-    payment_date  DATE,
-    status        VARCHAR(20)
+    record_no       VARCHAR(20)  PRIMARY KEY,
+    contract_no     VARCHAR(20),            -- → contracts.contract_no
+    customer_name   VARCHAR(100),
+    amount          BIGINT       DEFAULT 0,
+    method          VARCHAR(50),
+    payment_date    DATE,
+    status          VARCHAR(20),
+    confirmed_at    TIMESTAMP    NULL,
+    rejected_at     TIMESTAMP    NULL,
+    reject_category VARCHAR(50),
+    reject_reason   VARCHAR(500)
 );
 
 -- 해지
@@ -513,7 +557,8 @@ CREATE TABLE IF NOT EXISTS education_preparations (
     material_ready  BOOLEAN      DEFAULT FALSE,
     textbook_status VARCHAR(200),
     attendance_list TEXT,
-    status          VARCHAR(20)
+    status          VARCHAR(20),
+    registered_at   TIMESTAMP    NULL
 );
 
 -- ============================================================
@@ -578,6 +623,7 @@ CREATE TABLE IF NOT EXISTS education_executions (
     trainer_name   VARCHAR(100),
     executed_at    TIMESTAMP,
     attendee_count INT          DEFAULT 0,
+    memo           TEXT,
     status         VARCHAR(20)
 );
 
@@ -631,3 +677,43 @@ CREATE TABLE IF NOT EXISTS claim_payments (
     failure_reason  TEXT,
     status          VARCHAR(20)
 );
+
+-- ============================================================
+-- FK 제약 (모두 NULLABLE — NULL 삽입 허용, 비-NULL 값만 참조 무결성 검사)
+-- 적용 순서: Tier 2 → 3 → 4 → 5 (부모 테이블이 먼저 생성된 순서)
+-- ※ customer_registrations.customer_id 제외
+--    (판매채널이 고객 DB 등록 전에 registration 먼저 저장하는 흐름 존재)
+-- ============================================================
+
+-- Tier 2: customers 참조
+ALTER TABLE contracts              ADD CONSTRAINT fk_contracts_customer              FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE payments               ADD CONSTRAINT fk_payments_customer               FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE accident_reports       ADD CONSTRAINT fk_accident_reports_customer       FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE claim_requests         ADD CONSTRAINT fk_claim_requests_customer         FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE insurance_applications ADD CONSTRAINT fk_insurance_applications_customer FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+ALTER TABLE policy_applications    ADD CONSTRAINT fk_policy_applications_customer    FOREIGN KEY (customer_id)      REFERENCES customers(customer_id);
+
+-- Tier 2/3: contracts 참조
+ALTER TABLE claim_requests             ADD CONSTRAINT fk_claim_requests_contract           FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+ALTER TABLE revivals                   ADD CONSTRAINT fk_revivals_contract                 FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+ALTER TABLE payment_records            ADD CONSTRAINT fk_payment_records_contract           FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+ALTER TABLE cancellations              ADD CONSTRAINT fk_cancellations_contract             FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+ALTER TABLE expiring_contract_notices  ADD CONSTRAINT fk_expiring_contract_notices_contract FOREIGN KEY (contract_no) REFERENCES contracts(contract_no);
+
+-- Tier 3: 중간 엔터티 참조
+ALTER TABLE dispatches             ADD CONSTRAINT fk_dispatches_accident            FOREIGN KEY (accident_no)      REFERENCES accident_reports(accident_no);
+ALTER TABLE damage_investigations  ADD CONSTRAINT fk_damage_investigations_claim    FOREIGN KEY (claim_no)         REFERENCES claim_requests(claim_no);
+ALTER TABLE education_preparations ADD CONSTRAINT fk_education_preparations_plan    FOREIGN KEY (plan_no)          REFERENCES education_plans(plan_no);
+
+-- Tier 4: 처리 레코드 참조
+ALTER TABLE dispatch_records       ADD CONSTRAINT fk_dispatch_records_dispatch      FOREIGN KEY (dispatch_no)      REFERENCES dispatches(dispatch_no);
+ALTER TABLE claim_calculations     ADD CONSTRAINT fk_claim_calculations_investigation FOREIGN KEY (investigation_no) REFERENCES damage_investigations(investigation_no);
+ALTER TABLE education_executions   ADD CONSTRAINT fk_education_executions_prep      FOREIGN KEY (prep_no)          REFERENCES education_preparations(prep_no);
+ALTER TABLE education_attendances  ADD CONSTRAINT fk_education_attendances_execution FOREIGN KEY (execution_no)    REFERENCES education_executions(execution_no);
+ALTER TABLE refund_calculations    ADD CONSTRAINT fk_refund_calculations_cancellation FOREIGN KEY (cancellation_no) REFERENCES cancellations(cancellation_no);
+ALTER TABLE activity_schedule_items ADD CONSTRAINT fk_activity_schedule_items_plan  FOREIGN KEY (plan_no)          REFERENCES activity_plans(plan_no);
+
+-- Tier 5: 최종 처리 참조
+ALTER TABLE claim_payments  ADD CONSTRAINT fk_claim_payments_calculation  FOREIGN KEY (calculation_no) REFERENCES claim_calculations(calculation_no);
+ALTER TABLE refund_payments ADD CONSTRAINT fk_refund_payments_refund      FOREIGN KEY (refund_no)      REFERENCES refund_calculations(refund_no);
+ALTER TABLE payment_items   ADD CONSTRAINT fk_payment_items_payment       FOREIGN KEY (payment_no)     REFERENCES payments(payment_no);

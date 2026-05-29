@@ -10,7 +10,8 @@ public class ClaimsHandlerDAO {
         DBA.executeUpdate(
             "INSERT INTO claims_handlers (employee_id, name, department, position, transfer_limit)"
             + " VALUES (?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE name=VALUES(name), transfer_limit=VALUES(transfer_limit)",
+            + " ON DUPLICATE KEY UPDATE name=VALUES(name), transfer_limit=VALUES(transfer_limit),"
+            + " department=VALUES(department), position=VALUES(position)",
             h.getEmployeeId(), h.getName(), h.getDepartment(), h.getPosition(), h.getTransferLimit());
     }
 

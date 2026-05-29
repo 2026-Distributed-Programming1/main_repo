@@ -16,6 +16,7 @@ public class EducationExecution {
     private int attendanceCount;
     private int totalCount;
     private String memo;
+    private String status;
 
     private final EducationPreparation preparation;
 
@@ -58,6 +59,7 @@ public class EducationExecution {
     public void complete() {
         this.completedAt = LocalDateTime.now();
         calculateAttendanceCount();
+        this.status = "완료";
     }
 
     public void sendCompletionNotice() {
@@ -74,5 +76,7 @@ public class EducationExecution {
     public int getTotalCount() { return totalCount; }
     public String getMemo() { return memo; }
     public void setMemo(String memo) { this.memo = memo; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public EducationPreparation getPreparation() { return preparation; }
 }

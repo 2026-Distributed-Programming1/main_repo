@@ -88,6 +88,7 @@ public class PolicyApplication {
     public int getApplicationNumber() { return applicationNumber; }
     public LocalDateTime getSubmittedAt() { return submittedAt; }
     public LocalDateTime getUploadedAt() { return uploadedAt; }
+    public void setUploadedAt(java.time.LocalDateTime uploadedAt) { this.uploadedAt = uploadedAt; }
     public String getCustomerName() { return customerName; }
     public String getProductName() { return productName; }
     public int getPeriod() { return period; }

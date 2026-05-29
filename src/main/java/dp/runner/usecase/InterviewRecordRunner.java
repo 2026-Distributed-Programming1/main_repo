@@ -89,7 +89,7 @@ public class InterviewRecordRunner {
             // 5. 시스템은 저장 완료 결과를 출력한다.
             ConsoleHelper.printStage("시스템", "면담 기록 저장 완료 결과를 출력합니다.");
             ConsoleHelper.printInfo("기록번호: " + record.getRecordNumber()
-                    + " | 저장일시: " + record.getInterviewedAt()
+                    + " | 저장일시: " + record.getRecordedAt()
                     + " | 고객명: " + record.getCustomerName()
                     + " | 면담일시: " + record.getInterviewedAt());
 
@@ -109,8 +109,13 @@ public class InterviewRecordRunner {
                 ConsoleHelper.waitEnter();
                 return;
             }
+            String[] recordOptions = interviewRecords.stream()
+                    .map(r -> "[" + r.getRecordNumber() + "] " + r.getCustomerName()
+                            + " | " + r.getInterviewedAt())
+                    .toArray(String[]::new);
+            int idx = ConsoleHelper.readMenuChoice("수정할 면담 기록을 선택하세요.", recordOptions);
             ConsoleHelper.printStage("시스템", "면담 기록을 편집 가능한 상태로 출력합니다.");
-            InterviewRecord record = interviewRecords.get(interviewRecords.size() - 1);
+            InterviewRecord record = interviewRecords.get(idx - 1);
 
             String content = ConsoleHelper.readNonEmpty("  수정할 면담 내용: ");
             String reaction = ConsoleHelper.readNonEmpty("  고객 반응: ");
@@ -126,7 +131,8 @@ public class InterviewRecordRunner {
             record.modify(content, reaction, followUp);
             InterviewRecordDAO.save(record);
             ConsoleHelper.printStage("시스템", "수정 완료 결과를 출력합니다.");
-            ConsoleHelper.printInfo("기록번호: " + record.getRecordNumber());
+            ConsoleHelper.printInfo("기록번호: " + record.getRecordNumber()
+                    + " | 수정일시: " + record.getModifiedAt());
         }
 
         ConsoleHelper.waitEnter();

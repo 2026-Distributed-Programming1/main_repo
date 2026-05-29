@@ -57,6 +57,11 @@ public class DamageInvestigation {
         this.status = InvestigationStatus.INVESTIGATING;
     }
 
+    /** DB 복원용 — 상태 전이 없이 handler 셸만 주입 */
+    public void setHandlerShell(ClaimsHandler handler) {
+        this.handler = handler;
+    }
+
     /** 총 인정 손해액 입력 */
     public void enterRecognizedDamage(long amount) {
         this.recognizedDamage = amount;

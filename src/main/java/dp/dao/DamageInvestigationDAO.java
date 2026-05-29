@@ -27,7 +27,9 @@ public class DamageInvestigationDAO {
             + " recognized_damage, opinion, result, reject_reason, investigated_at, status)"
             + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE status=VALUES(status), result=VALUES(result),"
-            + " recognized_damage=VALUES(recognized_damage), investigated_at=VALUES(investigated_at)",
+            + " recognized_damage=VALUES(recognized_damage), investigated_at=VALUES(investigated_at),"
+            + " opinion=VALUES(opinion), reject_reason=VALUES(reject_reason),"
+            + " our_fault_ratio=VALUES(our_fault_ratio), counter_ratio=VALUES(counter_ratio)",
             inv.getInvestigationNo(), claimNo, claimCus,
             customerId, handlerId, handlerName,
             inv.getOurFaultRatio(), inv.getCounterFaultRatio(),
@@ -37,7 +39,8 @@ public class DamageInvestigationDAO {
 
     public static List<DamageInvestigation> findAll() {
         return DBA.executeQuery(
-            "SELECT investigation_no, claim_no, claim_customer, customer_id, handler_name,"
+            "SELECT investigation_no, claim_no, claim_customer, customer_id,"
+            + " handler_emp_id, handler_name,"
             + " our_fault_ratio, counter_ratio, recognized_damage, opinion,"
             + " result, reject_reason, investigated_at, status FROM damage_investigations",
             rs -> {
@@ -62,6 +65,20 @@ public class DamageInvestigationDAO {
                     rs.getDouble("counter_ratio"),
                     rs.getLong("recognized_damage"),
                     status);
+                String hid = rs.getString("handler_emp_id");
+                String hname = rs.getString("handler_name");
+                if (hid != null || hname != null) {
+                    dp.actor.ClaimsHandler handlerShell = new dp.actor.ClaimsHandler(
+                        hid != null ? hid : "?", hname != null ? hname : "", "", "", 0L);
+                    inv.setHandlerShell(handlerShell);
+                }
+                String op = rs.getString("opinion");
+                if (op != null) inv.enterOpinion(op);
+                String res = rs.getString("result");
+                if (res != null) {
+                    try { inv.selectResult(dp.enums.InvestigationResult.valueOf(res)); }
+                    catch (IllegalArgumentException ignored) {}
+                }
                 String rr = rs.getString("reject_reason");
                 if (rr != null) inv.setRejectReason(rr);
                 java.sql.Timestamp iat = rs.getTimestamp("investigated_at");

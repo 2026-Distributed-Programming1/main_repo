@@ -12,6 +12,7 @@ public class ReviewResult {
     private String condition;
     private String rejectionReason;
     private LocalDateTime confirmedAt;
+    private String processingNo;
 
     public ReviewResult(String result, String condition, String rejectionReason, LocalDateTime confirmedAt) {
         this.result = result;
@@ -32,6 +33,7 @@ public class ReviewResult {
 
     public void confirm() {
         this.confirmedAt = LocalDateTime.now();
+        this.processingNo = "PR-" + confirmedAt.toString().replaceAll("[^0-9]", "").substring(0, 14);
         System.out.println("  [시스템] 심사 결과 확인이 완료되었습니다.");
     }
 
@@ -43,4 +45,5 @@ public class ReviewResult {
     public String getRejectionReason() { return rejectionReason; }
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
     public LocalDateTime getConfirmedAt() { return confirmedAt; }
+    public String getProcessingNo() { return processingNo; }
 }

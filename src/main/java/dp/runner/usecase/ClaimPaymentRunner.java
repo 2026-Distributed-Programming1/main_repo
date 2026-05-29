@@ -92,6 +92,11 @@ public class ClaimPaymentRunner {
         if (payment.getStatus() == ClaimPaymentStatus.COMPLETED) {
             payment.sendCompletionNotice();
             payment.close();
+            ConsoleHelper.printStage("시스템", "지급 완료 안내를 출력합니다.");
+            if (payment.getRecipient() != null) ConsoleHelper.printInfo("수령인: " + payment.getRecipient().getName());
+            if (payment.getAccount() != null) ConsoleHelper.printInfo("은행명: " + payment.getAccount().getBankName()
+                    + " | 계좌번호: " + payment.getAccount().getAccountNo());
+            ConsoleHelper.printInfo("이체금액: " + payment.getFinalAmount() + "원");
         } else if (payment.getStatus() == ClaimPaymentStatus.SCHEDULED) {
             ConsoleHelper.printInfo("예약 지급이 등록되었습니다. 예약 시점에 자동으로 이체됩니다.");
         }
@@ -159,6 +164,11 @@ public class ClaimPaymentRunner {
         if (payment.getStatus() == ClaimPaymentStatus.COMPLETED) {
             payment.sendCompletionNotice();
             payment.close();
+            ConsoleHelper.printStage("시스템", "지급 완료 안내를 출력합니다.");
+            if (payment.getRecipient() != null) ConsoleHelper.printInfo("수령인: " + payment.getRecipient().getName());
+            if (payment.getAccount() != null) ConsoleHelper.printInfo("은행명: " + payment.getAccount().getBankName()
+                    + " | 계좌번호: " + payment.getAccount().getAccountNo());
+            ConsoleHelper.printInfo("이체금액: " + payment.getFinalAmount() + "원");
         } else if (payment.getStatus() == ClaimPaymentStatus.SCHEDULED) {
             ConsoleHelper.printInfo("예약 지급이 등록되었습니다. 예약 시점에 자동으로 이체됩니다.");
         }
@@ -170,9 +180,9 @@ public class ClaimPaymentRunner {
     /** OTP 인증 처리 (E1: 인증 실패 시 재시도 허용) */
     private static boolean handleOTP(ClaimPayment payment) {
         int attempt = 0;
-        while (attempt < 3) {
+        while (attempt < 5) {
             attempt++;
-            String otp = ConsoleHelper.readNonEmpty("[보상담당자] OTP 6자리 입력 (시도 " + attempt + "/3): ");
+            String otp = ConsoleHelper.readNonEmpty("[보상담당자] OTP 6자리 입력 (시도 " + attempt + "/5): ");
             payment.enterOTP(otp);
             if (payment.verifyOTP()) {
                 ConsoleHelper.printSuccess("OTP 인증 완료");

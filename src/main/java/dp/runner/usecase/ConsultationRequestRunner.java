@@ -62,10 +62,14 @@ public class ConsultationRequestRunner {
         String contact = ConsoleHelper.readNonEmpty("  연락처 (000-0000-0000): ");
         String content = ConsoleHelper.readNonEmpty("  상담 내용: ");
         String location = "";
+        LocalDateTime scheduledAt;
         if (type.equals("방문")) {
             location = ConsoleHelper.readNonEmpty("  희망 방문 장소: ");
+            scheduledAt = ConsoleHelper.readDateTime("  희망 방문일시");
+        } else {
+            scheduledAt = ConsoleHelper.readDateTime("  희망 상담일시");
         }
-        request.enterConsultationInfo(LocalDateTime.now(), location, contact, content);
+        request.enterConsultationInfo(scheduledAt, location, contact, content);
 
         // 4. 시스템은 유효성 검증 결과를 출력한다. (E1)
         if (!request.validateRequiredFields()) {
@@ -75,6 +79,15 @@ public class ConsultationRequestRunner {
             return;
         }
 
+        // 담당 설계사 사전 배정 (step 6 출력에 포함)
+        List<Designer> designers = DesignerDAO.findAll();
+        if (designers.isEmpty()) {
+            ConsoleHelper.printError("등록된 설계사가 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        Designer designer = designers.get(0);
+
         // 5. 고객은 [신청] 버튼을 클릭한다.
         request.submit();
         ConsultationRequestDAO.save(request);
@@ -83,17 +96,9 @@ public class ConsultationRequestRunner {
         ConsoleHelper.printStage("시스템", "상담 신청 접수 결과를 출력합니다.");
         ConsoleHelper.printInfo("접수번호: " + request.getConsultationNumber()
                 + " | 접수일시: " + request.getReceivedAt()
+                + " | 담당 설계사: " + designer.getName()
                 + " | 상담유형: " + request.getType()
                 + " | 상태: " + request.getStatus());
-
-        // 7~8. 판매채널은 신규 상담 신청 알림을 확인한다.
-        List<Designer> designers = DesignerDAO.findAll();
-        if (designers.isEmpty()) {
-            ConsoleHelper.printError("등록된 설계사가 없습니다.");
-            ConsoleHelper.waitEnter();
-            return;
-        }
-        Designer designer = designers.get(0);
         ConsoleHelper.printStage("시스템", "판매채널(" + designer.getName() + ")에게 신규 상담 신청 알림을 발송합니다.");
         ConsoleHelper.printInfo("고객명: " + customer.getName()
                 + " | 상담유형: " + request.getType()

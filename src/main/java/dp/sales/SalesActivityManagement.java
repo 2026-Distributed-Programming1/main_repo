@@ -62,7 +62,9 @@ public class SalesActivityManagement {
     public Integer getRevisedTarget() { return revisedTarget; }
     public String getManagerName() { return managerName; }
     public void setManagerName(String managerName) { this.managerName = managerName; }
+    public LocalDate getStartDate() { return startDate; }
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
     public void setChannelType(ChannelType channelType) { this.channelType = channelType; }
     public String getChannelName() { return channelName; }

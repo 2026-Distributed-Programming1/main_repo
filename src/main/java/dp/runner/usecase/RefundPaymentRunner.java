@@ -81,6 +81,15 @@ public class RefundPaymentRunner {
             return;
         }
 
+        // 지급 완료 팝업
+        ConsoleHelper.printStage("시스템", "지급 완료 안내를 출력합니다.");
+        if (payment.getAccount() != null) {
+            ConsoleHelper.printInfo("수령인명: " + payment.getAccount().getAccountHolder());
+            ConsoleHelper.printInfo("은행명: " + payment.getAccount().getBankName()
+                    + " | 계좌번호: " + payment.getAccount().getAccountNo());
+        }
+        ConsoleHelper.printInfo("이체금액: " + payment.getFinalAmount() + "원");
+
         // 6) 알림톡 발송 (E3 시뮬레이션 옵션)
         boolean noticeFail = ConsoleHelper.readYesNo(
                 "  [E3 시뮬레이션] 알림톡 발송 실패 상황을 시뮬레이션하시겠습니까?");
@@ -144,6 +153,15 @@ public class RefundPaymentRunner {
             ConsoleHelper.waitEnter();
             return;
         }
+
+        // 지급 완료 팝업
+        ConsoleHelper.printStage("시스템", "지급 완료 안내를 출력합니다.");
+        if (payment.getAccount() != null) {
+            ConsoleHelper.printInfo("수령인명: " + payment.getAccount().getAccountHolder());
+            ConsoleHelper.printInfo("은행명: " + payment.getAccount().getBankName()
+                    + " | 계좌번호: " + payment.getAccount().getAccountNo());
+        }
+        ConsoleHelper.printInfo("이체금액: " + payment.getFinalAmount() + "원");
 
         boolean noticeFail = ConsoleHelper.readYesNo(
                 "  [E3 시뮬레이션] 알림톡 발송 실패 상황을 시뮬레이션하시겠습니까?");

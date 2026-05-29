@@ -10,7 +10,8 @@ public class InsuranceReviewerDAO {
         DBA.executeUpdate(
             "INSERT INTO insurance_reviewers (employee_id, name, department, position)"
             + " VALUES (?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE name=VALUES(name)",
+            + " ON DUPLICATE KEY UPDATE name=VALUES(name),"
+            + " department=VALUES(department), position=VALUES(position)",
             r.getEmployeeId(), r.getName(), r.getDepartment(), r.getPosition());
     }
 

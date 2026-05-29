@@ -10,7 +10,8 @@ public class EducationTrainerDAO {
         DBA.executeUpdate(
             "INSERT INTO education_trainers (employee_id, name, department, position)"
             + " VALUES (?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE name=VALUES(name)",
+            + " ON DUPLICATE KEY UPDATE name=VALUES(name),"
+            + " department=VALUES(department), position=VALUES(position)",
             t.getEmployeeId(), t.getName(), t.getDepartment(), t.getPosition());
     }
 

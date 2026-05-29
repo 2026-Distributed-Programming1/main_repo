@@ -69,10 +69,15 @@ public class SalesActivityRunner {
         if (activityList.isEmpty()) {
             ConsoleHelper.printInfo("  (저장된 영업활동 데이터가 없습니다.)");
         } else {
-            ConsoleHelper.printInfo("  번호 | 채널명 | 등록일시");
+            ConsoleHelper.printInfo("  번호 | 채널명 | 방문건수 | 계약건수 | 전환율 | 목표달성률");
             for (int i = 0; i < activityList.size(); i++) {
                 SalesActivityManagement a = activityList.get(i);
-                ConsoleHelper.printInfo("  " + (i + 1) + " | " + a.getChannelName() + " | " + a.getRegisteredAt());
+                ConsoleHelper.printInfo("  " + (i + 1)
+                        + " | " + a.getChannelName()
+                        + " | " + (a.getVisitCount() != null ? a.getVisitCount() : "-")
+                        + " | " + (a.getContractCount() != null ? a.getContractCount() : "-")
+                        + " | " + (a.getConversionRate() != null ? String.format("%.1f%%", a.getConversionRate()) : "-")
+                        + " | " + (a.getAchievementRate() != null ? String.format("%.1f%%", a.getAchievementRate()) : "-"));
             }
         }
 
@@ -199,8 +204,8 @@ public class SalesActivityRunner {
         }
 
         // 10. 시스템은 "개선 지시가 등록되었습니다." 팝업과 등록 완료 결과를 출력한다. (E1)
-        activity.showSaveSuccess();
         SalesActivityManagementDAO.save(activity);
+        activity.showSaveSuccess();
         ConsoleHelper.printStage("시스템", "개선 지시가 등록되었습니다.");
         ConsoleHelper.printStage("시스템", "등록 완료 결과를 출력합니다.");
         ConsoleHelper.printInfo("관리번호: " + activity.getManagementNo()

@@ -10,7 +10,7 @@ public class AgencyDAO {
         DBA.executeUpdate(
             "INSERT INTO agencies (channel_id, name, location, agency_number)"
             + " VALUES (?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE name=VALUES(name)",
+            + " ON DUPLICATE KEY UPDATE name=VALUES(name), location=VALUES(location)",
             a.getChannelId(), a.getName(), "", a.getAgencyNumber());
     }
 

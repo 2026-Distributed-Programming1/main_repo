@@ -23,6 +23,9 @@ public class DBA {
 
     private static final HikariDataSource DATA_SOURCE;
 
+    /** 트랜잭션 전용 커넥션 (스레드당 1개) */
+    private static final ThreadLocal<Connection> TX_CONN = new ThreadLocal<>();
+
     static {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://localhost:3306/insurance_db"
@@ -44,6 +47,67 @@ public class DBA {
         return DATA_SOURCE.getConnection();
     }
 
+    // ── 트랜잭션 API ──────────────────────────────────────────────────────────
+
+    public static void beginTransaction() {
+        try {
+            Connection conn = DATA_SOURCE.getConnection();
+            conn.setAutoCommit(false);
+            TX_CONN.set(conn);
+        } catch (SQLException e) {
+            System.err.println("[DBA] beginTransaction 오류: " + e.getMessage());
+        }
+    }
+
+    public static void commit() {
+        Connection conn = TX_CONN.get();
+        if (conn == null) return;
+        try {
+            conn.commit();
+        } catch (SQLException e) {
+            System.err.println("[DBA] commit 오류: " + e.getMessage());
+        } finally {
+            closeTx(conn);
+        }
+    }
+
+    public static void rollback() {
+        Connection conn = TX_CONN.get();
+        if (conn == null) return;
+        try {
+            conn.rollback();
+        } catch (SQLException e) {
+            System.err.println("[DBA] rollback 오류: " + e.getMessage());
+        } finally {
+            closeTx(conn);
+        }
+    }
+
+    private static void closeTx(Connection conn) {
+        try {
+            conn.setAutoCommit(true);
+            conn.close();
+        } catch (SQLException ignored) {
+        } finally {
+            TX_CONN.remove();
+        }
+    }
+
+    /** TX_CONN이 있으면 재사용, 없으면 풀에서 새 커넥션 획득 */
+    private static Connection acquireConnection() throws SQLException {
+        Connection tx = TX_CONN.get();
+        return (tx != null) ? tx : DATA_SOURCE.getConnection();
+    }
+
+    /** TX 중이면 커넥션을 닫지 않음 (commit/rollback이 담당) */
+    private static void releaseConnection(Connection conn) {
+        if (TX_CONN.get() == null) {
+            try { conn.close(); } catch (SQLException ignored) {}
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
     /** ResultSet → 객체 매핑 함수형 인터페이스 */
     @FunctionalInterface
     public interface ResultSetMapper<T> {
@@ -55,13 +119,18 @@ public class DBA {
      * @return 영향받은 행 수
      */
     public static int executeUpdate(String sql, Object... params) {
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            setParams(ps, params);
-            return ps.executeUpdate();
+        Connection con = null;
+        try {
+            con = acquireConnection();
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                setParams(ps, params);
+                return ps.executeUpdate();
+            }
         } catch (SQLException e) {
             System.err.println("[DBA] executeUpdate 오류: " + e.getMessage());
             return 0;
+        } finally {
+            if (con != null) releaseConnection(con);
         }
     }
 
@@ -72,17 +141,22 @@ public class DBA {
      */
     public static <T> List<T> executeQuery(String sql, ResultSetMapper<T> mapper, Object... params) {
         List<T> result = new ArrayList<>();
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            setParams(ps, params);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    T row = mapper.map(rs);
-                    if (row != null) result.add(row);
+        Connection con = null;
+        try {
+            con = acquireConnection();
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                setParams(ps, params);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        T row = mapper.map(rs);
+                        if (row != null) result.add(row);
+                    }
                 }
             }
         } catch (SQLException e) {
             System.err.println("[DBA] executeQuery 오류: " + e.getMessage());
+        } finally {
+            if (con != null) releaseConnection(con);
         }
         return result;
     }
@@ -99,15 +173,20 @@ public class DBA {
      * 존재 여부 확인
      */
     public static boolean exists(String sql, Object... params) {
-        try (Connection con = getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            setParams(ps, params);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
+        Connection con = null;
+        try {
+            con = acquireConnection();
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                setParams(ps, params);
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next();
+                }
             }
         } catch (SQLException e) {
             System.err.println("[DBA] exists 오류: " + e.getMessage());
             return false;
+        } finally {
+            if (con != null) releaseConnection(con);
         }
     }
 

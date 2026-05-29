@@ -194,6 +194,8 @@ public class CustomerRegistrationRunner {
             case AUTO: insuranceTypeStr = "자동차"; break;
             default: insuranceTypeStr = "화재"; break;
         }
+        ConsoleHelper.printInfo("고객번호: " + registration.getCustomerId()
+                + " | 계약번호: " + registration.getContractNo());
         ConsoleHelper.printInfo("이름: " + registration.getName()
                 + " | 연락처: " + registration.getPhone()
                 + " | 보험종류: " + insuranceTypeStr

@@ -220,5 +220,6 @@ public class ClaimRequest {
     public boolean isFpNoticeAgreed() { return fpNoticeAgreed; }
     public List<Attachment> getAttachments() { return attachments; }
     public LocalDateTime getRequestedAt() { return requestedAt; }
+    public void setRequestedAt(LocalDateTime requestedAt) { this.requestedAt = requestedAt; }
     public ClaimRequestStatus getStatus() { return status; }
 }

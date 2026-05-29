@@ -9,6 +9,7 @@ import dp.dao.SalesManagerDAO;
 import dp.runner.ConsoleHelper;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * UC: 교육 계획안을 작성한다 시나리오 진행자
@@ -56,6 +57,16 @@ public class EducationPlanRunner {
             return;
         }
         SalesManager manager = managerList.get(0);
+
+        // 시작 메뉴: 새 계획 작성 또는 임시저장 계획안 불러오기
+        int startChoice = ConsoleHelper.readMenuChoice(
+                "[영업교육담당자] 작업을 선택하세요.",
+                "새 교육 계획안 작성", "임시저장 계획안 불러오기");
+
+        if (startChoice == 2) {
+            resumeTempSavedPlan(manager);
+            return;
+        }
 
         // 2. 시스템은 교육 계획 작성 화면을 출력한다.
         ConsoleHelper.printStage("시스템", "교육계획안 작성 화면을 출력합니다.");
@@ -139,10 +150,75 @@ public class EducationPlanRunner {
             // 10. 시스템은 승인 완료 결과를 출력한다.
             ConsoleHelper.printStage("시스템", "승인 완료 결과를 출력합니다.");
             ConsoleHelper.printInfo("계획번호: " + plan.getPlanNumber()
-                    + " | 교육명: " + plan.getEducationName()
-                    + " | 상태: " + plan.getStatus());
+                    + " | 승인일시: " + plan.getApprovedAt()
+                    + " | 교육명: " + plan.getEducationName());
         } else {
             // A3) 영업 관리자가 반려하는 경우
+            String reason = ConsoleHelper.readNonEmpty("  [A3] 반려 사유: ");
+            manager.rejectEducationPlan(plan, reason);
+            EducationPlanDAO.save(plan);
+            ConsoleHelper.printStage("시스템", "반려 알림을 영업교육담당자에게 발송합니다.");
+            ConsoleHelper.printInfo("반려 사유: " + reason);
+        }
+
+        ConsoleHelper.waitEnter();
+    }
+
+    private static void resumeTempSavedPlan(SalesManager manager) {
+        List<EducationPlan> tempPlans = EducationPlanDAO.findAll().stream()
+                .filter(p -> "임시저장".equals(p.getStatus()))
+                .collect(Collectors.toList());
+
+        if (tempPlans.isEmpty()) {
+            ConsoleHelper.printInfo("임시저장된 교육 계획안이 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
+        String[] options = tempPlans.stream()
+                .map(p -> "[" + p.getPlanNumber() + "] " + p.getEducationName())
+                .toArray(String[]::new);
+        int choice = ConsoleHelper.readMenuChoice("[영업교육담당자] 불러올 계획안을 선택하세요:", options);
+        EducationPlan plan = tempPlans.get(choice - 1);
+
+        ConsoleHelper.printInfo("계획번호: " + plan.getPlanNumber()
+                + " | 교육명: " + plan.getEducationName()
+                + " | 채널유형: " + plan.getChannelType());
+
+        int action = ConsoleHelper.readMenuChoice(
+                "[영업교육담당자] 처리를 선택하세요.",
+                "승인 요청", "취소");
+
+        if (action == 2) {
+            ConsoleHelper.printInfo("돌아갑니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
+        ConsoleHelper.printStage("시스템", "영업 관리자에게 승인을 요청하시겠습니까?");
+        if (!ConsoleHelper.readYesNo("  확인")) {
+            ConsoleHelper.waitEnter();
+            return;
+        }
+
+        plan.requestApproval();
+        EducationPlanDAO.save(plan);
+        ConsoleHelper.printStage("시스템", "영업 관리자에게 승인 요청 알림을 발송합니다.");
+        ConsoleHelper.printSuccess("승인 요청 완료. 계획번호: " + plan.getPlanNumber());
+
+        ConsoleHelper.printDoubleDivider();
+        int approveChoice = ConsoleHelper.readMenuChoice(
+                "[영업관리자] 교육계획안을 검토합니다.",
+                "승인", "반려");
+
+        if (approveChoice == 1) {
+            manager.approveEducationPlan(plan);
+            EducationPlanDAO.save(plan);
+            ConsoleHelper.printStage("시스템", "승인 완료 결과를 출력합니다.");
+            ConsoleHelper.printInfo("계획번호: " + plan.getPlanNumber()
+                    + " | 승인일시: " + plan.getApprovedAt()
+                    + " | 교육명: " + plan.getEducationName());
+        } else {
             String reason = ConsoleHelper.readNonEmpty("  [A3] 반려 사유: ");
             manager.rejectEducationPlan(plan, reason);
             EducationPlanDAO.save(plan);

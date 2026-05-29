@@ -29,6 +29,8 @@ public class ContractStatistics {
     private YearMonth filterStartMonth;        // 필터 시작 연월
     private YearMonth filterEndMonth;          // 필터 종료 연월
     private String fileName;                   // 엑셀 파일명
+    private String globalInsuranceType;        // 전체 통계 보험종류 필터
+    private String globalContractStatus;       // 전체 통계 계약상태 필터
 
     public ContractStatistics() {
         this.monthlyRetentionData = new ArrayList<>();
@@ -64,11 +66,18 @@ public class ContractStatistics {
         return "계약통계_" + contractNo + "_" + LocalDate.now() + ".xlsx";
     }
 
-    public void setGlobalInsuranceType() {}
+    public void setGlobalInsuranceType(String type) {
+        this.globalInsuranceType = (type != null && !type.isEmpty()) ? type : null;
+    }
 
-    public void setGlobalContractStatus() {}
+    public void setGlobalContractStatus(String status) {
+        this.globalContractStatus = (status != null && !status.isEmpty()) ? status : null;
+    }
 
     public void setGlobalDateRange() {}
+
+    public String getGlobalInsuranceType() { return globalInsuranceType; }
+    public String getGlobalContractStatus() { return globalContractStatus; }
 
     // Runner에서 실제 사용하는 getter/setter만 유지
     public String getContractNo() { return contractNo; }

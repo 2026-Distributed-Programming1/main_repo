@@ -60,6 +60,7 @@ public class SalesOrgEvaluation {
     public String getEvaluationComment() { return evaluationComment; }
     public ChannelType getChannelType() { return channelType; }
     public String getEvaluationNo() { return evaluationNo; }
+    public void setEvaluationNo(String evaluationNo) { this.evaluationNo = evaluationNo; }
     public void setFilterStartDate(LocalDate filterStartDate) { this.filterStartDate = filterStartDate; }
     public void setFilterEndDate(LocalDate filterEndDate) { this.filterEndDate = filterEndDate; }
     public void setChannelType(ChannelType channelType) { this.channelType = channelType; }
@@ -73,4 +74,5 @@ public class SalesOrgEvaluation {
     public void setEvaluationGrade(EvaluationGrade evaluationGrade) { this.evaluationGrade = evaluationGrade; }
     public void setEvaluationComment(String evaluationComment) { this.evaluationComment = evaluationComment; }
     public LocalDateTime getEvaluatedAt() { return evaluatedAt; }
+    public void setEvaluatedAt(LocalDateTime evaluatedAt) { this.evaluatedAt = evaluatedAt; }
 }

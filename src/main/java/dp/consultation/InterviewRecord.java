@@ -13,6 +13,8 @@ public class InterviewRecord {
     private int recordNumber;
     private String customerName;
     private LocalDateTime interviewedAt;
+    private LocalDateTime recordedAt;
+    private LocalDateTime modifiedAt;
     private String content;
     private String customerReaction;
     private String followUpAction;
@@ -51,12 +53,14 @@ public class InterviewRecord {
         this.content = content;
         this.customerReaction = customerReaction;
         this.followUpAction = followUpAction;
+        this.recordedAt = LocalDateTime.now();
     }
 
     public void modify(String content, String customerReaction, String followUpAction) {
         this.content = content;
         this.customerReaction = customerReaction;
         this.followUpAction = followUpAction;
+        this.modifiedAt = LocalDateTime.now();
     }
 
     public boolean validateRequiredFields() {
@@ -73,6 +77,9 @@ public class InterviewRecord {
     public void setCustomerName(String customerName) { this.customerName = customerName; }
     public LocalDateTime getInterviewedAt() { return interviewedAt; }
     public void setInterviewedAt(LocalDateTime interviewedAt) { this.interviewedAt = interviewedAt; }
+    public LocalDateTime getRecordedAt() { return recordedAt; }
+    public void setRecordedAt(LocalDateTime recordedAt) { this.recordedAt = recordedAt; }
+    public LocalDateTime getModifiedAt() { return modifiedAt; }
     public String getContent() { return content; }
     public String getCustomerReaction() { return customerReaction; }
     public String getFollowUpAction() { return followUpAction; }

@@ -11,11 +11,14 @@ public class SalesActivityManagementDAO {
         DBA.executeUpdate(
             "INSERT INTO sales_activity_managements"
             + " (activity_no, manager_name, channel_name, activity_type,"
+            + "  start_date, end_date,"
             + "  visit_count, contract_count, achievement_rate,"
             + "  improvement_content, revised_target, created_at)"
-            + " VALUES (?,?,?,?,?,?,?,?,?,?)"
+            + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE channel_name=VALUES(channel_name),"
             + "  manager_name=VALUES(manager_name),"
+            + "  activity_type=VALUES(activity_type),"
+            + "  start_date=VALUES(start_date), end_date=VALUES(end_date),"
             + "  visit_count=VALUES(visit_count),"
             + "  contract_count=VALUES(contract_count),"
             + "  achievement_rate=VALUES(achievement_rate),"
@@ -25,6 +28,8 @@ public class SalesActivityManagementDAO {
             a.getManagerName(),
             a.getChannelName(),
             a.getActivityType(),
+            a.getStartDate(),
+            a.getEndDate(),
             a.getVisitCount() != null ? a.getVisitCount() : 0,
             a.getContractCount() != null ? a.getContractCount() : 0,
             a.getAchievementRate() != null ? a.getAchievementRate() : 0.0,
@@ -36,6 +41,7 @@ public class SalesActivityManagementDAO {
     public static List<SalesActivityManagement> findAll() {
         return DBA.executeQuery(
             "SELECT activity_no, manager_name, channel_name, activity_type,"
+            + " start_date, end_date,"
             + " visit_count, contract_count, achievement_rate,"
             + " improvement_content, revised_target, created_at"
             + " FROM sales_activity_managements",
@@ -45,6 +51,10 @@ public class SalesActivityManagementDAO {
                 a.setManagerName(rs.getString("manager_name"));
                 a.setChannelName(rs.getString("channel_name"));
                 a.setActivityType(rs.getString("activity_type"));
+                java.sql.Date sd = rs.getDate("start_date");
+                if (sd != null) a.setStartDate(sd.toLocalDate());
+                java.sql.Date ed = rs.getDate("end_date");
+                if (ed != null) a.setEndDate(ed.toLocalDate());
                 a.setVisitCount(rs.getInt("visit_count"));
                 a.setContractCount(rs.getInt("contract_count"));
                 a.setAchievementRate(rs.getDouble("achievement_rate"));

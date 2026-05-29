@@ -36,7 +36,7 @@ public class ClaimRequestDAO {
     public static List<ClaimRequest> findAll() {
         return DBA.executeQuery(
             "SELECT claim_no, customer_id, customer_name, contract_no, claim_type,"
-            + " diagnosis, claim_reasons, bank_name, account_no, account_holder, status FROM claim_requests",
+            + " diagnosis, claim_reasons, bank_name, account_no, account_holder, requested_at, status FROM claim_requests",
             rs -> {
                 String cid  = rs.getString("customer_id");
                 String cname = rs.getString("customer_name");
@@ -76,6 +76,8 @@ public class ClaimRequestDAO {
                     bankAccount.verify();
                     r.selectExistingAccount(bankAccount);
                 }
+                java.sql.Timestamp rat = rs.getTimestamp("requested_at");
+                if (rat != null) r.setRequestedAt(rat.toLocalDateTime());
                 return r;
             });
     }

@@ -133,4 +133,8 @@ public class PaymentRecord {
     public void setInstallmentNo(int installmentNo) { this.installmentNo = installmentNo; }
     public void setLateFee(long lateFee) { this.lateFee = lateFee; }
     public void setApprovalNo(String approvalNo) { this.approvalNo = approvalNo; }
+    public void setConfirmedAt(java.time.LocalDateTime confirmedAt) { this.confirmedAt = confirmedAt; }
+    public void setRejectedAt(java.time.LocalDateTime rejectedAt) { this.rejectedAt = rejectedAt; }
+    public void setRejectCategory(RejectCategory rejectCategory) { this.rejectCategory = rejectCategory; }
+    public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
 }
