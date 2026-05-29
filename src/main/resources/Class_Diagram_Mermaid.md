@@ -162,6 +162,10 @@ classDiagram
     SalesManager ..> EducationPlan : 승인/반려
     EducationTrainer ..> EducationPreparation : 생성
     InsuranceReviewer ..> Underwriting : 심사
+    ContractManager ..> Contract : 계약 조회/편집(담당)
+    ContractManager ..> ContractStatistics : 통계 관리(담당)
+    ContractManager ..> ExpiringContractManagement : 만기 관리(담당)
+    ChannelScreening ..> Applicant : 채용 심사 대상
 ```
 
 > ※ `SalesManager`, `ContractManager`, `SalesChannel`, `Applicant` 는 `User`/`Employee` 를 상속하지 않는 독립 클래스이다.
@@ -190,9 +194,25 @@ classDiagram
         +enter(String bank, String no, String holder) void
         +verify() boolean
     }
+
+    %% 이 부품을 객체로 보유(참조)하는 도메인 클래스 — 사용처 모아보기
+    class Customer
+    class Payment
+    class ClaimRequest
+    class ClaimPayment
+    class RefundPayment
+    class DispatchRecord
+
+    Customer "1" o-- "*" BankAccount : 등록 계좌
+    Payment "*" --> "0..1" BankAccount : 납입 계좌
+    ClaimRequest "*" --> "1" BankAccount : 지급 계좌
+    ClaimPayment "*" --> "1" BankAccount : 수령 계좌
+    RefundPayment "*" --> "0..1" BankAccount : 수령 계좌
+    DispatchRecord "1" o-- "*" Attachment : 사진
+    ClaimRequest "1" o-- "*" Attachment : 첨부 서류
 ```
 
-> `Attachment` / `BankAccount` 는 여러 도메인이 공유하는 부품 클래스이다(관계는 각 도메인 다이어그램에 표기).
+> `Attachment` / `BankAccount` 는 여러 도메인이 공유하는 부품 클래스다. 위 다이어그램은 **이 부품을 객체로 보유하는 사용처**를 모아 보여준 것이고, 동일한 관계가 각 도메인 다이어그램(§1·§7·§8)에도 표기된다.
 
 ---
 
@@ -1021,9 +1041,10 @@ classDiagram
     DeductionAdjustment "*" --> "0..1" FinanceManager : 조정자
     RefundPayment "*" --> "1" RefundCalculation : 대상 산출
     RefundPayment "*" --> "0..1" BankAccount : 수령 계좌
+    FinanceManager ..> OverdueNoticeSetting : 미납 알림 설정(담당)
 ```
 
-> `OverdueNoticeSetting` 은 시스템 단위의 미납 알림 설정값이라 다른 도메인 객체를 참조하지 않는 독립 클래스이다.
+> `OverdueNoticeSetting` 은 다른 도메인 객체를 필드로 참조하지 않는 **시스템 단위 설정값**이라, 재무회계 담당자(`FinanceManager`)가 설정한다는 점선(담당)으로만 연결된다.
 
 ---
 
@@ -1060,7 +1081,7 @@ classDiagram
     class Customer
 
     Inquiry ..> Customer : 문의 고객(customerName)
-    CustomerCenterPage ..> Inquiry : 1:1문의 탭(흐름)
+    CustomerCenterPage ..> Inquiry : 1대1 문의 탭(흐름)
 ```
 
 > `Inquiry` 는 답변·FAQ 를 자체 필드로 보관하며 별도 Answer/FAQ 클래스를 두지 않는다.
