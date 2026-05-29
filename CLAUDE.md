@@ -53,6 +53,28 @@ DBA.queryOne("SELECT ...", rs -> ...);  // 단건 조회
 ```
 파라미터 타입으로 `String`, `Integer`, `Long`, `LocalDate`, `LocalDateTime`, `Boolean` 등을 직접 전달할 수 있다.
 
+**DBA 트랜잭션 API** (2026-05-29 추가)
+
+`ThreadLocal<Connection>` 기반. 트랜잭션 중에는 모든 executeUpdate/executeQuery가 동일 커넥션을 공유한다.
+
+```java
+DBA.beginTransaction();
+try {
+    DAO.save(A);
+    DAO.save(B);
+    DBA.commit();
+} catch (Exception e) {
+    DBA.rollback();
+}
+```
+
+현재 트랜잭션이 적용된 Runner (2개 이상 테이블을 원자적으로 저장):
+- `EducationExecutionRunner` — education_executions + education_attendances
+- `PaymentRunner` — payments + payment_items
+- `InsuranceCancellationRunner` — cancellations + contracts
+- `ExpiringContractManagementRunner` — expiring_contract_notices + contracts (A1 갱신 경로)
+- `RefundCalculationRunner` — refund_calculations + refund_payments (confirmAndProceed)
+
 **ConsoleHelper 주요 메서드**
 - 입력: `readLine`, `readNonEmpty`, `readInt`, `readLong`, `readPositiveInt`, `readYesNo`, `readDate`, `readDateTime`, `readMenuChoice(title, ...options)`, `readMultiChoice`
 - 출력: `printStage(actor, msg)`, `printInfo`, `printSuccess`, `printError`, `printWarning`, `printDivider`, `waitEnter`
@@ -162,8 +184,9 @@ JVM 재시작 시 도메인 클래스의 `private static int sequence`가 0으�
 
 | 항목 | 현황 | 이유 |
 |---|---|---|
-| **FK 제약** | schema.sql에 FOREIGN KEY 선언 없음 | 앱 코드가 FK 컬럼에 NULL을 삽입하는 경우가 있어 의도적으로 제외 |
-| **트랜잭션** | DBA가 호출마다 별도 Connection 사용 | 단일 `save()` 내에서 여러 테이블에 INSERT해도 원자성 보장 안 됨 |
+| **FK 제약** | schema.sql에 NULLABLE FK 23개 선언 (2026-05-29) | 비-NULL 값만 무결성 검사. `customer_registrations.customer_id` 1개만 제외 (등록 순서 문제) |
+| **트랜잭션** | DBA가 `ThreadLocal<Connection>` 기반 TX 지원 (2026-05-29). 5개 Runner에 적용 | 나머지 Runner는 단일 테이블 저장이라 원자성 보장. 크로스-DAO TX는 추후 Service 레이어 도입 시 이전 예정 |
+| **Service 레이어 부재** | Runner가 UC 조정 + 트랜잭션 경계 역할을 겸함 | AOP 없는 순수 Java 구조. 추후 Service 레이어 추가 시 `DBA.beginTransaction()` 호출을 Runner → Service로 이전 |
 | **static sequence PK** | 모든 도메인이 JVM 내 카운터로 PK 생성 | SequenceSync로 재시작 후 MAX 동기화하지만, 동시 실행 환경에서는 충돌 가능 |
 | **테스트 컴파일 에러** | `ActivityPlanTest.java:123` — ScheduleItem 생성자 시그니처 불일치 | 테스트 코드 미수정 상태; `./gradlew compileJava`(main)는 정상, `./gradlew build`(test 포함)는 실패 |
 
@@ -174,60 +197,31 @@ JVM 재시작 시 도메인 클래스의 `private static int sequence`가 0으�
 1. **수정 전 BUG ID를 먼저 언급한다** — Edit/Write 호출 직전에 `BUG-XXX-NN: 무엇을 왜 고치는지` 한 줄 이상 명시
 2. **하나씩 수정하고 컴파일 확인** — 버그 하나 수정 → `./gradlew compileJava` 통과 → 다음 버그
 3. **레포트 범위만 수정한다** — 버그 레포트에 없는 리팩토링이나 추가 기능은 넣지 않는다
+4. **트랜잭션 블록 안에서 생성한 변수를 밖에서 참조하지 않는다** — 필요한 경우 블록 밖에 컬렉션을 선언하고 블록 안에서 채운 뒤 커밋 후 사용
+
+## 추가 설계 문서
+
+- `StructureDesign.md` — 트랜잭션 지원(DBA ThreadLocal 방식) 및 FK 제약 추가에 대한 설계 결정 근거와 구현 방법 기술
 
 ## 스키마 변경 이력
 
-| 변경일 | 테이블 | 변경 내용 | 관련 BUG |
-|---|---|---|---|
-| 2026-05-28 | `interview_records` | `interviewed_at TIMESTAMP NULL` 컬럼 추가 | BUG-REC-04 |
-| 2026-05-28 | `expiring_contract_notices` | 테이블 신규 생성 (schema.sql에 누락돼 있었음) | BUG-NEW-CTR-01 |
-| 2026-05-29 | `payment_records` | `confirmed_at`, `rejected_at`, `reject_category`, `reject_reason` 컬럼 추가 | BUG-R2-PAY-01 |
-| 2026-05-29 | `education_preparations` | `registered_at TIMESTAMP NULL` 컬럼 추가 | BUG-EXTRA-EDU-04 |
-| 2026-05-29 | `overdue_notice_settings` | `saved_at TIMESTAMP NULL` 컬럼 추가 | BUG-R8-ONS-01 |
-| 2026-05-29 | `policy_applications` | `uploaded_at TIMESTAMP NULL` 컬럼 추가 | BUG-R8-PA-01 |
-| 2026-05-29 | 전체 (23개 테이블) | FOREIGN KEY 제약 추가 (NULLABLE, RESTRICT) | StructureDesign.md |
+컬럼 추가 상세 내역은 각 BUG ID(`FinalBugReport.md`)를 참조. 구조적 변경 요약:
+
+- **2026-05-28**: `expiring_contract_notices` 테이블 신규 생성, `interview_records.interviewed_at` 컬럼 추가
+- **2026-05-29**: 버그 수정 과정에서 컬럼 6개 추가 (payment_records, education_preparations, overdue_notice_settings, policy_applications 등)
+- **2026-05-29**: 전체 23개 테이블에 NULLABLE FK 제약 추가 (`StructureDesign.md` 참조)
 
 > **주의**: 스키마 변경 후엔 반드시 `docker compose down -v && docker compose up -d` 실행
 
 ---
 
-## AdditionalBugReport.md 현황 (2026-05-28 기준)
 
-| BUG ID | 내용 요약 | 상태 |
-|---|---|---|
-| BUG-NEW-EDU-01 | EducationPreparationDAO — status NULL 저장, findAll()에서 미복원 | ✅ 수정 완료 |
-| BUG-NEW-EDU-02 | EducationExecutionDAO — status NULL 저장, memo 컬럼·저장 누락 | ✅ 수정 완료 |
-| BUG-NEW-EDU-03 | EducationExecutionRunner — 마지막 제반 자동 선택 | ✅ 수정 완료 |
-| BUG-NEW-SAL-01 | ActivityPlanDAO.findAll() — plan_no 미복원(PK 덮어쓰기) | ✅ 수정 완료 |
-| BUG-NEW-SAL-02 | ChannelScreeningDAO — rejection_reason 컬럼·저장·복원 누락 | ✅ 수정 완료 |
-| BUG-NEW-CON-01 | ConsultationRequestDAO.findAll() — setAcceptedAt() 미호출 | ✅ 수정 완료 |
-| BUG-NEW-CON-02 | UnderwritingDAO — risk_grade·review_opinion 컬럼·저장 누락 | ✅ 수정 완료 |
-| BUG-NEW-CTR-01 | expiring_contract_notices 테이블이 schema.sql에 누락 (DAO는 생성됨) | ✅ 수정 완료 |
-| BUG-NEW-CLM-01 | ClaimPaymentDAO.findAll() — 수령인·계좌·지급일시 등 미복원 | ✅ 수정 완료 |
-| BUG-NEW-FIN-01 | PaymentDAO.findAll() — payment_no·방법·일시·금액 미복원 | ✅ 수정 완료 |
-| BUG-NEW-FIN-02 | RefundCalculationRunner — c.getCustomer() NPE 위험 | ✅ 수정 완료 |
-| BUG-NEW-INQ-01 | InquiryDAO — ON DUPLICATE KEY가 answer_content를 NULL로 덮어씀 | ✅ 수정 완료 |
+## 버그 수정 이력 문서
 
-## CodeReviewReport.md 현황 (2026-05-28 기준)
+아래 파일에 발견·수정된 버그 전체 내역이 기록되어 있다. 모든 항목 ✅ 수정 완료.
 
-| BUG ID | 내용 요약 | 상태 |
-|---|---|---|
-| BUG-EDU-05 ~ BUG-EDU-12 | Education 도메인 다수 | ✅ 수정 완료 |
-| BUG-SAL-07 ~ BUG-SAL-16 | Sales 도메인 다수 | ✅ 수정 완료 |
-| BUG-CON-01 ~ BUG-CON-04 | ConsultationRequest 도메인 | ✅ 수정 완료 |
-| BUG-SCH-01 ~ BUG-SCH-03 | InterviewSchedule 도메인 | ✅ 수정 완료 |
-| BUG-REC-01 | InterviewRecordRunner — A3 수정 시 기록 선택 메뉴 없이 마지막 항목 자동 선택 | ✅ 수정 완료 |
-| BUG-REC-02 | InterviewRecordRunner — 저장 완료 출력에서 interviewedAt을 저장일시로 오표시 | ✅ 수정 완료 |
-| BUG-REC-03 | InterviewRecordRunner — 수정 완료 출력에 modifiedAt 미포함 | ✅ 수정 완료 |
-| BUG-REC-04 | InterviewRecordDAO — interviewed_at/recorded_at 컬럼 혼용 저장 오류 | ✅ 수정 완료 (schema.sql에 interviewed_at 컬럼 추가 필요) |
-| BUG-PRP-01 | ProposalDAO — findAll() 메서드 누락 | ✅ 수정 완료 |
-| BUG-UDW-01 | ReviewResult — confirm() 호출 시 processingNo 미생성, Runner 출력에 처리번호 미포함 | ✅ 수정 완료 |
-| BUG-REV-01 | RevivalRunner — pay() 반환값 무시, E2 납입 실패 분기 없음 | ✅ 수정 완료 |
-| BUG-REV-02 | Revival — contact 필드 없음, Runner에서 setContact() 미호출 | ✅ 수정 완료 |
-| BUG-NEW-CTR-02 | ExpiringContractManagementRunner — saveNoticeRecord()/saveRenewalContract() 후 DAO.save() 누락 | ✅ 수정 완료 |
-| BUG-NEW-CLM-02 | ClaimPaymentRunner — OTP 재시도 횟수 3회(→5회로 수정) | ✅ 수정 완료 |
-| BUG-NEW-CLM-04 | ClaimPaymentRunner — execute() 성공 후 완료 안내 팝업 누락 | ✅ 수정 완료 |
-| BUG-NEW-CLM-05 | ClaimPaymentDAO — ON DUPLICATE KEY UPDATE에 scheduled_at·payment_type 누락 | ✅ 수정 완료 |
-| BUG-INQ-05 | Inquiry — setInquiryNo() 없음, InquiryDAO.mapRow()에서 inquiry_no 미복원 | ✅ 수정 완료 |
-| BUG-INQ-06 | InquiryDAO.save() — answer_content·answered_at INSERT 및 UPSERT에서 누락 | ✅ 수정 완료 |
-| BUG-REF-01 | RefundPaymentRunner — execute() 성공 후 수령인명·은행명·계좌번호·이체금액 팝업 누락 | ✅ 수정 완료 |
+| 파일 | 내용 |
+|---|---|
+| `AdditionalBugReport.md` | 초기 DB 마이그레이션 후 발견된 버그 (BUG-NEW-*) |
+| `CodeReviewReport.md` | 코드 리뷰 단계 버그 (BUG-EDU-*, BUG-SAL-*, BUG-CON-*, BUG-SCH-*, BUG-REC-*, 기타) |
+| `FinalBugReport.md` | 멀티 에이전트 전수 탐색으로 발견된 버그 (BUG-EXTRA-*, BUG-R2-* ~ BUG-R9-*) |
