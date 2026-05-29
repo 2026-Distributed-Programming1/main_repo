@@ -14,7 +14,8 @@ public class ProposalDAO {
         DBA.executeUpdate(
             "INSERT INTO proposals (proposal_no, customer_name, product_name, monthly_premium, created_at)"
             + " VALUES (?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE product_name=VALUES(product_name)",
+            + " ON DUPLICATE KEY UPDATE product_name=VALUES(product_name),"
+            + " monthly_premium=VALUES(monthly_premium)",
             String.valueOf(p.getProposalId()),
             p.getCustomerName(),
             productName,

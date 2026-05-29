@@ -15,7 +15,7 @@ public class RevivalDAO {
             + " payment_method=VALUES(payment_method),"
             + " revived_at=VALUES(revived_at)",
             String.valueOf(r.getRevivalNumber()),
-            null,
+            r.getContractNo(),
             r.getCustomer() != null ? r.getCustomer().getName() : null,
             r.getContact(),
             r.getUnpaidAmount(),

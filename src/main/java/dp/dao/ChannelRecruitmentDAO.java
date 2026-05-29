@@ -13,7 +13,8 @@ public class ChannelRecruitmentDAO {
             "INSERT INTO channel_recruitments (recruitment_no, manager_name, channel_type,"
             + " recruit_count, start_date, end_date, condition_text, status, created_at)"
             + " VALUES (?,?,?,?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE channel_type=VALUES(channel_type),"
+            + " ON DUPLICATE KEY UPDATE manager_name=VALUES(manager_name),"
+            + " channel_type=VALUES(channel_type),"
             + " recruit_count=VALUES(recruit_count), start_date=VALUES(start_date),"
             + " end_date=VALUES(end_date), condition_text=VALUES(condition_text)",
             r.getRecruitmentNo(),

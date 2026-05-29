@@ -15,7 +15,9 @@ public class ClaimCalculationDAO {
             "INSERT INTO claim_calculations (calculation_no, investigation_no, recognized_damage,"
             + " fault_ratio, final_amount, exceeded_deductible, adjusted, status)"
             + " VALUES (?,?,?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE status=VALUES(status), final_amount=VALUES(final_amount)",
+            + " ON DUPLICATE KEY UPDATE status=VALUES(status), final_amount=VALUES(final_amount),"
+            + " recognized_damage=VALUES(recognized_damage), fault_ratio=VALUES(fault_ratio),"
+            + " exceeded_deductible=VALUES(exceeded_deductible), adjusted=VALUES(adjusted)",
             c.getCalculationNo(), invNo, c.getRecognizedDamage(),
             c.getFaultRatio(), c.getFinalAmount(),
             c.isExceededDeductible(), c.isAdjusted(), status);

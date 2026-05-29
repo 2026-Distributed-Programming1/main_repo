@@ -120,7 +120,8 @@ CREATE TABLE IF NOT EXISTS overdue_notice_settings (
     id                  INT      PRIMARY KEY DEFAULT 1,
     max_overdue_count   INT      DEFAULT 3,
     notice_method       VARCHAR(50),
-    auto_cancel_enabled BOOLEAN  DEFAULT FALSE
+    auto_cancel_enabled BOOLEAN  DEFAULT FALSE,
+    saved_at            TIMESTAMP NULL
 );
 
 -- ============================================================
@@ -229,6 +230,7 @@ CREATE TABLE IF NOT EXISTS policy_applications (
     period         INT          DEFAULT 1,
     payment_method VARCHAR(50),
     submitted_at   TIMESTAMP,
+    uploaded_at    TIMESTAMP    NULL,
     status         VARCHAR(20)  DEFAULT '신청'
 );
 

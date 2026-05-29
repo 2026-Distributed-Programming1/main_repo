@@ -19,7 +19,7 @@ public class CustomerDAO {
 
     public static List<Customer> findAll() {
         return DBA.executeQuery(
-            "SELECT customer_id, name, resident_no, phone, email, address, birth_date FROM customers",
+            "SELECT customer_id, name, resident_no, phone, email, address, birth_date, registered_at FROM customers",
             rs -> {
                 Customer c = new Customer(
                     rs.getString("customer_id"),
@@ -31,6 +31,8 @@ public class CustomerDAO {
                 if (addr != null) c.enterAddress(addr);
                 java.sql.Date bd = rs.getDate("birth_date");
                 if (bd != null) c.enterBirthDate(bd.toLocalDate());
+                java.sql.Timestamp rat = rs.getTimestamp("registered_at");
+                if (rat != null) c.setRegisteredAt(rat.toLocalDateTime());
                 return c;
             });
     }
@@ -50,6 +52,8 @@ public class CustomerDAO {
                 if (addr != null) c.enterAddress(addr);
                 java.sql.Date bd = rs.getDate("birth_date");
                 if (bd != null) c.enterBirthDate(bd.toLocalDate());
+                java.sql.Timestamp rat = rs.getTimestamp("registered_at");
+                if (rat != null) c.setRegisteredAt(rat.toLocalDateTime());
                 return c;
             }, customerId);
     }

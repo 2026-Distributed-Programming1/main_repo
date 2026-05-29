@@ -21,7 +21,8 @@ public class EducationPlanDAO {
             + "  textbook_list=VALUES(textbook_list),"
             + "  reject_reason=VALUES(reject_reason),"
             + "  approved_at=VALUES(approved_at),"
-            + "  trainer_name=VALUES(trainer_name), title=VALUES(title)",
+            + "  trainer_name=VALUES(trainer_name), title=VALUES(title),"
+            + "  target_audience=VALUES(target_audience), scheduled_date=VALUES(scheduled_date)",
             String.valueOf(p.getPlanNumber()),
             p.getTrainerName(),
             p.getEducationName(),

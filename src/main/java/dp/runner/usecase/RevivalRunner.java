@@ -2,6 +2,8 @@ package dp.runner.usecase;
 
 import dp.actor.Customer;
 import dp.consultation.Revival;
+import dp.contract.Contract;
+import dp.dao.ContractDAO;
 import dp.dao.CustomerDAO;
 import dp.dao.RevivalDAO;
 import dp.runner.ConsoleHelper;
@@ -42,6 +44,19 @@ public class RevivalRunner {
 
         Revival revival = new Revival();
         revival.setCustomer(customer);
+
+        // 1-1. 고객 계약 목록 조회 후 선택
+        List<Contract> contracts = ContractDAO.findByCustomerId(customer.getCustomerId());
+        if (contracts.isEmpty()) {
+            ConsoleHelper.printError("해당 고객의 계약이 없습니다.");
+            ConsoleHelper.waitEnter();
+            return;
+        }
+        String[] contractOptions = contracts.stream()
+                .map(c -> c.getContractNo() + " - " + c.getPolicyNo())
+                .toArray(String[]::new);
+        int contractChoice = ConsoleHelper.readMenuChoice("[시스템] 부활 신청할 계약을 선택하세요:", contractOptions);
+        revival.setContractNo(contracts.get(contractChoice - 1).getContractNo());
 
         // 2. 시스템은 부활 신청 화면을 출력한다.
         ConsoleHelper.printStage("시스템", "부활 신청 화면을 출력합니다.");

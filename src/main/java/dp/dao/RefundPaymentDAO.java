@@ -25,7 +25,8 @@ public class RefundPaymentDAO {
 
     public static List<RefundPayment> findAll() {
         return DBA.executeQuery(
-            "SELECT payment_no, refund_no, cancellation_no, final_amount, status FROM refund_payments",
+            "SELECT payment_no, refund_no, cancellation_no, final_amount, status,"
+            + " transferred_at, notice_sent, otp_fail_count FROM refund_payments",
             rs -> {
                 String rno   = rs.getString("refund_no");
                 String cancNo = rs.getString("cancellation_no");
@@ -44,9 +45,14 @@ public class RefundPaymentDAO {
                     try { status = RefundPaymentStatus.valueOf(st); }
                     catch (IllegalArgumentException ignored) {}
                 }
-                return new RefundPayment(
+                RefundPayment p = new RefundPayment(
                     rs.getString("payment_no"), refundShell,
                     rs.getLong("final_amount"), status);
+                java.sql.Timestamp tat = rs.getTimestamp("transferred_at");
+                if (tat != null) p.setTransferredAt(tat.toLocalDateTime());
+                p.setNoticeSent(rs.getBoolean("notice_sent"));
+                p.setOtpFailCount(rs.getInt("otp_fail_count"));
+                return p;
             });
     }
 }

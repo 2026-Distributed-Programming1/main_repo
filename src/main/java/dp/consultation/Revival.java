@@ -13,6 +13,7 @@ public class Revival {
 
     private int revivalNumber;
     private Customer customer;
+    private String contractNo;
     private LocalDateTime appliedAt;
     private long unpaidAmount;
     private String paymentMethod;
@@ -58,6 +59,8 @@ public class Revival {
     public int getRevivalNumber() { return revivalNumber; }
     public Customer getCustomer() { return customer; }
     public void setCustomer(Customer customer) { this.customer = customer; }
+    public String getContractNo() { return contractNo; }
+    public void setContractNo(String contractNo) { this.contractNo = contractNo; }
     public LocalDateTime getAppliedAt() { return appliedAt; }
     public long getUnpaidAmount() { return unpaidAmount; }
     public void setUnpaidAmount(long unpaidAmount) { this.unpaidAmount = unpaidAmount; }

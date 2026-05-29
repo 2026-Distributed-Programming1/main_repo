@@ -40,7 +40,7 @@ public class ChannelScreeningDAO {
     public static List<ChannelScreening> findAll() {
         return DBA.executeQuery(
             "SELECT screening_no, candidate_name, channel_type, qualification,"
-            + " certifications, application_date, rejection_reason, status FROM channel_screenings",
+            + " certifications, application_date, rejection_reason, status, reviewed_at FROM channel_screenings",
             rs -> {
                 ChannelScreening s = new ChannelScreening();
                 s.setApprovalNo(rs.getString("screening_no"));
@@ -64,6 +64,8 @@ public class ChannelScreeningDAO {
                     try { s.setScreeningStatus(ScreeningStatus.valueOf(st)); }
                     catch (IllegalArgumentException ignored) {}
                 }
+                java.sql.Timestamp rat = rs.getTimestamp("reviewed_at");
+                if (rat != null) s.setApprovedAt(rat.toLocalDateTime());
                 return s;
             });
     }

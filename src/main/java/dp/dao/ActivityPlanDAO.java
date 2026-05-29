@@ -22,7 +22,9 @@ public class ActivityPlanDAO {
             + " start_date=VALUES(start_date), end_date=VALUES(end_date),"
             + " target_contract_count=VALUES(target_contract_count),"
             + " target_contract_amount=VALUES(target_contract_amount),"
-            + " proposed_insurance_type=VALUES(proposed_insurance_type)",
+            + " proposed_insurance_type=VALUES(proposed_insurance_type),"
+            + " target_new_customer=VALUES(target_new_customer),"
+            + " proposal_reason=VALUES(proposal_reason), memo=VALUES(memo)",
             p.getPlanId(),
             p.getPlanName(),
             p.getAuthor(),

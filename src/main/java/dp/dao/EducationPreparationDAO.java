@@ -20,7 +20,8 @@ public class EducationPreparationDAO {
             + "  venue=VALUES(venue), material_ready=VALUES(material_ready),"
             + "  textbook_status=VALUES(textbook_status),"
             + "  attendance_list=VALUES(attendance_list), status=VALUES(status),"
-            + "  registered_at=VALUES(registered_at)",
+            + "  registered_at=VALUES(registered_at),"
+            + "  plan_no=VALUES(plan_no), trainer_name=VALUES(trainer_name)",
             String.valueOf(e.getSetupNumber()),
             e.getPlanNo(),
             e.getInstructorName(),

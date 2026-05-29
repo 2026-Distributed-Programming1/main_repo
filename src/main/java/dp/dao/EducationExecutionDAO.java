@@ -15,7 +15,8 @@ public class EducationExecutionDAO {
             "INSERT INTO education_executions (execution_no, prep_no, trainer_name,"
             + " executed_at, attendee_count, memo, status)"
             + " VALUES (?,?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE attendee_count=VALUES(attendee_count),"
+            + " ON DUPLICATE KEY UPDATE trainer_name=VALUES(trainer_name),"
+            + " attendee_count=VALUES(attendee_count),"
             + " memo=VALUES(memo), status=VALUES(status), executed_at=VALUES(executed_at)",
             execNo,
             e.getPreparation() != null ? String.valueOf(e.getPreparation().getSetupNumber()) : null,

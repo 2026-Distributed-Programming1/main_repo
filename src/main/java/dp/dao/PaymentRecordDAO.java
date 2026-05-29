@@ -27,47 +27,53 @@ public class PaymentRecordDAO {
             r.getConfirmedAt(), r.getRejectedAt(), rejectCategory, r.getRejectReason());
     }
 
+    private static final String SELECT_COLUMNS =
+        "SELECT record_no, contract_no, customer_name, amount, method, payment_date, status,"
+        + " confirmed_at, rejected_at, reject_category, reject_reason";
+
+    private static PaymentRecord mapRow(java.sql.ResultSet rs, Contract contractShell) throws java.sql.SQLException {
+        String st = rs.getString("status");
+        PaymentRecordStatus status = PaymentRecordStatus.WAITING;
+        if (st != null) {
+            try { status = PaymentRecordStatus.valueOf(st); }
+            catch (IllegalArgumentException ignored) {}
+        }
+        java.sql.Date pd = rs.getDate("payment_date");
+        LocalDate paymentDate = pd != null ? pd.toLocalDate() : LocalDate.now();
+        PaymentRecord r = new PaymentRecord(
+            rs.getString("record_no"), contractShell,
+            rs.getLong("amount"), rs.getString("method"),
+            paymentDate, status);
+        java.sql.Timestamp cat = rs.getTimestamp("confirmed_at");
+        if (cat != null) r.setConfirmedAt(cat.toLocalDateTime());
+        java.sql.Timestamp rat = rs.getTimestamp("rejected_at");
+        if (rat != null) r.setRejectedAt(rat.toLocalDateTime());
+        String rc = rs.getString("reject_category");
+        if (rc != null) {
+            try { r.setRejectCategory(dp.enums.RejectCategory.valueOf(rc)); }
+            catch (IllegalArgumentException ignored) {}
+        }
+        r.setRejectReason(rs.getString("reject_reason"));
+        return r;
+    }
+
     public static List<PaymentRecord> findAll() {
         return DBA.executeQuery(
-            "SELECT record_no, contract_no, customer_name, amount, method, payment_date, status"
-            + " FROM payment_records",
+            SELECT_COLUMNS + " FROM payment_records",
             rs -> {
                 String cno = rs.getString("contract_no");
                 Contract contractShell = Contract.shellOf(cno, null, 0L);
-                String st = rs.getString("status");
-                PaymentRecordStatus status = PaymentRecordStatus.WAITING;
-                if (st != null) {
-                    try { status = PaymentRecordStatus.valueOf(st); }
-                    catch (IllegalArgumentException ignored) {}
-                }
-                java.sql.Date pd = rs.getDate("payment_date");
-                LocalDate paymentDate = pd != null ? pd.toLocalDate() : LocalDate.now();
-                return new PaymentRecord(
-                    rs.getString("record_no"), contractShell,
-                    rs.getLong("amount"), rs.getString("method"),
-                    paymentDate, status);
+                return mapRow(rs, contractShell);
             });
     }
 
     public static List<PaymentRecord> findByContractNo(String contractNo) {
         return DBA.executeQuery(
-            "SELECT record_no, contract_no, customer_name, amount, method, payment_date, status"
-            + " FROM payment_records WHERE contract_no=?",
+            SELECT_COLUMNS + " FROM payment_records WHERE contract_no=?",
             rs -> {
                 Contract contractShell = new Contract();
                 contractShell.setContractNo(rs.getString("contract_no"));
-                String st = rs.getString("status");
-                PaymentRecordStatus status = PaymentRecordStatus.WAITING;
-                if (st != null) {
-                    try { status = PaymentRecordStatus.valueOf(st); }
-                    catch (IllegalArgumentException ignored) {}
-                }
-                java.sql.Date pd = rs.getDate("payment_date");
-                LocalDate paymentDate = pd != null ? pd.toLocalDate() : LocalDate.now();
-                return new PaymentRecord(
-                    rs.getString("record_no"), contractShell,
-                    rs.getLong("amount"), rs.getString("method"),
-                    paymentDate, status);
+                return mapRow(rs, contractShell);
             }, contractNo);
     }
 }

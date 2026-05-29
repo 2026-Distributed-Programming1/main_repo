@@ -204,8 +204,8 @@ public class SalesActivityRunner {
         }
 
         // 10. 시스템은 "개선 지시가 등록되었습니다." 팝업과 등록 완료 결과를 출력한다. (E1)
-        activity.showSaveSuccess();
         SalesActivityManagementDAO.save(activity);
+        activity.showSaveSuccess();
         ConsoleHelper.printStage("시스템", "개선 지시가 등록되었습니다.");
         ConsoleHelper.printStage("시스템", "등록 완료 결과를 출력합니다.");
         ConsoleHelper.printInfo("관리번호: " + activity.getManagementNo()

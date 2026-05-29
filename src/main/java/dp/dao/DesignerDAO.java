@@ -10,7 +10,7 @@ public class DesignerDAO {
         DBA.executeUpdate(
             "INSERT INTO designers (channel_id, name, location, license_number)"
             + " VALUES (?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE name=VALUES(name)",
+            + " ON DUPLICATE KEY UPDATE name=VALUES(name), location=VALUES(location)",
             d.getChannelId(), d.getName(), "", d.getLicenseNumber());
     }
 

@@ -151,6 +151,10 @@ public class RefundPayment {
         this.account = account;
     }
 
+    public void setOtpFailCount(int otpFailCount) { this.otpFailCount = otpFailCount; }
+    public void setTransferredAt(LocalDateTime transferredAt) { this.transferredAt = transferredAt; }
+    public void setNoticeSent(boolean noticeSent) { this.noticeSent = noticeSent; }
+
     // Getter
     public String getPaymentNo() { return paymentNo; }
     public RefundCalculation getRefund() { return refund; }

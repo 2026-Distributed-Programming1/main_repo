@@ -20,7 +20,8 @@ public class ClaimPaymentDAO {
             + " VALUES (?,?,?,?,?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE status=VALUES(status),"
             + " paid_at=VALUES(paid_at), failure_reason=VALUES(failure_reason),"
-            + " scheduled_at=VALUES(scheduled_at), payment_type=VALUES(payment_type)",
+            + " scheduled_at=VALUES(scheduled_at), payment_type=VALUES(payment_type),"
+            + " recipient_name=VALUES(recipient_name), account_no=VALUES(account_no)",
             p.getPaymentNo(), calcNo, p.getFinalAmount(),
             p.getPaidAt(), p.getScheduledAt(), paymentType,
             recipientName, accountNo, p.getFailureReason(), status);
@@ -29,7 +30,7 @@ public class ClaimPaymentDAO {
     public static List<ClaimPayment> findAll() {
         return DBA.executeQuery(
             "SELECT payment_no, calculation_no, final_amount,"
-            + " paid_at, scheduled_at, payment_type, recipient_name, account_no, status FROM claim_payments",
+            + " paid_at, scheduled_at, payment_type, recipient_name, account_no, failure_reason, status FROM claim_payments",
             rs -> {
                 String cno = rs.getString("calculation_no");
                 ClaimCalculation calcShell = new ClaimCalculation(
@@ -55,6 +56,7 @@ public class ClaimPaymentDAO {
                     try { cp.setPaymentType(dp.enums.PaymentType.valueOf(pt)); }
                     catch (IllegalArgumentException ignored) {}
                 }
+                cp.setFailureReason(rs.getString("failure_reason"));
                 return cp;
             });
     }

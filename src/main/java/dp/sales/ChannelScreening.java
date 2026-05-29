@@ -82,6 +82,7 @@ public class ChannelScreening {
     public String getApprovalNo() { return approvalNo; }
     public void setApprovalNo(String approvalNo) { this.approvalNo = approvalNo; }
     public LocalDateTime getApprovedAt() { return approvedAt; }
+    public void setApprovedAt(LocalDateTime approvedAt) { this.approvedAt = approvedAt; }
     public String getRejectionReason() { return rejectionReason; }
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
     public LocalDate getFilterStartDate() { return filterStartDate; }

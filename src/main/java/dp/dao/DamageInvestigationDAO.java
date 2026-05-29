@@ -39,7 +39,8 @@ public class DamageInvestigationDAO {
 
     public static List<DamageInvestigation> findAll() {
         return DBA.executeQuery(
-            "SELECT investigation_no, claim_no, claim_customer, customer_id, handler_name,"
+            "SELECT investigation_no, claim_no, claim_customer, customer_id,"
+            + " handler_emp_id, handler_name,"
             + " our_fault_ratio, counter_ratio, recognized_damage, opinion,"
             + " result, reject_reason, investigated_at, status FROM damage_investigations",
             rs -> {
@@ -64,6 +65,13 @@ public class DamageInvestigationDAO {
                     rs.getDouble("counter_ratio"),
                     rs.getLong("recognized_damage"),
                     status);
+                String hid = rs.getString("handler_emp_id");
+                String hname = rs.getString("handler_name");
+                if (hid != null || hname != null) {
+                    dp.actor.ClaimsHandler handlerShell = new dp.actor.ClaimsHandler(
+                        hid != null ? hid : "?", hname != null ? hname : "", "", "", 0L);
+                    inv.setHandlerShell(handlerShell);
+                }
                 String op = rs.getString("opinion");
                 if (op != null) inv.enterOpinion(op);
                 String res = rs.getString("result");

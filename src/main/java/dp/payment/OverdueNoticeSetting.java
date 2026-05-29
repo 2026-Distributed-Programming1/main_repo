@@ -52,4 +52,5 @@ public class OverdueNoticeSetting {
     public int getDaysAfterDue() { return daysAfterDue; }
     public String getMessageTemplate() { return messageTemplate; }
     public LocalDateTime getSavedAt() { return savedAt; }
+    public void setSavedAt(java.time.LocalDateTime savedAt) { this.savedAt = savedAt; }
 }

@@ -17,6 +17,7 @@ public class SalesActivityManagementDAO {
             + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
             + " ON DUPLICATE KEY UPDATE channel_name=VALUES(channel_name),"
             + "  manager_name=VALUES(manager_name),"
+            + "  activity_type=VALUES(activity_type),"
             + "  start_date=VALUES(start_date), end_date=VALUES(end_date),"
             + "  visit_count=VALUES(visit_count),"
             + "  contract_count=VALUES(contract_count),"

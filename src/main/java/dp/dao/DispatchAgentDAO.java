@@ -10,7 +10,8 @@ public class DispatchAgentDAO {
         DBA.executeUpdate(
             "INSERT INTO dispatch_agents (employee_id, name, department, position, region, vehicle_no)"
             + " VALUES (?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE name=VALUES(name), region=VALUES(region)",
+            + " ON DUPLICATE KEY UPDATE name=VALUES(name), region=VALUES(region),"
+            + " department=VALUES(department), position=VALUES(position), vehicle_no=VALUES(vehicle_no)",
             a.getEmployeeId(), a.getName(), a.getDepartment(), a.getPosition(),
             a.getRegion(), a.getVehicleNo());
     }

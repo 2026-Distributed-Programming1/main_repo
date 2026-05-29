@@ -211,8 +211,8 @@ public class ChannelScreeningRunner {
                 + " | 승인일시: " + screening.getApprovedAt());
 
         // 완료 결과 출력
-        screening.showApprovalResult();
         ChannelScreeningDAO.save(screening);
+        screening.showApprovalResult();
         ConsoleHelper.printStage("시스템", "완료 결과를 출력합니다.");
         ConsoleHelper.printInfo("승인번호: " + screening.getApprovalNo()
                 + " | 승인일시: " + screening.getApprovedAt()

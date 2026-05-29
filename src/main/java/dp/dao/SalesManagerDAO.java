@@ -10,7 +10,7 @@ public class SalesManagerDAO {
         DBA.executeUpdate(
             "INSERT INTO sales_managers (manager_id, name, department)"
             + " VALUES (?,?,?)"
-            + " ON DUPLICATE KEY UPDATE name=VALUES(name)",
+            + " ON DUPLICATE KEY UPDATE name=VALUES(name), department=VALUES(department)",
             m.getManagerId(), m.getName(), m.getDepartment());
     }
 

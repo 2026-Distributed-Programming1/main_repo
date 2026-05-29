@@ -173,6 +173,7 @@ public class ClaimPayment {
     public ClaimPaymentStatus getStatus() { return status; }
 
     // DB 복원용 setter
+    public void setFailureReason(String failureReason) { this.failureReason = failureReason; }
     public void setRecipientFromName(String name) {
         if (name != null) this.recipient = new RecipientInfo(name);
     }

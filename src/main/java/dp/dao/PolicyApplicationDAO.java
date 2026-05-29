@@ -10,9 +10,10 @@ public class PolicyApplicationDAO {
         String customerId = p.getCustomer() != null ? p.getCustomer().getCustomerId() : null;
         DBA.executeUpdate(
             "INSERT INTO policy_applications (application_no, customer_id, customer_name,"
-            + " product_name, period, payment_method, submitted_at, status)"
-            + " VALUES (?,?,?,?,?,?,?,?)"
-            + " ON DUPLICATE KEY UPDATE product_name=VALUES(product_name), status=VALUES(status)",
+            + " product_name, period, payment_method, submitted_at, uploaded_at, status)"
+            + " VALUES (?,?,?,?,?,?,?,?,?)"
+            + " ON DUPLICATE KEY UPDATE product_name=VALUES(product_name),"
+            + " uploaded_at=VALUES(uploaded_at), status=VALUES(status)",
             p.getApplicationNumber(),
             customerId,
             p.getCustomerName(),
@@ -20,6 +21,7 @@ public class PolicyApplicationDAO {
             p.getPeriod(),
             p.getPaymentMethod(),
             p.getSubmittedAt(),
+            p.getUploadedAt(),
             p.getStatus() != null ? p.getStatus() : "신청");
     }
 
